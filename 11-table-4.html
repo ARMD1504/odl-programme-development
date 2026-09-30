@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Table 4 — Your Course Blueprint — ODL Programme Development</title>
+<style>
+  :root {
+    --navy: #1a365d;
+    --blue: #2b6cb0;
+    --light-blue: #ebf4ff;
+    --green: #276749;
+    --light-green: #f0fff4;
+    --orange: #c05621;
+    --light-orange: #fffaf0;
+    --purple: #553c9a;
+    --light-purple: #faf5ff;
+    --teal: #285e61;
+    --light-teal: #e6fffa;
+    --red: #c53030;
+    --light-red: #fff5f5;
+    --gray: #4a5568;
+    --light-gray: #f7fafc;
+    --border: #e2e8f0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #2d3748;
+    line-height: 1.7;
+    background: #fff;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .page-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page-nav a {
+    color: var(--blue);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--blue);
+    border-radius: 6px;
+    transition: background 0.2s;
+  }
+
+  .page-nav a:hover { background: var(--light-blue); }
+  .page-nav .page-label { font-size: 0.85rem; color: var(--gray); }
+
+  .page-header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--green) 100%);
+    color: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+  }
+
+  .page-header .module-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    padding: 0.2rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .page-header h1 { font-size: 1.6rem; margin-bottom: 0.4rem; }
+  .page-header .page-subtitle { font-size: 0.95rem; opacity: 0.85; }
+
+  h2 {
+    color: var(--navy);
+    font-size: 1.3rem;
+    margin: 2rem 0 1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid var(--blue);
+    display: inline-block;
+  }
+
+  h3 { color: var(--navy); font-size: 1.05rem; margin: 1.5rem 0 0.5rem; }
+  p { margin-bottom: 1rem; }
+
+  .key-point {
+    background: var(--light-blue);
+    border-left: 5px solid var(--blue);
+    padding: 1rem 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 1.5rem 0;
+    font-size: 0.95rem;
+  }
+
+  .key-point strong { color: var(--navy); }
+
+  .case-box {
+    background: var(--light-orange);
+    border-left: 5px solid var(--orange);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .case-box h3 { color: var(--orange); margin-top: 0; margin-bottom: 0.75rem; }
+  .case-box .scenario { font-style: italic; margin-bottom: 1rem; }
+
+  /* Alignment chain */
+  .chain {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin: 2rem 0;
+    flex-wrap: wrap;
+  }
+
+  .chain-step {
+    text-align: center;
+    padding: 1rem 1.25rem;
+    border-radius: 10px;
+    color: #fff;
+    min-width: 130px;
+    flex-shrink: 0;
+  }
+
+  .chain-step .chain-icon { font-size: 1.5rem; margin-bottom: 0.3rem; }
+  .chain-step h4 { font-size: 0.88rem; margin-bottom: 0.2rem; }
+  .chain-step p { font-size: 0.78rem; opacity: 0.9; margin: 0; }
+
+  .chain-clo { background: var(--blue); }
+  .chain-activity { background: var(--teal); }
+  .chain-assess { background: var(--purple); }
+  .chain-slt { background: var(--green); }
+
+  .chain-arrow {
+    font-size: 1.5rem;
+    color: var(--gray);
+    padding: 0 0.5rem;
+    flex-shrink: 0;
+  }
+
+  /* Section cards */
+  .section-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .section-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    background: var(--light-gray);
+  }
+
+  .section-card .sec-num {
+    display: inline-block;
+    background: var(--navy);
+    color: #fff;
+    padding: 0.1rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+  }
+
+  .section-card h4 {
+    color: var(--navy);
+    font-size: 0.92rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .section-card p {
+    font-size: 0.85rem;
+    color: var(--gray);
+    margin: 0;
+  }
+
+  .section-card.highlight {
+    border-left: 4px solid var(--green);
+    background: var(--light-green);
+  }
+
+  /* Pipeline visual */
+  .pipeline {
+    display: flex;
+    align-items: stretch;
+    margin: 2rem 0;
+    gap: 0;
+  }
+
+  .pipeline-step {
+    flex: 1;
+    text-align: center;
+    padding: 1.25rem 0.75rem;
+    position: relative;
+    color: #fff;
+  }
+
+  .pipeline-step h4 { font-size: 0.85rem; margin-bottom: 0.25rem; }
+  .pipeline-step p { font-size: 0.78rem; opacity: 0.85; margin: 0; }
+
+  .pipeline-step::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -15px;
+    width: 0;
+    height: 0;
+    border-top: 50px solid transparent;
+    border-bottom: 50px solid transparent;
+    z-index: 1;
+  }
+
+  .pipeline-step:last-child::after { display: none; }
+
+  .pipe-blueprint { background: var(--navy); }
+  .pipe-blueprint::after { border-left: 15px solid var(--navy); }
+  .pipe-sim { background: var(--teal); }
+  .pipe-sim::after { border-left: 15px solid var(--teal); }
+  .pipe-lms { background: var(--green); }
+  .pipe-lms::after { display: none; }
+
+  /* Good practice box */
+  .good-practice-box {
+    background: var(--light-green);
+    border-left: 5px solid var(--green);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .good-practice-box h3 { color: var(--green); margin-top: 0; margin-bottom: 0.75rem; }
+  .good-practice-box .scenario { font-style: italic; margin-bottom: 1rem; }
+
+  .why-annotation {
+    background: #fff;
+    border: 1px solid #c6f6d5;
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    margin-top: 0.75rem;
+    font-size: 0.88rem;
+  }
+
+  .why-annotation strong { color: var(--green); }
+
+  /* Checklist */
+  .checklist {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+  }
+
+  .checklist li {
+    padding: 0.5rem 0 0.5rem 2rem;
+    position: relative;
+    font-size: 0.92rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .checklist li:last-child { border-bottom: none; }
+
+  .checklist li::before {
+    content: '\2713';
+    position: absolute;
+    left: 0.5rem;
+    color: var(--green);
+    font-weight: 700;
+    font-size: 1rem;
+  }
+
+  /* Fill-in-the-blanks */
+  .fib-box {
+    background: var(--light-blue);
+    border-left: 5px solid var(--blue);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .fib-box h3 {
+    color: var(--blue);
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+  }
+
+  .fib-item {
+    margin-bottom: 1.2rem;
+    font-size: 0.93rem;
+    line-height: 1.8;
+  }
+
+  .fib-item label {
+    font-weight: 600;
+    color: var(--navy);
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  .fib-item input[type="text"] {
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    padding: 0.35rem 0.65rem;
+    font-size: 0.9rem;
+    width: 180px;
+    transition: border-color 0.2s;
+  }
+
+  .fib-item input[type="text"]:focus {
+    outline: none;
+    border-color: var(--blue);
+  }
+
+  .fib-item input.correct {
+    border-color: var(--green);
+    background: var(--light-green);
+  }
+
+  .fib-item input.incorrect {
+    border-color: var(--red);
+    background: var(--light-red);
+  }
+
+  .fib-item .fib-feedback {
+    font-size: 0.83rem;
+    margin-top: 0.2rem;
+    min-height: 1.2em;
+  }
+
+  .fib-item .fib-feedback.correct-fb { color: var(--green); }
+  .fib-item .fib-feedback.incorrect-fb { color: var(--red); }
+
+  .fib-check-btn {
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 0.5rem;
+  }
+
+  .fib-check-btn:hover { background: var(--navy); }
+
+  .fib-score {
+    margin-top: 1rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    min-height: 1.5em;
+  }
+
+  /* Warning box */
+  .warning-box {
+    background: var(--light-red);
+    border-left: 5px solid var(--red);
+    padding: 1rem 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 1.5rem 0;
+    font-size: 0.93rem;
+  }
+
+  .warning-box strong { color: var(--red); }
+
+  /* Page footer */
+  .page-footer {
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--gray);
+    font-size: 0.85rem;
+  }
+
+  /* Table 4 action prompt */
+  .table4-action {
+    background: #FFFBEB;
+    border-left: 5px solid #D97706;
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+
+  .table4-action h3 {
+    color: #B45309;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .table4-action .table4-icon { font-size: 1.3rem; }
+
+  .table4-action p {
+    font-size: 0.93rem;
+    margin-bottom: 0;
+  }
+
+  .table4-action .table4-intro {
+    font-size: 0.9rem;
+    color: #92400E;
+    font-style: italic;
+    margin-bottom: 0.5rem;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 1rem; }
+    .section-grid { grid-template-columns: 1fr; }
+    .chain { flex-direction: column; }
+    .chain-arrow { transform: rotate(90deg); }
+    .pipeline { flex-direction: column; }
+    .pipeline-step::after { display: none; }
+    .page-header h1 { font-size: 1.3rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<div class="page-nav">
+  <a href="10-slt-calculations.html">&larr; Previous</a>
+  <span class="page-label">Page 11 of 20</span>
+  <a href="12-lms-implementation.html">Next &rarr;</a>
+</div>
+
+<!-- HEADER -->
+<div class="page-header">
+  <div class="module-tag">Module 3 &bull; Planning and Designing Your ODL Course</div>
+  <h1>Table 4 &mdash; Your Course Blueprint</h1>
+  <p class="page-subtitle">The single document that ties together your learning outcomes, activities, assessments, and SLT</p>
+</div>
+
+<!-- BRIDGE FROM PAGES 09-10 -->
+<p>On the previous two pages, you learned how to allocate and calculate Student Learning Time. Those calculations are essential &mdash; but they do not exist in isolation. They live inside a document called Table 4, which is the primary course planning tool required by MQA for every ODL course. Table 4 is where your course design comes together: learning outcomes, teaching and learning activities, assessment methods, and SLT allocation all documented in a single, structured format. Understanding how to complete Table 4 correctly is the difference between a course that passes accreditation review and one that gets sent back for revision.</p>
+
+<!-- WHAT IS TABLE 4 -->
+<h2>What Is Table 4?</h2>
+
+<p>Table 4 is the Course Information template prescribed by the Malaysian Qualifications Agency (MQA) under the Code of Practice for Programme Accreditation: Open and Distance Learning (COPPA:ODL). It is the official course-level document that describes your course structure, learning outcomes, teaching and learning activities, assessment methods, and Student Learning Time distribution.</p>
+
+<p>For ODL courses, Table 4 serves multiple purposes simultaneously. It is a planning tool that helps you design your course coherently. It is an accreditation document that MQA assessors review during programme approval and audit exercises. And it is a communication tool that tells students, colleagues, and quality assurance reviewers exactly what your course involves and how it is delivered.</p>
+
+<div class="key-point">
+  <strong>Table 4 is not optional.</strong> Academic staff are required to complete Table 4 in accordance with MQA's prescribed format. For ODL courses, the SLT distribution documented in Table 4 provides the basis for determining whether the course satisfies the 80% ODL delivery requirement. Incomplete or inconsistent Table 4 documentation is one of the most common reasons programmes are flagged during accreditation.
+</div>
+
+<!-- THE ALIGNMENT CHAIN -->
+<h2>The Alignment Chain</h2>
+
+<p>Table 4 is built around a principle called <em>constructive alignment</em>: every component of your course must connect logically to every other component. Your learning outcomes determine what activities students do. Those activities determine how you assess. And all of the above determine how SLT is distributed. If any link in this chain is broken, the course design is incoherent &mdash; and Table 4 will reveal the gap.</p>
+
+<div class="chain">
+  <div class="chain-step chain-clo">
+    <div class="chain-icon">&#127919;</div>
+    <h4>Course Learning Outcomes</h4>
+    <p>What students should be able to do</p>
+  </div>
+  <div class="chain-arrow">&rarr;</div>
+  <div class="chain-step chain-activity">
+    <div class="chain-icon">&#128218;</div>
+    <h4>Teaching &amp; Learning Activities</h4>
+    <p>How students engage with the content</p>
+  </div>
+  <div class="chain-arrow">&rarr;</div>
+  <div class="chain-step chain-assess">
+    <div class="chain-icon">&#9989;</div>
+    <h4>Assessment Methods</h4>
+    <p>How achievement is measured</p>
+  </div>
+  <div class="chain-arrow">&rarr;</div>
+  <div class="chain-step chain-slt">
+    <div class="chain-icon">&#9201;</div>
+    <h4>SLT Allocation</h4>
+    <p>How time is distributed</p>
+  </div>
+</div>
+
+<p>When you fill in Table 4, you are essentially documenting this chain. Each CLO should map to specific activities, which in turn map to specific assessments, which collectively account for the total SLT. MQA assessors look for this alignment &mdash; and they will question any CLO that has no corresponding activity, any activity that is not assessed, or any SLT hours that do not connect to a learning outcome.</p>
+
+<!-- KEY SECTIONS OF TABLE 4 -->
+<h2>Key Sections of Table 4 for ODL Courses</h2>
+
+<p>While Table 4 contains several sections covering different aspects of course information, the following sections are particularly important for ODL course design:</p>
+
+<div class="section-grid">
+  <div class="section-card">
+    <span class="sec-num">Section</span>
+    <h4>Course Information</h4>
+    <p>Course title, code, credit value, prerequisite, synopsis, and the programme it belongs to. The credit value determines your total SLT (credits &times; 40 hours).</p>
+  </div>
+  <div class="section-card">
+    <span class="sec-num">Section</span>
+    <h4>Course Learning Outcomes (CLOs)</h4>
+    <p>The specific outcomes students must achieve, mapped to programme learning outcomes and MQF domains. Each CLO drives the activities and assessments that follow.</p>
+  </div>
+  <div class="section-card">
+    <span class="sec-num">Section</span>
+    <h4>Teaching &amp; Learning Activities</h4>
+    <p>The methods used to deliver the course: synchronous online, asynchronous online, independent learning, and physical face-to-face. Each activity should link to one or more CLOs.</p>
+  </div>
+  <div class="section-card">
+    <span class="sec-num">Section</span>
+    <h4>Assessment Methods</h4>
+    <p>How each CLO is assessed: online quizzes, assignments, e-portfolios, discussions, presentations, or examinations. Must align with both the CLOs and the activities.</p>
+  </div>
+  <div class="section-card highlight">
+    <span class="sec-num">Section 10</span>
+    <h4>Student Learning Time (SLT) Distribution</h4>
+    <p>The breakdown of total SLT across all activity types. For ODL courses, this section must show that at least 80% of SLT is delivered through ODL approaches. This is the section that determines your course's ODL classification.</p>
+  </div>
+  <div class="section-card">
+    <span class="sec-num">Section</span>
+    <h4>Learning Resources</h4>
+    <p>Core and supplementary readings, digital resources, SIM references, and any specialised materials. Should be consistent with the activities described above.</p>
+  </div>
+</div>
+
+<div class="key-point">
+  <strong>Section 10 is the critical section for ODL compliance.</strong> This is where you document how many hours are allocated to each delivery method and where the 80% ODL threshold is verified. All the SLT calculation skills you practised on the previous pages are applied in this section.
+</div>
+
+<!-- THE PIPELINE: TABLE 4 → SIM → LMS -->
+<h2>From Blueprint to Delivery</h2>
+
+<p>Table 4 does not exist in isolation. It is the first step in a three-stage pipeline that moves from planning to implementation to delivery. Once your Table 4 is approved, it becomes the blueprint for developing your Self-Instructional Materials (SIMs). Those SIMs are then implemented within the Learning Management System (LMS), which is where students actually experience the course.</p>
+
+<div class="pipeline">
+  <div class="pipeline-step pipe-blueprint">
+    <h4>Table 4</h4>
+    <p>The blueprint: CLOs, activities, assessments, SLT</p>
+  </div>
+  <div class="pipeline-step pipe-sim">
+    <h4>SIM Development</h4>
+    <p>Structured learning packages built from the Table 4 plan</p>
+  </div>
+  <div class="pipeline-step pipe-lms">
+    <h4>LMS Implementation</h4>
+    <p>SIMs delivered to students through the online platform</p>
+  </div>
+</div>
+
+<p>This pipeline matters because every stage must be consistent with the one before it. Your SIM should accurately reflect what Table 4 specifies. Your LMS should deliver what the SIM contains. If Table 4 allocates 28 hours of asynchronous learning, but the SIM only provides 15 hours of asynchronous content, the discrepancy will be flagged during quality review. Similarly, if the LMS implementation diverges from the approved SIM, the course is no longer delivering what was planned.</p>
+
+<div class="warning-box">
+  <strong>Consistency is non-negotiable.</strong> MQA assessors will compare your Table 4, your SIM, and your LMS implementation. Any mismatch between what was planned (Table 4), what was developed (SIM), and what students actually experience (LMS) is a compliance risk. Keep all three documents aligned throughout the development process.
+</div>
+
+<!-- GOOD PRACTICE -->
+<p>Let's look at how an experienced lecturer uses Table 4 effectively during the course design process.</p>
+
+<div class="good-practice-box">
+  <h3>Good Practice: Dr. Priya's Table 4 Process</h3>
+  <p class="scenario">Dr. Priya is developing an ODL course in Educational Research Methods (3 credits, 120 SLT hours). Rather than filling in Table 4 as an afterthought, she uses it as her primary design tool from the very beginning.</p>
+
+  <p><strong>Her process:</strong></p>
+  <ul class="checklist">
+    <li>She starts with the CLOs &mdash; writing them first, before deciding on any activities or assessments</li>
+    <li>For each CLO, she identifies the teaching and learning activities that will help students achieve it, noting whether each activity is synchronous, asynchronous, independent, or physical F2F</li>
+    <li>For each CLO, she selects an assessment method that directly measures whether students have achieved that outcome</li>
+    <li>She then allocates SLT hours to each activity using the equivalency guide, ensuring the total matches her 3-credit value (120 hours)</li>
+    <li>Finally, she calculates the ODL percentage from the SLT breakdown in Section 10 &mdash; and confirms it meets the 80% threshold before proceeding to SIM development</li>
+  </ul>
+
+  <div class="why-annotation">
+    <strong>Why this works:</strong> Dr. Priya uses Table 4 as a design tool, not just a compliance document. By starting with CLOs and working forward through activities, assessments, and SLT, she ensures constructive alignment from the outset. Her ODL percentage is verified <em>before</em> she begins developing SIMs, which means she does not have to restructure her course later. This forward-planning approach prevents the common problem of building a course first and then trying to retrofit it into Table 4 &mdash; which almost always produces alignment gaps.
+  </div>
+</div>
+
+<!-- TABLE 4 ACTION -->
+<p>Before you move on, take a moment to apply what you have learned.</p>
+
+<div class="table4-action">
+  <h3><span class="table4-icon">&#128221;</span> Update Your Table 4</h3>
+  <p class="table4-intro">This page is about Table 4 itself. Now is the time to complete all remaining sections.</p>
+  <p>Complete all remaining sections: CLOs, learning activities, assessment plan, and SLT distribution. Ensure constructive alignment &mdash; every CLO has at least one activity and one assessment. Your Table 4 should now be a near-complete blueprint of your course.</p>
+</div>
+
+<!-- CASE SCENARIO -->
+<p>Now let's see what happens when Table 4 is treated as a compliance exercise rather than a design tool.</p>
+
+<div class="case-box">
+  <h3>Case: Dr. Wong's Misaligned Table 4</h3>
+  <p class="scenario">Dr. Wong has been asked to convert his face-to-face course into an ODL course. He develops his SIM and LMS content first, building what he thinks is a good online course. Only after the LMS is set up does he sit down to fill in Table 4. He quickly discovers several problems: his CLOs mention "critical evaluation" but his activities are mostly recorded lectures with no evaluation exercises; his SLT allocation adds up to 140 hours for a 3-credit course (he forgot the credit-to-hours constraint); and his assessment section lists a final examination that does not map to any specific CLO. The ODL percentage in Section 10 calculates to 76%, below the 80% threshold. He now faces the prospect of restructuring his entire course to fix the alignment gaps.</p>
+  <p><strong>What went wrong?</strong> Dr. Wong treated Table 4 as an afterthought &mdash; a form to fill in after the course was already built. Because he did not use Table 4 to guide his design decisions from the start, the resulting course had misaligned CLOs, overallocated SLT, unmapped assessments, and an ODL percentage that failed to meet the threshold. Had he started with Table 4, he would have caught all of these issues during the planning stage, before investing time in SIM development and LMS implementation.</p>
+</div>
+
+<!-- TRANSITION TO QUIZ -->
+<p>With the role and structure of Table 4 now clear, let's check your understanding of how this document works as a planning and compliance tool.</p>
+
+<!-- FILL-IN-THE-BLANKS QUIZ -->
+<div class="fib-box">
+  <h3>Check Your Understanding: Fill in the Blanks</h3>
+  <p style="margin-bottom: 1rem; font-size: 0.9rem;">Complete each statement below, then click "Check All" to see your score.</p>
+
+  <div class="fib-item">
+    <label>1. Table 4 is prescribed by MQA under the</label>
+    <input type="text" id="fib1" placeholder="___" style="width: 220px;"> <span>code of practice for ODL.</span>
+    <div class="fib-feedback" id="fb1"></div>
+  </div>
+
+  <div class="fib-item">
+    <label>2. In Table 4, the section that determines whether a course qualifies as ODL is the</label>
+    <input type="text" id="fib2" placeholder="___" style="width: 220px;"> <span>distribution.</span>
+    <div class="fib-feedback" id="fb2"></div>
+  </div>
+
+  <div class="fib-item">
+    <label>3. The principle that CLOs, activities, assessments, and SLT must all connect logically is called</label>
+    <input type="text" id="fib3" placeholder="___" style="width: 240px;"> <span>alignment.</span>
+    <div class="fib-feedback" id="fb3"></div>
+  </div>
+
+  <div class="fib-item">
+    <label>4. After Table 4 is approved, it becomes the blueprint for developing the</label>
+    <input type="text" id="fib4" placeholder="___"> <span>, which are then implemented on the LMS.</span>
+    <div class="fib-feedback" id="fb4"></div>
+  </div>
+
+  <div class="fib-item">
+    <label>5. Table 4 should be used as a</label>
+    <input type="text" id="fib5" placeholder="___" style="width: 200px;"> <span>tool from the start of course development, not as an afterthought.</span>
+    <div class="fib-feedback" id="fb5"></div>
+  </div>
+
+  <button class="fib-check-btn" onclick="checkAllFib()">Check All</button>
+  <div class="fib-score" id="fibScore"></div>
+</div>
+
+<script>
+  const fibAnswers = {
+    fib1: { answers: ['coppa', 'coppa:odl', 'code of practice for programme accreditation'], feedback: { correct: 'Correct. Table 4 is prescribed under COPPA:ODL (Code of Practice for Programme Accreditation: Open and Distance Learning).', incorrect: 'Not quite. The correct answer is COPPA (or COPPA:ODL) — the Code of Practice for Programme Accreditation: Open and Distance Learning.' }},
+    fib2: { answers: ['slt', 'student learning time', 'sltm'], feedback: { correct: 'Correct. The SLT (Student Learning Time) distribution in Section 10 of Table 4 determines whether a course meets the 80% ODL threshold.', incorrect: 'Not quite. The SLT (Student Learning Time) distribution is the section that determines ODL classification. It shows the breakdown of hours across delivery methods.' }},
+    fib3: { answers: ['constructive', 'constructive alignment'], feedback: { correct: 'Correct. Constructive alignment is the principle that CLOs, activities, assessments, and SLT must all connect logically.', incorrect: 'Not quite. The principle is "constructive" alignment — the idea that every component of the course must connect logically to every other component.' }},
+    fib4: { answers: ['sim', 'sims', 'self-instructional materials', 'self-instructional material'], feedback: { correct: 'Correct. Table 4 serves as the blueprint for developing Self-Instructional Materials (SIMs), which are then implemented on the LMS.', incorrect: 'Not quite. Table 4 guides the development of SIMs (Self-Instructional Materials). The pipeline is: Table 4 (blueprint) → SIM (development) → LMS (delivery).' }},
+    fib5: { answers: ['design', 'planning', 'planning and design'], feedback: { correct: 'Correct. Table 4 should be used as a design (or planning) tool from the very beginning of course development, not filled in as an afterthought.', incorrect: 'Not quite. Table 4 should be used as a "design" or "planning" tool from the start — guiding your decisions rather than documenting them after the fact.' }}
+  };
+
+  function checkAllFib() {
+    let score = 0;
+    let total = Object.keys(fibAnswers).length;
+
+    for (let id in fibAnswers) {
+      const input = document.getElementById(id);
+      const fb = document.getElementById('fb' + id.replace('fib',''));
+      const userVal = input.value.trim().toLowerCase();
+      const data = fibAnswers[id];
+
+      if (data.answers.some(a => userVal === a.toLowerCase())) {
+        input.classList.remove('incorrect');
+        input.classList.add('correct');
+        fb.textContent = data.feedback.correct;
+        fb.className = 'fib-feedback correct-fb';
+        score++;
+      } else {
+        input.classList.remove('correct');
+        input.classList.add('incorrect');
+        fb.textContent = data.feedback.incorrect;
+        fb.className = 'fib-feedback incorrect-fb';
+      }
+    }
+
+    const scoreEl = document.getElementById('fibScore');
+    if (score === total) {
+      scoreEl.textContent = score + '/' + total + ' — Excellent! You understand how Table 4 works as a planning and compliance document.';
+      scoreEl.style.color = 'var(--green)';
+    } else if (score >= 3) {
+      scoreEl.textContent = score + '/' + total + ' — Good effort. Review the incorrect items above.';
+      scoreEl.style.color = 'var(--orange)';
+    } else {
+      scoreEl.textContent = score + '/' + total + ' — Revisit this page. Table 4 is the foundation document for every ODL course you will develop.';
+      scoreEl.style.color = 'var(--red)';
+    }
+  }
+</script>
+
+<!-- SUMMARY / BRIDGE -->
+<h2>Summary</h2>
+
+<p>Table 4 is the single document that ties together every aspect of your ODL course design: learning outcomes, activities, assessments, and SLT allocation. It should be used as a design tool from the start, not filled in retrospectively. The alignment chain (CLOs → activities → assessments → SLT) ensures that every component connects logically, and the SLT distribution in Section 10 determines whether your course meets the 80% ODL threshold. Once approved, Table 4 becomes the blueprint for developing your SIMs and implementing them on the LMS.</p>
+
+<p>With your blueprint in place, the next step is to understand how your course design translates into the actual online learning environment. The next page covers LMS implementation &mdash; how to structure your course on the platform, what evidence to maintain for accreditation, and the requirements for Provisional Accreditation.</p>
+
+<!-- FOOTER -->
+<div class="page-footer">
+  <p>ODL Programme Development &bull; Page 11 of 20<br>
+  Part of the ODL Professional Development Series</p>
+</div>
+
+</body>
+</html>

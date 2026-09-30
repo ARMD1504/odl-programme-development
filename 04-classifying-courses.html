@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Classifying ODL Courses — The 80% Rule — ODL Programme Development</title>
+<style>
+  :root {
+    --navy: #1a365d;
+    --blue: #2b6cb0;
+    --light-blue: #ebf4ff;
+    --green: #276749;
+    --light-green: #f0fff4;
+    --orange: #c05621;
+    --light-orange: #fffaf0;
+    --purple: #553c9a;
+    --light-purple: #faf5ff;
+    --teal: #285e61;
+    --light-teal: #e6fffa;
+    --red: #c53030;
+    --light-red: #fff5f5;
+    --gray: #4a5568;
+    --light-gray: #f7fafc;
+    --border: #e2e8f0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #2d3748;
+    line-height: 1.7;
+    background: #fff;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .page-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page-nav a {
+    color: var(--blue);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--blue);
+    border-radius: 6px;
+    transition: background 0.2s;
+  }
+
+  .page-nav a:hover { background: var(--light-blue); }
+  .page-nav .page-label { font-size: 0.85rem; color: var(--gray); }
+
+  .page-header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+    color: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+  }
+
+  .page-header .module-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    padding: 0.2rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .page-header h1 { font-size: 1.6rem; margin-bottom: 0.4rem; }
+  .page-header .page-subtitle { font-size: 0.95rem; opacity: 0.85; }
+
+  h2 {
+    color: var(--navy);
+    font-size: 1.3rem;
+    margin: 2rem 0 1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid var(--blue);
+    display: inline-block;
+  }
+
+  h3 { color: var(--navy); font-size: 1.05rem; margin: 1.5rem 0 0.5rem; }
+  p { margin-bottom: 1rem; }
+
+  .key-point {
+    background: var(--light-blue);
+    border-left: 5px solid var(--blue);
+    padding: 1rem 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 1.5rem 0;
+    font-size: 0.95rem;
+  }
+
+  .key-point strong { color: var(--navy); }
+
+  .case-box {
+    background: var(--light-orange);
+    border-left: 5px solid var(--orange);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .case-box h3 { color: var(--orange); margin-top: 0; margin-bottom: 0.75rem; }
+  .case-box .scenario { font-style: italic; margin-bottom: 1rem; }
+
+  /* Stacked bar visual */
+  .bar-container {
+    margin: 1.5rem 0;
+  }
+
+  .bar-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 0.3rem;
+  }
+
+  .bar-wrapper {
+    display: flex;
+    height: 36px;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 0.3rem;
+  }
+
+  .bar-odl {
+    background: var(--green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    transition: width 0.3s;
+  }
+
+  .bar-f2f {
+    background: #a0aec0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    transition: width 0.3s;
+  }
+
+  .bar-legend {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 0.8rem;
+    color: var(--gray);
+    margin-top: 0.3rem;
+  }
+
+  .bar-legend span::before {
+    content: '';
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    margin-right: 0.3rem;
+    vertical-align: middle;
+  }
+
+  .bar-legend .leg-odl::before { background: var(--green); }
+  .bar-legend .leg-f2f::before { background: #a0aec0; }
+
+  .threshold-line {
+    position: relative;
+    margin: 0.5rem 0;
+  }
+
+  .threshold-marker {
+    position: absolute;
+    left: 80%;
+    transform: translateX(-50%);
+    font-size: 0.7rem;
+    color: var(--green);
+    font-weight: 700;
+  }
+
+  /* Worked example */
+  .example-box {
+    background: var(--light-gray);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .example-box h3 { margin-top: 0; }
+
+  .example-box .example-label {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 0.15rem 0.6rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+  }
+
+  .example-label.pass { background: #c6f6d5; color: var(--green); }
+  .example-label.fail { background: #fed7d7; color: var(--red); }
+
+  .calc-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+  }
+
+  .calc-table th {
+    background: var(--navy);
+    color: #fff;
+    padding: 0.6rem 0.8rem;
+    text-align: left;
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+
+  .calc-table td {
+    padding: 0.5rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .calc-table tr:last-child td { border-bottom: none; }
+  .calc-table .highlight-row { background: #ebf4ff; font-weight: 600; }
+  .calc-table .num-col { text-align: center; width: 100px; }
+
+  .verdict {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 5px;
+    font-weight: 700;
+    font-size: 0.82rem;
+  }
+
+  .verdict.pass { background: #c6f6d5; color: var(--green); }
+  .verdict.fail { background: #fed7d7; color: var(--red); }
+
+  /* MCQ quiz */
+  .mcq-box {
+    background: var(--light-green);
+    border-left: 5px solid var(--green);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .mcq-box h3 { color: var(--green); margin-top: 0; margin-bottom: 0.75rem; }
+  .mcq-box .question { font-weight: 600; margin-bottom: 1rem; }
+
+  .mcq-box .options {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem;
+  }
+
+  .mcq-box .options li {
+    padding: 0.6rem 1rem;
+    margin-bottom: 0.4rem;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.93rem;
+  }
+
+  .mcq-box .options li:hover { border-color: var(--green); background: #f0fff4; }
+  .mcq-box .options li.correct { background: #c6f6d5; border-color: var(--green); font-weight: 600; }
+  .mcq-box .options li.incorrect { background: #fed7d7; border-color: var(--red); }
+
+  .mcq-box .feedback {
+    display: none;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-top: 0.5rem;
+    font-size: 0.92rem;
+  }
+
+  .mcq-box .feedback.show { display: block; }
+  .mcq-box .feedback.correct-fb { background: #c6f6d5; color: #22543d; }
+  .mcq-box .feedback.incorrect-fb { background: #fed7d7; color: #742a2a; }
+
+  .mcq-box .check-btn {
+    background: var(--green);
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+
+  .mcq-box .check-btn:hover { background: #22543d; }
+
+  /* Considerations */
+  .considerations-box {
+    background: var(--light-purple);
+    border: 1px solid #e9d8fd;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .considerations-box h3 { color: var(--purple); margin-top: 0; }
+
+  .considerations-box ul { padding-left: 1.5rem; margin: 0; }
+  .considerations-box li { margin-bottom: 0.5rem; font-size: 0.92rem; }
+
+  .page-footer {
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--gray);
+    font-size: 0.85rem;
+  }
+
+  /* Table 4 action prompt */
+  .table4-action {
+    background: #FFFBEB;
+    border-left: 5px solid #D97706;
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+
+  .table4-action h3 {
+    color: #B45309;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .table4-action .table4-icon { font-size: 1.3rem; }
+
+  .table4-action p {
+    font-size: 0.93rem;
+    margin-bottom: 0;
+  }
+
+  .table4-action .table4-intro {
+    font-size: 0.9rem;
+    color: #92400E;
+    font-style: italic;
+    margin-bottom: 0.5rem;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 1rem; }
+    .page-header h1 { font-size: 1.3rem; }
+    .calc-table { font-size: 0.8rem; }
+    .calc-table th, .calc-table td { padding: 0.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<div class="page-nav">
+  <a href="03-classifying-programmes.html">&larr; Previous</a>
+  <span class="page-label">Page 4 of 20</span>
+  <a href="05-synchronous.html">Next &rarr;</a>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="module-tag">Module 1 &bull; Foundations</div>
+  <h1>Classifying ODL Courses &mdash; The 80% Rule</h1>
+  <p class="page-subtitle">How to determine whether an individual course qualifies as an ODL course</p>
+</div>
+
+<!-- BRIDGE FROM PREVIOUS PAGE -->
+<p>On the previous page, you classified a programme using the 60% rule. But that programme-level calculation depends on a prior step: determining whether each individual course qualifies as an ODL course. This page zooms in to the course level and shows you exactly how that determination is made.</p>
+
+<!-- THE 80% RULE -->
+<h2>The Rule</h2>
+
+<p>A course is considered an ODL course when <strong>at least 80% of the total Student Learning Time (SLT)</strong> is delivered through ODL mode. ODL mode includes synchronous online learning, asynchronous online learning, and independent learning that is intentionally integrated into the ODL learning design.</p>
+
+<p>Physical face-to-face learning &mdash; activities conducted in classrooms, labs, studios, or field sites &mdash; does <em>not</em> count towards the 80%. In fact, physical face-to-face activities should generally not exceed 20% of the total SLT of an ODL course.</p>
+
+<div class="key-point">
+  <strong>The logic is simple:</strong> If at least 80% of the learning happens online or at a distance, the course is an ODL course. If more than 20% requires physical attendance, the course does not qualify.
+</div>
+
+<!-- WHAT COUNTS AND WHAT DOESN'T -->
+<h2>What Counts Towards the 80%?</h2>
+
+<p>Not all learning activities are treated equally. Here is how each delivery method relates to the ODL classification:</p>
+
+<table class="calc-table">
+  <tr>
+    <th>Delivery Method</th>
+    <th class="num-col">Counts as ODL Delivery?</th>
+    <th class="num-col">Counts as Contact Hours?</th>
+  </tr>
+  <tr>
+    <td><strong>Synchronous Online Learning</strong> &mdash; live online sessions, webinars, virtual tutorials</td>
+    <td class="num-col"><span class="verdict pass">Yes</span></td>
+    <td class="num-col"><span class="verdict pass">Yes</span></td>
+  </tr>
+  <tr>
+    <td><strong>Asynchronous Online Learning</strong> &mdash; recorded lectures, discussion forums, digital modules</td>
+    <td class="num-col"><span class="verdict pass">Yes</span></td>
+    <td class="num-col"><span class="verdict fail">No</span></td>
+  </tr>
+  <tr>
+    <td><strong>Independent Learning</strong> &mdash; guided reading, assignment preparation, research (when integrated into ODL design)</td>
+    <td class="num-col"><span class="verdict pass">Yes</span></td>
+    <td class="num-col"><span class="verdict fail">No</span></td>
+  </tr>
+  <tr>
+    <td><strong>Physical Face-to-Face</strong> &mdash; labs, studios, clinical training, fieldwork</td>
+    <td class="num-col"><span class="verdict fail">No</span></td>
+    <td class="num-col"><span class="verdict pass">Yes</span></td>
+  </tr>
+</table>
+
+<div class="key-point">
+  <strong>Watch the independent learning caveat:</strong> Independent learning only counts towards the 80% when it is intentionally designed and integrated into the ODL learning environment. Unstructured or unguided activities &mdash; such as telling students to "find resources online" without guidance &mdash; do not qualify.
+</div>
+
+<!-- VISUAL EXAMPLES -->
+<h2>Visualising the Threshold</h2>
+
+<p>The bars below show two courses with different SLT distributions. The green portion represents ODL delivery; the grey portion represents physical face-to-face activities. The 80% threshold determines whether the course qualifies.</p>
+
+<div class="bar-container">
+  <div class="bar-label">Course A: Advanced Data Analytics (120 hours SLT)</div>
+  <div class="bar-wrapper">
+    <div class="bar-odl" style="width: 85%;">85% ODL</div>
+    <div class="bar-f2f" style="width: 15%;">15% F2F</div>
+  </div>
+  <div class="bar-legend">
+    <span class="leg-odl">ODL delivery (synchronous + asynchronous + independent)</span>
+    <span class="leg-f2f">Physical face-to-face</span>
+  </div>
+  <p style="margin-top: 0.5rem; font-size: 0.9rem;"><span class="verdict pass">Qualifies</span> &mdash; 85% exceeds the 80% threshold.</p>
+</div>
+
+<div class="bar-container">
+  <div class="bar-label">Course B: Leadership Practicum (120 hours SLT)</div>
+  <div class="bar-wrapper">
+    <div class="bar-odl" style="width: 65%;">65% ODL</div>
+    <div class="bar-f2f" style="width: 35%;">35% F2F</div>
+  </div>
+  <div class="bar-legend">
+    <span class="leg-odl">ODL delivery (synchronous + asynchronous + independent)</span>
+    <span class="leg-f2f">Physical face-to-face</span>
+  </div>
+  <p style="margin-top: 0.5rem; font-size: 0.9rem;"><span class="verdict fail">Does not qualify</span> &mdash; 65% falls below the 80% threshold. This course cannot be counted as an ODL course.</p>
+</div>
+
+<!-- WORKED EXAMPLE -->
+<div class="example-box">
+  <span class="example-label pass">Qualifies as ODL Course</span>
+  <h3>Example: Research Methods in Education (3 credits = 120 hours SLT)</h3>
+
+  <table class="calc-table">
+    <tr>
+      <th>Learning Activity</th>
+      <th>Delivery Method</th>
+      <th class="num-col">Hours</th>
+    </tr>
+    <tr>
+      <td>Live online seminars (weekly, 2 hrs &times; 14 weeks)</td>
+      <td>Synchronous online</td>
+      <td class="num-col">28</td>
+    </tr>
+    <tr>
+      <td>Recorded lectures and video modules</td>
+      <td>Asynchronous online</td>
+      <td class="num-col">20</td>
+    </tr>
+    <tr>
+      <td>Guided readings and annotated bibliography</td>
+      <td>Independent learning (structured)</td>
+      <td class="num-col">30</td>
+    </tr>
+    <tr>
+      <td>Online discussion forum participation</td>
+      <td>Asynchronous online</td>
+      <td class="num-col">12</td>
+    </tr>
+    <tr>
+      <td>Assignment preparation and submission</td>
+      <td>Independent learning (guided)</td>
+      <td class="num-col">20</td>
+    </tr>
+    <tr>
+      <td>On-campus research ethics workshop</td>
+      <td>Physical face-to-face</td>
+      <td class="num-col">10</td>
+    </tr>
+    <tr class="highlight-row">
+      <td colspan="2"><strong>ODL delivery total</strong></td>
+      <td class="num-col"><strong>110 of 120 (91.7%)</strong></td>
+    </tr>
+  </table>
+
+  <p><strong>Result:</strong> 110 out of 120 hours (91.7%) are delivered through ODL mode. The 10-hour on-campus workshop (8.3%) is well within the 20% limit. This course qualifies as an ODL course.</p>
+</div>
+
+<div class="example-box">
+  <span class="example-label fail">Does NOT Qualify as ODL Course</span>
+  <h3>Example: Clinical Assessment (4 credits = 160 hours SLT)</h3>
+
+  <table class="calc-table">
+    <tr>
+      <th>Learning Activity</th>
+      <th>Delivery Method</th>
+      <th class="num-col">Hours</th>
+    </tr>
+    <tr>
+      <td>Live online case discussions</td>
+      <td>Synchronous online</td>
+      <td class="num-col">20</td>
+    </tr>
+    <tr>
+      <td>Recorded demonstration videos</td>
+      <td>Asynchronous online</td>
+      <td class="num-col">15</td>
+    </tr>
+    <tr>
+      <td>Clinical reading and case analysis</td>
+      <td>Independent learning (structured)</td>
+      <td class="num-col">25</td>
+    </tr>
+    <tr>
+      <td>Hospital-based clinical rotations</td>
+      <td>Physical face-to-face</td>
+      <td class="num-col">60</td>
+    </tr>
+    <tr>
+      <td>Simulation lab practice</td>
+      <td>Physical face-to-face</td>
+      <td class="num-col">20</td>
+    </tr>
+    <tr>
+      <td>Online assessment and e-portfolio</td>
+      <td>Asynchronous online</td>
+      <td class="num-col">20</td>
+    </tr>
+    <tr class="highlight-row">
+      <td colspan="2"><strong>ODL delivery total</strong></td>
+      <td class="num-col"><strong>80 of 160 (50%)</strong></td>
+    </tr>
+  </table>
+
+  <p><strong>Result:</strong> Only 50% of the SLT is delivered through ODL mode. The 80 hours of physical face-to-face activities (hospital rotations + simulation lab) push the course well below the 80% threshold. This course does not qualify as an ODL course &mdash; and that is perfectly acceptable. Not every course needs to be ODL.</p>
+</div>
+
+<!-- IMPORTANT CONSIDERATIONS -->
+<div class="considerations-box">
+  <h3>Important Considerations</h3>
+  <ul>
+    <li>The classification is based on the proportion of <strong>Student Learning Time</strong> delivered through ODL approaches, not the number or type of online activities offered.</li>
+    <li>All ODL SLT claimed should be supported by appropriate learning design, Self-Instructional Materials (SIMs), digital learning resources, online activities, assessments, and evidence of student engagement.</li>
+    <li>Physical face-to-face activities should only be included where there is a clear <strong>pedagogical, practical, professional, or regulatory justification</strong>.</li>
+    <li>If your course falls just below the 80% threshold, consider whether any face-to-face activities could be redesigned for online delivery without compromising learning outcomes.</li>
+  </ul>
+</div>
+
+<!-- TRANSITION TO APPLICATION -->
+<h2>Applying the 80% Rule to Your Course</h2>
+
+<p>You now have the tools to classify individual courses. Combined with the 60% programme-level rule from the previous page, you can determine whether an entire programme qualifies as ODL. The process is always the same: classify each course first, then calculate the programme-level percentage based on graduating credits.</p>
+
+<p>The case below tests whether you can apply both rules together in a realistic scenario.</p>
+
+<!-- TABLE 4 ACTION -->
+<p>Before you move on, take a moment to apply what you have learned.</p>
+
+<div class="table4-action">
+  <h3><span class="table4-icon">&#128221;</span> Update Your Table 4</h3>
+  <p class="table4-intro">Now that you understand how courses are classified, determine your course&rsquo;s ODL status.</p>
+  <p>Open your Table 4 and fill in Section 1: Course Information &mdash; include the course name, code, credit value, and total SLT hours (credits &times; 40). Based on your planned delivery, note whether your course will meet the 80% ODL threshold.</p>
+</div>
+
+<!-- CASE SCENARIO -->
+<div class="case-box">
+  <h3>Case: The Borderline Programme</h3>
+  <p class="scenario">Prof. Kamala is developing a Master of Public Health (40 graduating credits, 8 courses). She has classified her courses as follows:</p>
+  <table class="calc-table" style="margin: 1rem 0;">
+    <tr>
+      <th>Course</th>
+      <th>Credits</th>
+      <th class="num-col">% ODL SLT</th>
+      <th class="num-col">ODL Course?</th>
+    </tr>
+    <tr><td>Epidemiology</td><td>4</td><td class="num-col">90%</td><td class="num-col"><span class="verdict pass">Yes</span></td></tr>
+    <tr><td>Biostatistics</td><td>4</td><td class="num-col">85%</td><td class="num-col"><span class="verdict pass">Yes</span></td></tr>
+    <tr><td>Health Policy</td><td>4</td><td class="num-col">82%</td><td class="num-col"><span class="verdict pass">Yes</span></td></tr>
+    <tr><td>Qualitative Methods</td><td>4</td><td class="num-col">80%</td><td class="num-col"><span class="verdict pass">Yes</span></td></tr>
+    <tr><td>Community Practicum A</td><td>8</td><td class="num-col">45%</td><td class="num-col"><span class="verdict fail">No</span></td></tr>
+    <tr><td>Community Practicum B</td><td>8</td><td class="num-col">40%</td><td class="num-col"><span class="verdict fail">No</span></td></tr>
+    <tr><td>Research Design</td><td>4</td><td class="num-col">88%</td><td class="num-col"><span class="verdict pass">Yes</span></td></tr>
+    <tr><td>Dissertation</td><td>4</td><td class="num-col">92%</td><td class="num-col"><span class="verdict pass">Yes</span></td></tr>
+  </table>
+  <p><strong>Does this programme qualify as ODL?</strong> Six of eight courses qualify as ODL courses, contributing 24 credits out of 40 graduating credits (60%). This is <em>exactly</em> 60% &mdash; not <em>more than</em> 60%. The programme does <strong>not</strong> qualify. The threshold requires <em>more than</em> 60%, so Prof. Kamala would need at least one of the non-ODL courses to be redesigned to meet the 80% ODL threshold, or she would need to adjust the credit structure.</p>
+  <p>This case illustrates a critical nuance: the 60% threshold is a <em>strict greater-than</em> condition. Meeting it exactly is not enough.</p>
+</div>
+
+<!-- TRANSITION TO QUIZ -->
+<p>Now let's test your understanding with three scenario-based questions. Work through each one carefully.</p>
+
+<!-- MCQ QUIZ -->
+<div class="mcq-box" id="quiz1">
+  <h3>Check Your Understanding</h3>
+  <p class="question">Dr. Tan is designing a 3-credit course (120 hours SLT). He plans 24 hours of live online seminars, 18 hours of recorded lectures, 30 hours of guided independent reading, and 18 hours of online forum discussions. The remaining hours are allocated to two on-campus lab sessions. Does this course qualify as an ODL course?</p>
+  <ul class="options" id="options1">
+    <li onclick="selectOption('options1', this, 'A')">A. Yes &mdash; the ODL delivery is 90 hours (75%), which is close enough to the 80% threshold</li>
+    <li onclick="selectOption('options1', this, 'B')">B. Yes &mdash; the ODL delivery is 90 hours (75%), but the lab sessions do not count because they are optional</li>
+    <li onclick="selectOption('options1', this, 'C')">C. No &mdash; the ODL delivery is 90 hours (75%), which falls below the 80% threshold. The course does not qualify.</li>
+    <li onclick="selectOption('options1', this, 'D')">D. No &mdash; the ODL delivery is 120 hours (100%), but lab sessions cannot be included in an ODL course at all</li>
+  </ul>
+  <button class="check-btn" onclick="checkAnswer('quiz1', 'options1', 'C')">Check Answer</button>
+  <div class="feedback" id="feedback-quiz1"></div>
+</div>
+
+<!-- MCQ QUIZ 2 -->
+<div class="mcq-box" id="quiz2">
+  <h3>Question 2: The Independent Learning Trap</h3>
+  <p class="question">Dr. Lee is preparing Table 4 for her 3-credit ODL course (120 hours SLT). Her SLT breakdown is: 20 hours synchronous online, 25 hours asynchronous online, 50 hours independent learning (students told to "search for and read relevant articles online"), and 25 hours physical face-to-face lab work. She claims 95 hours (79.2%) as ODL delivery. What is the most significant problem with her classification?</p>
+  <ul class="options" id="options2">
+    <li onclick="selectOption('options2', this, 'A')">A. The synchronous online hours are too low to count as ODL delivery</li>
+    <li onclick="selectOption('options2', this, 'B')">B. The 50 hours of independent learning are unstructured and unguided &mdash; they should not be counted towards ODL delivery, which reduces her actual ODL percentage significantly</li>
+    <li onclick="selectOption('options2', this, 'C')">C. Physical face-to-face lab work cannot be included in any ODL course</li>
+    <li onclick="selectOption('options2', this, 'D')">D. Her ODL percentage of 79.2% is actually above the 80% threshold once rounding is applied</li>
+  </ul>
+  <button class="check-btn" onclick="checkAnswer('quiz2', 'options2', 'B')">Check Answer</button>
+  <div class="feedback" id="feedback-quiz2"></div>
+</div>
+
+<!-- MCQ QUIZ 3 -->
+<div class="mcq-box" id="quiz3">
+  <h3>Question 3: Programme-Level Impact</h3>
+  <p class="question">A Master's programme has 40 graduating credits across 5 courses. Course A (8 credits, 85% ODL SLT), Course B (8 credits, 90% ODL SLT), Course C (8 credits, 78% ODL SLT), Course D (8 credits, 82% ODL SLT), and Course E (8 credits, 88% ODL SLT). How many credits count towards the ODL programme classification, and does the programme qualify?</p>
+  <ul class="options" id="options3">
+    <li onclick="selectOption('options3', this, 'A')">A. 40 credits count (all courses are above 75% ODL) &mdash; the programme qualifies</li>
+    <li onclick="selectOption('options3', this, 'B')">B. 32 credits count (Courses A, B, D, and E meet the 80% threshold; Course C at 78% does not) &mdash; 32 of 40 = 80%, the programme qualifies</li>
+    <li onclick="selectOption('options3', this, 'C')">C. 24 credits count (only 3 courses meet the threshold) &mdash; 24 of 40 = 60%, the programme does not qualify</li>
+    <li onclick="selectOption('options3', this, 'D')">D. 40 credits count (the average ODL percentage across all courses exceeds 80%) &mdash; the programme qualifies</li>
+  </ul>
+  <button class="check-btn" onclick="checkAnswer('quiz3', 'options3', 'B')">Check Answer</button>
+  <div class="feedback" id="feedback-quiz3"></div>
+</div>
+
+<script>
+  let selectedOptions = {};
+
+  // Feedback messages keyed by quiz ID
+  const feedbackData = {
+    quiz1: {
+      correct: '<strong>Correct.</strong> The ODL delivery totals 90 hours (24 + 18 + 30 + 18 = 90 out of 120 = 75%). This falls below the 80% threshold, so the course does not qualify. The 30 hours of on-campus lab sessions (25%) push it past the 20% limit.',
+      incorrect: '<strong>Not quite.</strong> The correct answer is <strong>C</strong>. Calculate the ODL hours: 24 (synchronous) + 18 (asynchronous) + 30 (independent) + 18 (asynchronous) = 90 out of 120 = 75%. That is below 80%. "Close enough" (A) does not apply. Optional status (B) is irrelevant. The ODL hours are not 120 (D) because the labs are physical F2F.'
+    },
+    quiz2: {
+      correct: '<strong>Correct.</strong> The 50 hours of independent learning are unstructured &mdash; students are simply told to "search for and read relevant articles online" without guidance, learning outcomes, or structured activities. This does not qualify as independent learning for ODL purposes. Without those 50 hours, Dr. Lee\'s actual ODL delivery drops to 45 hours (20 + 25) out of 120 = 37.5%, far below the 80% threshold. To fix this, she would need to redesign the independent learning with clear guidance, curated readings, and aligned activities.',
+      incorrect: '<strong>Not quite.</strong> The correct answer is <strong>B</strong>. The core problem is that 50 hours of independent learning are unstructured &mdash; just telling students to search the internet does not qualify. Option A is wrong because synchronous hours count regardless of quantity. Option C is wrong because physical F2F <em>can</em> be included (up to 20% of SLT). Option D is wrong because 79.2% is not above 80%, and rounding does not apply to classification thresholds.'
+    },
+    quiz3: {
+      correct: '<strong>Correct.</strong> Each course must individually meet the 80% ODL SLT threshold to be counted. Course C at 78% does <em>not</em> qualify &mdash; even though it is close. That leaves Courses A, B, D, and E (each at or above 80%), contributing 32 credits out of 40 = 80%. Since 80% is more than 60%, the programme qualifies as an ODL programme. Note the importance of Course C: a 2-percentage-point shortfall on a single course costs the programme 8 credits.',
+      incorrect: '<strong>Not quite.</strong> The correct answer is <strong>B</strong>. Each course must individually meet the 80% threshold. Course C at 78% falls short and cannot be counted, regardless of how close it is. The four qualifying courses (A, B, D, E) contribute 32 of 40 credits = 80%, which exceeds the 60% programme threshold. Option A is wrong because "above 75%" is not the standard &mdash; the threshold is 80%. Option C miscounts the qualifying courses. Option D is wrong because averaging percentages across courses is not how classification works &mdash; each course is evaluated individually.'
+    }
+  };
+
+  function selectOption(qId, el, letter) {
+    const container = document.getElementById(qId);
+    container.querySelectorAll('.options li').forEach(li => li.style.border = '1px solid #e2e8f0');
+    el.style.border = '2px solid #2b6cb0';
+    selectedOptions[qId] = letter;
+  }
+
+  function checkAnswer(quizId, optId, correct) {
+    const container = document.getElementById(optId);
+    const feedback = document.getElementById('feedback-' + quizId);
+    const selected = selectedOptions[quizId];
+
+    if (!selected) {
+      feedback.textContent = 'Please select an answer before checking.';
+      feedback.className = 'feedback show incorrect-fb';
+      return;
+    }
+
+    const options = container.querySelectorAll('.options li');
+    options.forEach((li, idx) => {
+      const letter = String.fromCharCode(65 + idx);
+      li.classList.remove('correct', 'incorrect');
+      if (letter === correct) li.classList.add('correct');
+      else if (letter === selected && selected !== correct) li.classList.add('incorrect');
+    });
+
+    const data = feedbackData[quizId];
+    if (selected === correct) {
+      feedback.innerHTML = data.correct;
+      feedback.className = 'feedback show correct-fb';
+    } else {
+      feedback.innerHTML = data.incorrect;
+      feedback.className = 'feedback show incorrect-fb';
+    }
+  }
+</script>
+
+<!-- SUMMARY / BRIDGE -->
+<h2>Summary</h2>
+
+<p>A course qualifies as an ODL course when at least 80% of its Student Learning Time is delivered through online and distance learning approaches. Synchronous online, asynchronous online, and structured independent learning all count. Physical face-to-face activities do not count and should generally not exceed 20% of total SLT.</p>
+
+<p>You now have both classification tools: the 60% programme-level rule and the 80% course-level rule. In the next module, you will move beyond classification and begin exploring the four delivery methods in detail &mdash; starting with synchronous online learning.</p>
+
+<!-- FOOTER -->
+<div class="page-footer">
+  <p>ODL Programme Development &bull; Page 4 of 20<br>
+  Part of the ODL Professional Development Series</p>
+</div>
+
+</body>
+</html>

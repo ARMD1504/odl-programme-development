@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Classifying ODL Programmes — The 60% Rule — ODL Programme Development</title>
+<style>
+  :root {
+    --navy: #1a365d;
+    --blue: #2b6cb0;
+    --light-blue: #ebf4ff;
+    --green: #276749;
+    --light-green: #f0fff4;
+    --orange: #c05621;
+    --light-orange: #fffaf0;
+    --purple: #553c9a;
+    --light-purple: #faf5ff;
+    --teal: #285e61;
+    --light-teal: #e6fffa;
+    --red: #c53030;
+    --light-red: #fff5f5;
+    --gray: #4a5568;
+    --light-gray: #f7fafc;
+    --border: #e2e8f0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #2d3748;
+    line-height: 1.7;
+    background: #fff;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .page-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page-nav a {
+    color: var(--blue);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--blue);
+    border-radius: 6px;
+    transition: background 0.2s;
+  }
+
+  .page-nav a:hover { background: var(--light-blue); }
+  .page-nav .page-label { font-size: 0.85rem; color: var(--gray); }
+
+  .page-header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+    color: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+  }
+
+  .page-header .module-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    padding: 0.2rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .page-header h1 { font-size: 1.6rem; margin-bottom: 0.4rem; }
+  .page-header .page-subtitle { font-size: 0.95rem; opacity: 0.85; }
+
+  h2 {
+    color: var(--navy);
+    font-size: 1.3rem;
+    margin: 2rem 0 1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid var(--blue);
+    display: inline-block;
+  }
+
+  h3 { color: var(--navy); font-size: 1.05rem; margin: 1.5rem 0 0.5rem; }
+  p { margin-bottom: 1rem; }
+
+  .key-point {
+    background: var(--light-blue);
+    border-left: 5px solid var(--blue);
+    padding: 1rem 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 1.5rem 0;
+    font-size: 0.95rem;
+  }
+
+  .key-point strong { color: var(--navy); }
+
+  .case-box {
+    background: var(--light-orange);
+    border-left: 5px solid var(--orange);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .case-box h3 { color: var(--orange); margin-top: 0; margin-bottom: 0.75rem; }
+  .case-box .scenario { font-style: italic; margin-bottom: 1rem; }
+
+  /* Fill-in-the-blanks quiz */
+  .fib-box {
+    background: var(--light-green);
+    border-left: 5px solid var(--green);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .fib-box h3 { color: var(--green); margin-top: 0; margin-bottom: 0.5rem; }
+
+  .fib-instructions {
+    font-size: 0.9rem;
+    color: var(--gray);
+    margin-bottom: 1.2rem;
+  }
+
+  .fib-item {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 0.8rem;
+    font-size: 0.93rem;
+    line-height: 1.8;
+  }
+
+  .fib-item .fib-num {
+    font-weight: 700;
+    color: var(--green);
+    margin-right: 0.3rem;
+  }
+
+  .fib-item input[type="text"] {
+    border: none;
+    border-bottom: 2px solid var(--border);
+    padding: 0.2rem 0.5rem;
+    font-size: 0.9rem;
+    font-family: inherit;
+    width: 100px;
+    text-align: center;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+
+  .fib-item input[type="text"]:focus {
+    border-bottom-color: var(--green);
+  }
+
+  .fib-item input[type="text"].correct-input {
+    border-bottom-color: var(--green);
+    background: #c6f6d5;
+    font-weight: 600;
+  }
+
+  .fib-item input[type="text"].wrong-input {
+    border-bottom-color: var(--red);
+    background: #fed7d7;
+  }
+
+  .fib-btn {
+    background: var(--green);
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    transition: background 0.2s;
+  }
+
+  .fib-btn:hover { background: #22543d; }
+
+  .fib-feedback {
+    display: none;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-top: 1rem;
+    font-size: 0.92rem;
+  }
+
+  .fib-feedback.show { display: block; }
+  .fib-feedback.perfect { background: #c6f6d5; color: #22543d; }
+  .fib-feedback.partial { background: #feebc8; color: #744210; }
+
+  .fib-score { font-weight: 700; font-size: 1rem; margin-bottom: 0.5rem; }
+
+  /* Worked example tables */
+  .example-box {
+    background: var(--light-gray);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .example-box h3 { margin-top: 0; }
+
+  .example-box .example-label {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 0.15rem 0.6rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+  }
+
+  .example-label.pass { background: #c6f6d5; color: var(--green); }
+  .example-label.fail { background: #fed7d7; color: var(--red); }
+
+  .calc-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+  }
+
+  .calc-table th {
+    background: var(--navy);
+    color: #fff;
+    padding: 0.6rem 0.8rem;
+    text-align: left;
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+
+  .calc-table td {
+    padding: 0.5rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .calc-table tr:last-child td { border-bottom: none; }
+
+  .calc-table .highlight-row {
+    background: #ebf4ff;
+    font-weight: 600;
+  }
+
+  .calc-table .num-col { text-align: center; width: 100px; }
+
+  .verdict {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 5px;
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+
+  .verdict.pass { background: #c6f6d5; color: var(--green); }
+  .verdict.fail { background: #fed7d7; color: var(--red); }
+
+  /* Important considerations */
+  .considerations-box {
+    background: var(--light-purple);
+    border: 1px solid #e9d8fd;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .considerations-box h3 { color: var(--purple); margin-top: 0; }
+
+  .considerations-box ul {
+    padding-left: 1.5rem;
+    margin: 0;
+  }
+
+  .considerations-box li {
+    margin-bottom: 0.5rem;
+    font-size: 0.92rem;
+  }
+
+  /* Step-by-step process */
+  .steps {
+    counter-reset: step-counter;
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0;
+  }
+
+  .steps li {
+    counter-increment: step-counter;
+    position: relative;
+    padding: 0.8rem 0 0.8rem 3.5rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.93rem;
+  }
+
+  .steps li:last-child { border-bottom: none; }
+
+  .steps li::before {
+    content: counter(step-counter);
+    position: absolute;
+    left: 0;
+    top: 0.7rem;
+    width: 28px;
+    height: 28px;
+    background: var(--blue);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+
+  .page-footer {
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--gray);
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 1rem; }
+    .page-header h1 { font-size: 1.3rem; }
+    .calc-table { font-size: 0.8rem; }
+    .calc-table th, .calc-table td { padding: 0.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<div class="page-nav">
+  <a href="02-key-definitions.html">&larr; Previous</a>
+  <span class="page-label">Page 3 of 20</span>
+  <a href="04-classifying-courses.html">Next &rarr;</a>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="module-tag">Module 1 &bull; Foundations</div>
+  <h1>Classifying ODL Programmes &mdash; The 60% Rule</h1>
+  <p class="page-subtitle">How to determine whether your programme qualifies as an ODL programme</p>
+</div>
+
+<!-- BRIDGE FROM PREVIOUS PAGE -->
+<p>On the previous page, you learned the key definitions that underpin ODL delivery. You encountered two important thresholds: &gt;60% for programmes and &ge;80% for courses. This page focuses on the first of those &mdash; the programme-level threshold &mdash; and walks you through how to calculate it using real programme structures.</p>
+
+<!-- THE 60% RULE -->
+<h2>The Rule</h2>
+
+<p>A programme shall be classified as an ODL programme when <strong>more than 60% of the total graduating credits</strong> are contributed by courses where at least 80% of the course Student Learning Time (SLT) is delivered through ODL mode.</p>
+
+<div class="key-point">
+  <strong>Two thresholds working together:</strong> First, each course must individually meet the 80% ODL delivery threshold to be counted as an ODL course. Then, the ODL courses must collectively contribute more than 60% of the programme's total graduating credits. Both conditions must be satisfied.
+</div>
+
+<!-- HOW TO CALCULATE -->
+<h2>How to Calculate</h2>
+
+<p>The classification process follows four steps. Notice that the calculation is based on <em>graduating credits</em>, not the total number of courses.</p>
+
+<ol class="steps">
+  <li><strong>Identify each course's ODL status.</strong> For every course in the programme, determine whether at least 80% of its SLT is delivered through ODL approaches (synchronous online, asynchronous online, and qualifying independent learning). If yes, the course counts as an ODL course. If no, it does not.</li>
+  <li><strong>Sum the graduating credits contributed by ODL courses.</strong> Add up the credit values of all courses that qualified as ODL courses in Step 1.</li>
+  <li><strong>Calculate the percentage.</strong> Divide the ODL course credits by the total graduating credits, then multiply by 100.</li>
+  <li><strong>Apply the threshold.</strong> If the result is greater than 60%, the programme qualifies as an ODL programme.</li>
+</ol>
+
+<div class="key-point">
+  <strong>Why graduating credits, not number of courses?</strong> Courses carry different credit values. A 6-credit course contributes more to the programme than a 2-credit course. Using graduating credits ensures that the classification reflects the actual weight of ODL delivery in the student's learning experience.
+</div>
+
+<!-- WORKED EXAMPLES -->
+<h2>Worked Examples</h2>
+
+<p>The two examples below show how the same programme structure can lead to different classification outcomes depending on which courses meet the ODL threshold.</p>
+
+<!-- Example 1: Qualifies -->
+<div class="example-box">
+  <span class="example-label pass">Qualifies as ODL Programme</span>
+  <h3>Example 1: Master of Data Analytics (40 graduating credits)</h3>
+
+  <table class="calc-table">
+    <tr>
+      <th>Course</th>
+      <th>Credits</th>
+      <th class="num-col">% ODL SLT</th>
+      <th class="num-col">ODL Course?</th>
+    </tr>
+    <tr>
+      <td>Research Methods</td>
+      <td>4</td>
+      <td class="num-col">85%</td>
+      <td class="num-col"><span class="verdict pass">Yes</span></td>
+    </tr>
+    <tr>
+      <td>Machine Learning</td>
+      <td>4</td>
+      <td class="num-col">90%</td>
+      <td class="num-col"><span class="verdict pass">Yes</span></td>
+    </tr>
+    <tr>
+      <td>Data Visualisation</td>
+      <td>4</td>
+      <td class="num-col">80%</td>
+      <td class="num-col"><span class="verdict pass">Yes</span></td>
+    </tr>
+    <tr>
+      <td>Big Data Architecture</td>
+      <td>4</td>
+      <td class="num-col">85%</td>
+      <td class="num-col"><span class="verdict pass">Yes</span></td>
+    </tr>
+    <tr>
+      <td>Statistical Modelling</td>
+      <td>4</td>
+      <td class="num-col">82%</td>
+      <td class="num-col"><span class="verdict pass">Yes</span></td>
+    </tr>
+    <tr>
+      <td>AI Ethics &amp; Governance</td>
+      <td>4</td>
+      <td class="num-col">95%</td>
+      <td class="num-col"><span class="verdict pass">Yes</span></td>
+    </tr>
+    <tr>
+      <td>Industry Practicum</td>
+      <td>8</td>
+      <td class="num-col">40%</td>
+      <td class="num-col"><span class="verdict fail">No</span></td>
+    </tr>
+    <tr>
+      <td>Capstone Project</td>
+      <td>8</td>
+      <td class="num-col">85%</td>
+      <td class="num-col"><span class="verdict pass">Yes</span></td>
+    </tr>
+    <tr class="highlight-row">
+      <td colspan="2"><strong>ODL credits: 32 of 40</strong></td>
+      <td class="num-col"><strong>80%</strong></td>
+      <td class="num-col"><span class="verdict pass">Qualifies</span></td>
+    </tr>
+  </table>
+
+  <p><strong>Why it qualifies:</strong> Seven of eight courses meet the 80% ODL SLT threshold. Those seven courses contribute 32 credits out of 40 graduating credits (80%), which exceeds the 60% requirement. The Industry Practicum, with only 40% ODL delivery, does not count as an ODL course &mdash; but it does not need to, because the remaining courses already carry the programme over the threshold.</p>
+</div>
+
+<!-- Example 2: Does not qualify -->
+<div class="example-box">
+  <span class="example-label fail">Does NOT Qualify as ODL Programme</span>
+  <h3>Example 2: Master of Business Administration (42 graduating credits)</h3>
+
+  <table class="calc-table">
+    <tr>
+      <th>Course</th>
+      <th>Credits</th>
+      <th class="num-col">% ODL SLT</th>
+      <th class="num-col">ODL Course?</th>
+    </tr>
+    <tr>
+      <td>Strategic Management</td>
+      <td>3</td>
+      <td class="num-col">85%</td>
+      <td class="num-col"><span class="verdict pass">Yes</span></td>
+    </tr>
+    <tr>
+      <td>Financial Accounting</td>
+      <td>3</td>
+      <td class="num-col">90%</td>
+      <td class="num-col"><span class="verdict pass">Yes</span></td>
+    </tr>
+    <tr>
+      <td>Marketing Analytics</td>
+      <td>3</td>
+      <td class="num-col">80%</td>
+      <td class="num-col"><span class="verdict pass">Yes</span></td>
+    </tr>
+    <tr>
+      <td>Operations Management</td>
+      <td>3</td>
+      <td class="num-col">60%</td>
+      <td class="num-col"><span class="verdict fail">No</span></td>
+    </tr>
+    <tr>
+      <td>Leadership Workshop</td>
+      <td>3</td>
+      <td class="num-col">50%</td>
+      <td class="num-col"><span class="verdict fail">No</span></td>
+    </tr>
+    <tr>
+      <td>Business Law</td>
+      <td>3</td>
+      <td class="num-col">75%</td>
+      <td class="num-col"><span class="verdict fail">No</span></td>
+    </tr>
+    <tr>
+      <td>Consulting Practicum</td>
+      <td>12</td>
+      <td class="num-col">30%</td>
+      <td class="num-col"><span class="verdict fail">No</span></td>
+    </tr>
+    <tr>
+      <td>Dissertation</td>
+      <td>12</td>
+      <td class="num-col">85%</td>
+      <td class="num-col"><span class="verdict pass">Yes</span></td>
+    </tr>
+    <tr class="highlight-row">
+      <td colspan="2"><strong>ODL credits: 21 of 42</strong></td>
+      <td class="num-col"><strong>50%</strong></td>
+      <td class="num-col"><span class="verdict fail">Does not qualify</span></td>
+    </tr>
+  </table>
+
+  <p><strong>Why it does not qualify:</strong> Only four of eight courses meet the 80% threshold. Those four contribute 21 credits out of 42 (50%), which falls short of the 60% requirement. Notice how the 12-credit Consulting Practicum &mdash; with only 30% ODL delivery &mdash; has a disproportionate impact on the result. Even though half the courses are ODL, the credit-weighted calculation tells a different story.</p>
+</div>
+
+<!-- IMPORTANT CONSIDERATIONS -->
+<div class="considerations-box">
+  <h3>Important Considerations</h3>
+  <ul>
+    <li>The calculation is based on <strong>graduating credits</strong>, not the number of courses. A single high-credit course can significantly affect the outcome.</li>
+    <li>A programme may contain a combination of ODL courses and conventional courses. Only the ODL courses count towards the 60% threshold.</li>
+    <li>Courses that do not satisfy the 80% ODL delivery requirement shall not be counted as ODL courses in the calculation.</li>
+    <li>The ODL status of a programme shall be <strong>reviewed whenever there are significant curriculum revisions</strong> affecting course delivery modes or graduating credit structure.</li>
+  </ul>
+</div>
+
+<!-- TRANSITION TO APPLICATION -->
+<h2>Applying the Rule to Your Programme</h2>
+
+<p>You have now seen how the 60% rule works in theory and in practice. The next step is to apply it to your own programme. But before you do that, you need to understand the other half of the classification &mdash; how individual courses are determined to be ODL courses using the 80% rule. The two calculations are linked: you cannot classify a programme without first classifying its courses.</p>
+
+<p>The case below tests whether you can spot a common error in programme-level classification.</p>
+
+<!-- CASE SCENARIO -->
+<div class="case-box">
+  <h3>Case: Counting Courses Instead of Credits</h3>
+  <p class="scenario">Dr. Azman is preparing an ODL programme proposal for a Master of Education (40 graduating credits). His programme has 10 courses, each worth different credit values. Seven of the 10 courses meet the 80% ODL SLT threshold. In his proposal, he writes: "7 out of 10 courses are ODL courses, which is 70%. This exceeds the 60% threshold, so the programme qualifies as an ODL programme."</p>
+  <p><strong>What went wrong?</strong> Dr. Azman calculated the percentage based on the <em>number of courses</em> (7 out of 10 = 70%) rather than <em>graduating credits</em>. If the three non-ODL courses happen to carry higher credit values &mdash; say, a 6-credit practicum and two 3-credit face-to-face seminars &mdash; the ODL credits could be much lower than 70%. Suppose the ODL courses carry 3 credits each (7 &times; 3 = 21 credits) and the non-ODL courses carry 6, 3, and 3 credits (total 12 credits). The ODL credit share would be 21 out of 40 = 52.5%, which does not meet the 60% threshold. Dr. Azman's programme would not qualify as ODL despite his calculation suggesting otherwise.</p>
+  <p>This is one of the most common errors in ODL programme classification. Always calculate using <strong>graduating credits</strong>, never the number of courses.</p>
+</div>
+
+<!-- TRANSITION TO QUIZ -->
+<p>Now let's see whether you can apply the 60% rule correctly. Complete the statements below using what you have learned.</p>
+
+<!-- FILL-IN-THE-BLANKS QUIZ -->
+<div class="fib-box" id="fibQuiz">
+  <h3>Check Your Understanding: Fill in the Blanks</h3>
+  <p class="fib-instructions">Type the correct word or number in each blank. Click "Check Answers" when you are done.</p>
+
+  <div class="fib-item">
+    <span class="fib-num">1.</span> A programme is classified as ODL when more than <input type="text" id="fib0" placeholder="___"> percent of total graduating credits are contributed by ODL courses.
+  </div>
+
+  <div class="fib-item">
+    <span class="fib-num">2.</span> A course qualifies as an ODL course when at least <input type="text" id="fib1" placeholder="___"> percent of its Student Learning Time is delivered through ODL mode.
+  </div>
+
+  <div class="fib-item">
+    <span class="fib-num">3.</span> The ODL programme classification is based on <input type="text" id="fib2" placeholder="___"> credits, not the number of courses.
+  </div>
+
+  <div class="fib-item">
+    <span class="fib-num">4.</span> A programme has 40 graduating credits. The ODL courses contribute 28 credits. The ODL percentage is <input type="text" id="fib3" placeholder="___"> %, and the programme <input type="text" id="fib4" placeholder="___" style="width: 130px;"> (qualifies / does not qualify) as an ODL programme.
+  </div>
+
+  <div class="fib-item">
+    <span class="fib-num">5.</span> The ODL status of a programme should be reviewed whenever there are significant <input type="text" id="fib5" placeholder="___" style="width: 150px;"> revisions affecting course delivery or credit structure.
+  </div>
+
+  <button class="fib-btn" onclick="checkFib()">Check Answers</button>
+  <div class="fib-feedback" id="fibFeedback"></div>
+</div>
+
+<script>
+  function normalise(str) {
+    return str.trim().toLowerCase().replace(/\s+/g, ' ');
+  }
+
+  function checkFib() {
+    const answers = [
+      { id: 'fib0', correct: ['60'], display: '60' },
+      { id: 'fib1', correct: ['80'], display: '80' },
+      { id: 'fib2', correct: ['graduating'], display: 'graduating' },
+      { id: 'fib3', correct: ['70'], display: '70' },
+      { id: 'fib4', correct: ['qualifies', 'does qualify'], display: 'qualifies' },
+      { id: 'fib5', correct: ['curriculum'], display: 'curriculum' }
+    ];
+
+    let score = 0;
+
+    answers.forEach(a => {
+      const input = document.getElementById(a.id);
+      const val = normalise(input.value);
+      const isCorrect = a.correct.some(c => normalise(c) === val);
+
+      input.classList.remove('correct-input', 'wrong-input');
+      if (isCorrect) {
+        score++;
+        input.classList.add('correct-input');
+      } else {
+        input.classList.add('wrong-input');
+      }
+    });
+
+    const fb = document.getElementById('fibFeedback');
+    if (score === answers.length) {
+      fb.innerHTML = '<div class="fib-score">Perfect: ' + score + ' / ' + answers.length + '</div>All blanks filled correctly. You have a solid understanding of the 60% rule and how programme-level classification works.';
+      fb.className = 'fib-feedback show perfect';
+    } else {
+      let hint = '<div class="fib-score">Score: ' + score + ' / ' + answers.length + '</div>';
+      hint += 'Review the incorrect blanks. Key answers: ';
+      hint += '(1) 60, (2) 80, (3) graduating, (4) 70% and qualifies, (5) curriculum.';
+      fb.innerHTML = hint;
+      fb.className = 'fib-feedback show partial';
+    }
+  }
+</script>
+
+<!-- SUMMARY / BRIDGE -->
+<h2>Summary</h2>
+
+<p>Classifying an ODL programme requires calculating whether more than 60% of graduating credits come from courses that individually meet the 80% ODL delivery threshold. The calculation must be credit-weighted, not course-counted. In the next page, you will zoom in from the programme level to the course level and learn how to determine whether a single course qualifies as an ODL course.</p>
+
+<!-- FOOTER -->
+<div class="page-footer">
+  <p>ODL Programme Development &bull; Page 3 of 20<br>
+  Part of the ODL Professional Development Series</p>
+</div>
+
+</body>
+</html>

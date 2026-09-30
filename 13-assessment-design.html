@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assessment Design in ODL — ODL Programme Development</title>
+<style>
+  :root {
+    --navy: #1a365d;
+    --blue: #2b6cb0;
+    --light-blue: #ebf4ff;
+    --green: #276749;
+    --light-green: #f0fff4;
+    --orange: #c05621;
+    --light-orange: #fffaf0;
+    --purple: #553c9a;
+    --light-purple: #faf5ff;
+    --teal: #285e61;
+    --light-teal: #e6fffa;
+    --red: #c53030;
+    --light-red: #fff5f5;
+    --gray: #4a5568;
+    --light-gray: #f7fafc;
+    --border: #e2e8f0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #2d3748;
+    line-height: 1.7;
+    background: #fff;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .page-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page-nav a {
+    color: var(--blue);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--blue);
+    border-radius: 6px;
+    transition: background 0.2s;
+  }
+
+  .page-nav a:hover { background: var(--light-blue); }
+  .page-nav .page-label { font-size: 0.85rem; color: var(--gray); }
+
+  .page-header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--orange) 100%);
+    color: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+  }
+
+  .page-header .module-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    padding: 0.2rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .page-header h1 { font-size: 1.6rem; margin-bottom: 0.4rem; }
+  .page-header .page-subtitle { font-size: 0.95rem; opacity: 0.85; }
+
+  h2 {
+    color: var(--navy);
+    font-size: 1.3rem;
+    margin: 2rem 0 1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid var(--blue);
+    display: inline-block;
+  }
+
+  h3 { color: var(--navy); font-size: 1.05rem; margin: 1.5rem 0 0.5rem; }
+  p { margin-bottom: 1rem; }
+
+  .key-point {
+    background: var(--light-blue);
+    border-left: 5px solid var(--blue);
+    padding: 1rem 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 1.5rem 0;
+    font-size: 0.95rem;
+  }
+
+  .key-point strong { color: var(--navy); }
+
+  .case-box {
+    background: var(--light-orange);
+    border-left: 5px solid var(--orange);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .case-box h3 { color: var(--orange); margin-top: 0; margin-bottom: 0.75rem; }
+  .case-box .scenario { font-style: italic; margin-bottom: 1rem; }
+
+  /* Good practice box */
+  .good-practice {
+    background: var(--light-green);
+    border-left: 5px solid var(--green);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .good-practice h3 { color: var(--green); margin-top: 0; margin-bottom: 0.75rem; }
+
+  /* Principle cards */
+  .principle-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .principle-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem;
+    background: var(--light-gray);
+  }
+
+  .principle-card h4 {
+    color: var(--navy);
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .principle-card p {
+    font-size: 0.87rem;
+    color: var(--gray);
+    margin: 0;
+  }
+
+  /* Assessment type cards */
+  .type-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .type-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem;
+    border-left: 4px solid var(--teal);
+    background: var(--light-teal);
+  }
+
+  .type-card h4 {
+    color: var(--teal);
+    font-size: 0.9rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .type-card p {
+    font-size: 0.85rem;
+    color: var(--gray);
+    margin: 0;
+  }
+
+  .type-card.formative { border-left-color: var(--green); background: var(--light-green); }
+  .type-card.formative h4 { color: var(--green); }
+
+  .type-card.summative { border-left-color: var(--purple); background: var(--light-purple); }
+  .type-card.summative h4 { color: var(--purple); }
+
+  /* SIM note */
+  .sim-note {
+    background: var(--light-purple);
+    border-left: 5px solid var(--purple);
+    padding: 1rem 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 1.5rem 0;
+    font-size: 0.93rem;
+  }
+
+  .sim-note strong { color: var(--purple); }
+
+  /* Fill-in-the-blanks quiz */
+  .fib-box {
+    background: var(--light-blue);
+    border-left: 5px solid var(--blue);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .fib-box h3 { color: var(--blue); margin-top: 0; margin-bottom: 0.5rem; }
+
+  .fib-item {
+    margin-bottom: 1.25rem;
+  }
+
+  .fib-item label {
+    display: block;
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+    color: var(--navy);
+    font-weight: 500;
+  }
+
+  .fib-item input[type="text"] {
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.88rem;
+    width: 180px;
+    transition: border-color 0.2s;
+  }
+
+  .fib-item input[type="text"]:focus {
+    outline: none;
+    border-color: var(--blue);
+  }
+
+  .fib-item input[type="text"].correct {
+    border-color: var(--green);
+    background: var(--light-green);
+  }
+
+  .fib-item input[type="text"].incorrect {
+    border-color: var(--red);
+    background: var(--light-red);
+  }
+
+  .fib-feedback {
+    font-size: 0.83rem;
+    margin-top: 0.3rem;
+    min-height: 1.2rem;
+  }
+
+  .fib-feedback.correct-fb { color: var(--green); }
+  .fib-feedback.incorrect-fb { color: var(--red); }
+
+  .fib-btn {
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    padding: 0.45rem 1.25rem;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 0.5rem;
+  }
+
+  .fib-btn:hover { background: var(--navy); }
+
+  .fib-score {
+    margin-top: 1rem;
+    font-weight: 600;
+    font-size: 0.92rem;
+  }
+
+  /* MCQ quiz */
+  .mcq-box {
+    background: var(--light-blue);
+    border-left: 5px solid var(--blue);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .mcq-box h3 { color: var(--blue); margin-top: 0; margin-bottom: 0.5rem; }
+  .mcq-box .question { font-weight: 500; margin-bottom: 0.75rem; }
+
+  .mcq-box .options {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 0.75rem;
+  }
+
+  .mcq-box .options li {
+    padding: 0.55rem 0.85rem;
+    margin-bottom: 0.4rem;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    font-size: 0.9rem;
+  }
+
+  .mcq-box .options li:hover { border-color: var(--blue); background: var(--light-blue); }
+  .mcq-box .options li.selected { border-color: var(--blue); background: var(--light-blue); }
+  .mcq-box .options li.correct { border-color: var(--green); background: var(--light-green); }
+  .mcq-box .options li.incorrect { border-color: var(--red); background: var(--light-red); }
+
+  .mcq-btn {
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    padding: 0.45rem 1.25rem;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .mcq-btn:hover { background: var(--navy); }
+
+  .feedback {
+    margin-top: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    display: none;
+  }
+
+  .feedback.show { display: block; }
+  .feedback.correct-fb { background: var(--light-green); color: var(--green); border: 1px solid var(--green); }
+  .feedback.incorrect-fb { background: var(--light-red); color: var(--red); border: 1px solid var(--red); }
+
+  /* Page footer */
+  .page-footer {
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--gray);
+    font-size: 0.85rem;
+  }
+
+  /* Table 4 action prompt */
+  .table4-action {
+    background: #FFFBEB;
+    border-left: 5px solid #D97706;
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+
+  .table4-action h3 {
+    color: #B45309;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .table4-action .table4-icon { font-size: 1.3rem; }
+
+  .table4-action p {
+    font-size: 0.93rem;
+    margin-bottom: 0;
+  }
+
+  .table4-action .table4-intro {
+    font-size: 0.9rem;
+    color: #92400E;
+    font-style: italic;
+    margin-bottom: 0.5rem;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 1rem; }
+    .principle-grid, .type-cards { grid-template-columns: 1fr; }
+    .page-header h1 { font-size: 1.3rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<div class="page-nav">
+  <a href="12-lms-implementation.html">&larr; Previous</a>
+  <span class="page-label">Page 13 of 20</span>
+  <a href="14-academic-integrity.html">Next &rarr;</a>
+</div>
+
+<!-- HEADER -->
+<div class="page-header">
+  <div class="module-tag">Module 4 &bull; Delivery, Assessment, and Support</div>
+  <h1>Assessment Design in ODL</h1>
+  <p class="page-subtitle">Designing assessments that measure learning outcomes effectively while maintaining academic standards in online environments</p>
+</div>
+
+<!-- BRIDGE FROM PAGE 12 -->
+<p>You have now completed Module 3, where you learned to calculate SLT, document your course design in Table 4, and implement that design on the LMS. Module 4 shifts focus to the learner experience itself &mdash; how you assess learning, support students, and prepare staff for ODL delivery. We begin with assessment, because the way you assess shapes everything else: what students focus on, how they engage with the material, and whether they can demonstrate what they have actually learned.</p>
+
+<!-- ASSESSMENT PRINCIPLES -->
+<h2>Foundations of ODL Assessment</h2>
+
+<p>Assessment in ODL courses should be designed to measure the achievement of Course Learning Outcomes while maintaining academic standards, assessment validity, reliability, fairness, and academic integrity. These are not unique to ODL &mdash; they are the same standards that apply to any mode of delivery. What changes in ODL is <em>how</em> you meet those standards when students and lecturers are separated by time, space, or both.</p>
+
+<p>The guideline identifies four foundational principles that should shape every assessment decision you make in an ODL course:</p>
+
+<div class="principle-grid">
+  <div class="principle-card">
+    <h4>Constructive Alignment</h4>
+    <p>Assessment activities must be aligned with the CLOs and appropriate to the level of study, discipline requirements, and mode of delivery. If a CLO asks students to &ldquo;evaluate,&rdquo; the assessment must require evaluation &mdash; not just recall.</p>
+  </div>
+  <div class="principle-card">
+    <h4>Variety of Methods</h4>
+    <p>ODL courses should employ a variety of assessment methods rather than relying solely on traditional examinations. This gives students multiple opportunities to demonstrate learning and reduces the risk associated with any single assessment.</p>
+  </div>
+  <div class="principle-card">
+    <h4>Formative and Summative Balance</h4>
+    <p>ODL assessments may comprise both formative assessments (which support learning and provide feedback during the course) and summative assessments (which measure achievement at the end of a learning period). Both are essential.</p>
+  </div>
+  <div class="principle-card">
+    <h4>Individual and Group Assessment</h4>
+    <p>Assessment activities may include a combination of individual and group-based tasks. Group assessments develop collaboration skills but require careful design to ensure individual accountability and fair marking.</p>
+  </div>
+</div>
+
+<div class="key-point">
+  <strong>Constructive alignment is the starting point, not the afterthought.</strong> Before choosing an assessment method, ask: what does the CLO actually require students to do? The verb in the CLO (analyse, design, evaluate, demonstrate) tells you the cognitive level and the type of evidence you need to collect. The assessment method is then chosen to collect that evidence &mdash; not the other way around.
+</div>
+
+<!-- FORMATIVE AND SUMMATIVE -->
+<h2>Formative and Summative Assessment</h2>
+
+<p>ODL courses benefit from a deliberate mix of formative and summative assessments. Each serves a distinct purpose in the learning journey, and both should be visible in your Table 4 and reflected on the LMS.</p>
+
+<div class="type-cards">
+  <div class="type-card formative">
+    <h4>Formative Assessment</h4>
+    <p>Purpose: support learning by providing feedback during the course. Examples include self-check quizzes, peer-reviewed drafts, discussion forum contributions, and practice exercises. Formative assessments may or may not carry marks, but they always carry feedback.</p>
+  </div>
+  <div class="type-card summative">
+    <h4>Summative Assessment</h4>
+    <p>Purpose: measure achievement at the end of a learning period. Examples include final projects, e-portfolios, examinations, case study analyses, and capstone presentations. Summative assessments carry marks that contribute to the final grade.</p>
+  </div>
+</div>
+
+<p>In ODL environments, formative assessment is particularly important because students lack the informal feedback they receive in physical classrooms &mdash; the lecturer reading the room, adjusting pace, answering questions in real time. Well-designed formative assessments on the LMS fill this gap by giving students regular checkpoints and actionable feedback throughout the course.</p>
+
+<div class="key-point">
+  <strong>A common mistake is front-loading all assessment to the end of the semester.</strong> If 70% of the marks come from a final examination and only 30% from coursework, students have no structured feedback until it is too late to adjust. A balanced design spreads assessment across the semester, using formative tasks to build towards summative ones.</p>
+</div>
+
+<!-- GOOD PRACTICE EXAMPLE -->
+<p>Let's see what well-balanced assessment design looks like in practice.</p>
+
+<div class="good-practice">
+  <h3>Good Practice: Dr. Nadia's Assessment Plan</h3>
+  <p>Dr. Nadia is designing assessments for a 3-credit ODL course on Research Methods. Her CLOs require students to (1) explain research methodologies, (2) design a research proposal, and (3) evaluate published research critically.</p>
+  <p>Her assessment plan includes:</p>
+  <p style="margin-left: 1rem;">&bull; <strong>Weekly self-check quizzes</strong> (formative, 0%) &mdash; low-stakes checks on terminology and concepts, with instant feedback explaining each answer</p>
+  <p style="margin-left: 1rem;">&bull; <strong>Discussion forum contributions</strong> (formative, 10%) &mdash; students critique a published methodology each week, with lecturer responses</p>
+  <p style="margin-left: 1rem;">&bull; <strong>Mid-semester literature review</strong> (summative, 25%) &mdash; students evaluate three published studies using a structured rubric</p>
+  <p style="margin-left: 1rem;">&bull; <strong>Research proposal</strong> (summative, 40%) &mdash; students design a proposal addressing a real-world problem, submitted in two stages (draft + final)</p>
+  <p style="margin-left: 1rem;">&bull; <strong>Peer review exercise</strong> (summative, 25%) &mdash; students review a classmate's proposal draft using the same rubric the lecturer will use</p>
+  <p><strong>Why this works:</strong> The assessment plan uses multiple methods (quizzes, forums, reviews, proposals, peer review), balances formative and summative tasks, and aligns each assessment with a specific CLO. The self-check quizzes provide the regular feedback that ODL students need, the discussion forums develop evaluative thinking progressively, and the two-stage proposal submission teaches revision as part of the research process. Every assessment connects back to a stated CLO &mdash; nothing is assessed that was not intended.</p>
+</div>
+
+<!-- TABLE 4 ACTION -->
+<p>Before you move on, take a moment to apply what you have learned.</p>
+
+<div class="table4-action">
+  <h3><span class="table4-icon">&#128221;</span> Update Your Table 4</h3>
+  <p class="table4-intro">Return to the assessment section of your Table 4.</p>
+  <p>Check that each assessment aligns with its corresponding CLO &mdash; does the assessment task match the verb in the CLO? Add formative assessments if your plan is too heavily weighted toward summative tasks. Ensure you have a variety of assessment methods.</p>
+</div>
+
+<!-- CASE SCENARIO -->
+<p>Now let&rsquo;s examine what happens when assessment design does not follow these principles.</p>
+
+<div class="case-box">
+  <h3>Case: Prof. Azman's Single-Exam Course</h3>
+  <p class="scenario">Prof. Azman is converting his face-to-face course to ODL. In the physical classroom, he used weekly participation (20%), a mid-term test (30%), and a final examination (50%). For the ODL version, he decides to simplify: he removes the weekly participation component entirely, keeps the mid-term test at 30%, and increases the final examination to 70%. Both assessments are timed online exams with multiple-choice questions. His CLOs require students to &ldquo;design solutions&rdquo; and &ldquo;evaluate approaches&rdquo; for complex problems.</p>
+  <p><strong>What's wrong here?</strong> Prof. Azman has created several problems. First, the assessment methods do not align with the CLOs &mdash; multiple-choice questions measure recall and recognition, not the ability to design solutions or evaluate approaches. Second, 70% of the grade depends on a single final exam, leaving students with no structured feedback until the mid-term and nothing between that and the final. Third, removing weekly participation eliminates the formative assessment that kept students engaged throughout the semester. Fourth, the total assessment relies on only two methods (both timed exams), which does not meet the variety principle. Students who perform poorly under timed conditions have no alternative way to demonstrate their learning. Prof. Azman needs to add assessments that actually measure design and evaluation skills (such as project-based tasks or case analyses), spread the assessment load across the semester, and include formative tasks that give students feedback before the high-stakes assessments.</p>
+</div>
+
+<!-- SIM WRITING NOTE -->
+<p>You may be wondering how to develop the actual learning materials &mdash; the self-instructional content that students will engage with on the LMS. This includes writing the narratives, designing the activities, embedding the self-checks, and structuring the learning pathways that make ODL content effective.</p>
+
+<div class="sim-note">
+  <strong>SIM writing is covered in a separate course.</strong> Compulsory 3: Effective SIM Writing (8 hours, self-paced) teaches you how to develop Self-Instructional Materials &mdash; the detailed, learner-centred content that lives inside each LMS module. That course covers the six attributes of effective SIMs, how to write for self-directed learners, and how to structure content for the LMS. For now, focus on the assessment and support design principles in this module. The SIM development skills will follow in the next compulsory course.
+</div>
+
+<!-- TRANSITION TO QUIZ -->
+<p>With the assessment design principles in mind, let's check your understanding of the key concepts covered on this page.</p>
+
+<!-- FILL-IN-THE-BLANKS QUIZ -->
+<div class="fib-box">
+  <h3>Check Your Understanding: Fill in the Blanks</h3>
+  <p style="margin-bottom: 1rem; font-size: 0.9rem;">Complete each statement below, then click "Check All" to see your score.</p>
+
+  <div class="fib-item">
+    <label>1. The principle that requires assessments to be directly connected to Course Learning Outcomes is called</label>
+    <input type="text" id="fib1" placeholder="___"> <span>alignment.</span>
+    <div class="fib-feedback" id="fb1"></div>
+  </div>
+
+  <div class="fib-item">
+    <label>2. Assessments that provide feedback during the course to help students improve are called</label>
+    <input type="text" id="fib2" placeholder="___"> <span>assessments.</span>
+    <div class="fib-feedback" id="fb2"></div>
+  </div>
+
+  <div class="fib-item">
+    <label>3. The guideline recommends that ODL courses use a</label>
+    <input type="text" id="fib3" placeholder="___"> <span>of assessment methods rather than relying solely on traditional examinations.</span>
+    <div class="fib-feedback" id="fb3"></div>
+  </div>
+
+  <div class="fib-item">
+    <label>4. When choosing an assessment method, you should start by examining the</label>
+    <input type="text" id="fib4" placeholder="___"> <span>in the CLO, because it tells you the cognitive level required.</span>
+    <div class="fib-feedback" id="fb4"></div>
+  </div>
+
+  <div class="fib-item">
+    <label>5. Assessments that measure achievement at the end of a learning period and contribute to the final grade are called</label>
+    <input type="text" id="fib5" placeholder="___"> <span>assessments.</span>
+    <div class="fib-feedback" id="fb5"></div>
+  </div>
+
+  <button class="fib-btn" onclick="checkFIB()">Check All</button>
+  <div class="fib-score" id="fibScore"></div>
+</div>
+
+<!-- MCQ QUIZZES -->
+<p>Let's also test your ability to apply these principles to specific assessment scenarios.</p>
+
+<div class="mcq-box" id="quiz1">
+  <h3>MCQ Quiz 1: Alignment Check</h3>
+  <p class="question">A Course Learning Outcome states: &ldquo;Students will be able to design a comprehensive marketing plan for a new product.&rdquo; Which assessment method best demonstrates constructive alignment with this CLO?</p>
+  <ul class="options" id="opts1">
+    <li onclick="selectOpt('q1','opts1','A')" id="opts1-0">A. A multiple-choice test on marketing terminology and definitions</li>
+    <li onclick="selectOpt('q1','opts1','B')" id="opts1-1">B. A written essay explaining different marketing theories and frameworks</li>
+    <li onclick="selectOpt('q1','opts1','C')" id="opts1-2">C. A project requiring students to create a detailed marketing plan for a real or hypothetical product launch</li>
+    <li onclick="selectOpt('q1','opts1','D')" id="opts1-3">D. A group discussion analysing successful marketing campaigns from existing companies</li>
+  </ul>
+  <button class="mcq-btn" onclick="checkMCQ('quiz1','q1','opts1','C')">Check Answer</button>
+  <div class="feedback" id="feedback-quiz1"></div>
+</div>
+
+<div class="mcq-box" id="quiz2">
+  <h3>MCQ Quiz 2: Assessment Balance</h3>
+  <p class="question">An ODL lecturer allocates 80% of the final grade to a single end-of-semester online examination, with the remaining 20% from one mid-semester assignment. According to the guideline, what is the primary concern with this assessment design?</p>
+  <ul class="options" id="opts2">
+    <li onclick="selectOpt('q2','opts2','A')" id="opts2-0">A. Online examinations are not permitted under the ODL guideline, so the entire assessment must be converted to coursework</li>
+    <li onclick="selectOpt('q2','opts2','B')" id="opts2-1">B. Students receive insufficient structured feedback before the high-stakes exam, the assessment relies on only two methods, and students have limited opportunities to demonstrate learning</li>
+    <li onclick="selectOpt('q2','opts2','C')" id="opts2-2">C. The mid-semester assignment should carry more weight than the final exam to ensure students are motivated throughout the course</li>
+    <li onclick="selectOpt('q2','opts2','D')" id="opts2-3">D. The examination should be split into two shorter exams to reduce student stress during the assessment period</li>
+  </ul>
+  <button class="mcq-btn" onclick="checkMCQ('quiz2','q2','opts2','B')">Check Answer</button>
+  <div class="feedback" id="feedback-quiz2"></div>
+</div>
+
+<script>
+  var mcqSelected = {};
+
+  var mcqFeedback = {
+    quiz1: {
+      correct: '<strong>Correct.</strong> Option C is the best answer because it directly matches the CLO verb &ldquo;design.&rdquo; The CLO requires students to create a marketing plan, and option C asks them to do exactly that &mdash; create a detailed plan for a real or hypothetical product. Option A tests recall of terminology, which does not match &ldquo;design.&rdquo; Option B tests explanation of theories, which is a lower cognitive level than designing. Option D tests analysis of existing campaigns, not the creation of a new plan. None of the wrong options require students to actually design anything.',
+      incorrect: '<strong>Not quite.</strong> The correct answer is <strong>C</strong>. The CLO verb is &ldquo;design,&rdquo; so the assessment must require students to design something &mdash; in this case, create a detailed marketing plan. Option A only tests recall of terminology. Option B only tests explanation of theories (a lower cognitive level). Option D only tests analysis of existing campaigns. Constructive alignment means the assessment task matches the cognitive demand of the CLO.'
+    },
+    quiz2: {
+      correct: '<strong>Correct.</strong> Option B identifies the core problems: insufficient formative feedback before the high-stakes exam, reliance on only two assessment methods (violating the variety principle), and limited opportunities for students to demonstrate learning across the semester. The guideline recommends a balanced mix of formative and summative assessments spread throughout the course. Option A is wrong because online exams are permitted under the guideline. Option C misdiagnoses the issue &mdash; the problem is not the weight of the assignment but the overall lack of formative checkpoints. Option D addresses stress but does not address the fundamental design issues of variety, alignment, and feedback.',
+      incorrect: '<strong>Not quite.</strong> The correct answer is <strong>B</strong>. The primary concern is that students have very few structured feedback opportunities before the 80% exam, the assessment uses only two methods (violating variety), and students have limited chances to demonstrate learning across the semester. Option A is incorrect &mdash; online exams are allowed. Option C focuses on weight distribution rather than the actual design problem. Option D addresses stress but misses the alignment and variety issues.'
+    }
+  };
+
+  function selectOpt(qId, optsId, letter) {
+    mcqSelected[qId] = letter;
+    var container = document.getElementById(optsId);
+    var items = container.querySelectorAll('li');
+    items.forEach(function(li, idx) {
+      li.classList.remove('selected');
+      if (String.fromCharCode(65 + idx) === letter) li.classList.add('selected');
+    });
+  }
+
+  function checkMCQ(quizId, qId, optsId, correct) {
+    var container = document.getElementById(optsId);
+    var feedback = document.getElementById('feedback-' + quizId);
+    var selected = mcqSelected[qId];
+
+    if (!selected) {
+      feedback.textContent = 'Please select an answer before checking.';
+      feedback.className = 'feedback show incorrect-fb';
+      return;
+    }
+
+    var items = container.querySelectorAll('li');
+    items.forEach(function(li, idx) {
+      var letter = String.fromCharCode(65 + idx);
+      li.classList.remove('correct', 'incorrect');
+      if (letter === correct) li.classList.add('correct');
+      else if (letter === selected && selected !== correct) li.classList.add('incorrect');
+    });
+
+    var data = mcqFeedback[quizId];
+    if (selected === correct) {
+      feedback.innerHTML = data.correct;
+      feedback.className = 'feedback show correct-fb';
+    } else {
+      feedback.innerHTML = data.incorrect;
+      feedback.className = 'feedback show incorrect-fb';
+    }
+  }
+
+  var fibAnswers = {
+    fib1: ['constructive'],
+    fib2: ['formative'],
+    fib3: ['variety'],
+    fib4: ['verb'],
+    fib5: ['summative']
+  };
+
+  var fibExplanations = {
+    fib1: 'Constructive alignment means assessments are directly connected to the CLOs they are meant to measure.',
+    fib2: 'Formative assessments provide feedback during the learning process, helping students identify gaps before summative assessments.',
+    fib3: 'A variety of methods gives students multiple opportunities to demonstrate learning and reduces reliance on any single assessment type.',
+    fib4: 'The verb in the CLO (analyse, design, evaluate) specifies the cognitive level and tells you what kind of evidence to collect.',
+    fib5: 'Summative assessments measure achievement at the end of a learning period and carry marks that contribute to the final grade.'
+  };
+
+  function checkFIB() {
+    var score = 0;
+    var total = Object.keys(fibAnswers).length;
+
+    for (var i = 1; i <= total; i++) {
+      var id = 'fib' + i;
+      var input = document.getElementById(id);
+      var fb = document.getElementById('fb' + i);
+      var userAnswer = input.value.trim().toLowerCase();
+      var accepted = fibAnswers[id];
+
+      var isCorrect = false;
+      for (var j = 0; j < accepted.length; j++) {
+        if (userAnswer === accepted[j]) {
+          isCorrect = true;
+          break;
+        }
+      }
+
+      if (isCorrect) {
+        input.classList.remove('incorrect');
+        input.classList.add('correct');
+        fb.textContent = 'Correct! ' + fibExplanations[id];
+        fb.className = 'fib-feedback correct-fb';
+        score++;
+      } else {
+        input.classList.remove('correct');
+        input.classList.add('incorrect');
+        fb.textContent = 'Not quite. ' + fibExplanations[id] + ' The answer is: ' + accepted[0] + '.';
+        fb.className = 'fib-feedback incorrect-fb';
+      }
+    }
+
+    var scoreEl = document.getElementById('fibScore');
+    if (score === total) {
+      scoreEl.textContent = score + '/' + total + ' — Perfect! You understand the foundations of ODL assessment design.';
+      scoreEl.style.color = 'var(--green)';
+    } else if (score >= 3) {
+      scoreEl.textContent = score + '/' + total + ' — Good effort. Review the explanations for the ones you missed.';
+      scoreEl.style.color = 'var(--orange)';
+    } else {
+      scoreEl.textContent = score + '/' + total + ' — Revisit the four principles and the formative/summative distinction above. These concepts underpin everything in Module 4.';
+      scoreEl.style.color = 'var(--red)';
+    }
+  }
+</script>
+
+<!-- SUMMARY / BRIDGE -->
+<h2>Summary</h2>
+
+<p>Assessment design in ODL rests on four foundations: constructive alignment with CLOs, variety of methods, a balance of formative and summative tasks, and a mix of individual and group assessments. The verb in each CLO tells you the cognitive level required, and the assessment method is then chosen to collect appropriate evidence. Formative assessments are especially important in ODL because they replace the informal feedback students receive naturally in physical classrooms.</p>
+
+<p>On the next page, you will learn about academic integrity in ODL assessments &mdash; including integrity controls, online proctoring, and alternative assessment approaches that naturally reduce opportunities for misconduct while promoting higher-order thinking.</p>
+
+<!-- FOOTER -->
+<div class="page-footer">
+  <p>ODL Programme Development &bull; Page 13 of 20<br>
+  Part of the ODL Professional Development Series</p>
+</div>
+
+</body>
+</html>

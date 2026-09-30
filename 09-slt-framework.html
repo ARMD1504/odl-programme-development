@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Learning Time Framework — ODL Programme Development</title>
+<style>
+  :root {
+    --navy: #1a365d;
+    --blue: #2b6cb0;
+    --light-blue: #ebf4ff;
+    --green: #276749;
+    --light-green: #f0fff4;
+    --orange: #c05621;
+    --light-orange: #fffaf0;
+    --purple: #553c9a;
+    --light-purple: #faf5ff;
+    --teal: #285e61;
+    --light-teal: #e6fffa;
+    --red: #c53030;
+    --light-red: #fff5f5;
+    --gray: #4a5568;
+    --light-gray: #f7fafc;
+    --border: #e2e8f0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #2d3748;
+    line-height: 1.7;
+    background: #fff;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .page-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page-nav a {
+    color: var(--blue);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--blue);
+    border-radius: 6px;
+    transition: background 0.2s;
+  }
+
+  .page-nav a:hover { background: var(--light-blue); }
+  .page-nav .page-label { font-size: 0.85rem; color: var(--gray); }
+
+  .page-header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--green) 100%);
+    color: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+  }
+
+  .page-header .module-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    padding: 0.2rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .page-header h1 { font-size: 1.6rem; margin-bottom: 0.4rem; }
+  .page-header .page-subtitle { font-size: 0.95rem; opacity: 0.85; }
+
+  h2 {
+    color: var(--navy);
+    font-size: 1.3rem;
+    margin: 2rem 0 1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid var(--blue);
+    display: inline-block;
+  }
+
+  h3 { color: var(--navy); font-size: 1.05rem; margin: 1.5rem 0 0.5rem; }
+  p { margin-bottom: 1rem; }
+
+  .key-point {
+    background: var(--light-blue);
+    border-left: 5px solid var(--blue);
+    padding: 1rem 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 1.5rem 0;
+    font-size: 0.95rem;
+  }
+
+  .key-point strong { color: var(--navy); }
+
+  .case-box {
+    background: var(--light-orange);
+    border-left: 5px solid var(--orange);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .case-box h3 { color: var(--orange); margin-top: 0; margin-bottom: 0.75rem; }
+  .case-box .scenario { font-style: italic; margin-bottom: 1rem; }
+
+  /* Credit formula box */
+  .formula-box {
+    background: linear-gradient(135deg, var(--navy), var(--green));
+    color: #fff;
+    padding: 1.5rem 2rem;
+    border-radius: 12px;
+    text-align: center;
+    margin: 1.5rem 0;
+  }
+
+  .formula-box .formula {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin: 0.5rem 0;
+    letter-spacing: 1px;
+  }
+
+  .formula-box .formula-note {
+    font-size: 0.88rem;
+    opacity: 0.85;
+    margin-top: 0.5rem;
+  }
+
+  /* SLT component cards */
+  .slt-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .slt-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    background: var(--light-gray);
+  }
+
+  .slt-card .slt-icon {
+    font-size: 1.3rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .slt-card h4 {
+    color: var(--navy);
+    font-size: 0.92rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .slt-card p {
+    font-size: 0.85rem;
+    color: var(--gray);
+    margin: 0;
+  }
+
+  .slt-card.odl-yes { border-left: 4px solid var(--green); }
+  .slt-card.odl-no { border-left: 4px solid var(--red); }
+
+  /* ODL SLT breakdown table */
+  .slt-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+  }
+
+  .slt-table th {
+    background: var(--navy);
+    color: #fff;
+    padding: 0.6rem 0.75rem;
+    text-align: left;
+    font-weight: 600;
+  }
+
+  .slt-table td {
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .slt-table tr:nth-child(even) { background: var(--light-gray); }
+
+  .slt-table .tag-yes {
+    background: var(--light-green);
+    color: var(--green);
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.82rem;
+  }
+
+  .slt-table .tag-no {
+    background: var(--light-red);
+    color: var(--red);
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.82rem;
+  }
+
+  .slt-table .tag-cond {
+    background: var(--light-orange);
+    color: var(--orange);
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.82rem;
+  }
+
+  /* Worked example */
+  .worked-example {
+    background: var(--light-green);
+    border: 1px solid var(--green);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .worked-example h3 {
+    color: var(--green);
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+  }
+
+  .we-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.75rem 0;
+    font-size: 0.88rem;
+  }
+
+  .we-table th {
+    background: var(--green);
+    color: #fff;
+    padding: 0.5rem 0.65rem;
+    text-align: left;
+    font-weight: 600;
+  }
+
+  .we-table td {
+    padding: 0.45rem 0.65rem;
+    border-bottom: 1px solid #c6f6d5;
+  }
+
+  .we-table tr:last-child td { border-bottom: none; font-weight: 700; }
+
+  /* Bar visual */
+  .bar-container {
+    margin: 1.5rem 0;
+  }
+
+  .bar-label {
+    font-size: 0.85rem;
+    color: var(--gray);
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+  }
+
+  .bar-track {
+    height: 36px;
+    background: var(--light-gray);
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    position: relative;
+    margin-bottom: 0.5rem;
+  }
+
+  .bar-segment {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    min-width: 30px;
+  }
+
+  .bar-sync { background: var(--blue); }
+  .bar-async { background: var(--teal); }
+  .bar-indep { background: var(--green); }
+  .bar-f2f { background: var(--red); }
+  .bar-assess { background: var(--purple); }
+
+  .bar-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    font-size: 0.8rem;
+    color: var(--gray);
+    margin-top: 0.25rem;
+  }
+
+  .bar-legend span::before {
+    content: '';
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    margin-right: 0.3rem;
+    vertical-align: middle;
+  }
+
+  .bar-legend .leg-sync::before { background: var(--blue); }
+  .bar-legend .leg-async::before { background: var(--teal); }
+  .bar-legend .leg-indep::before { background: var(--green); }
+  .bar-legend .leg-f2f::before { background: var(--red); }
+  .bar-legend .leg-assess::before { background: var(--purple); }
+
+  .bar-threshold {
+    position: absolute;
+    top: -4px;
+    bottom: -4px;
+    width: 2px;
+    background: var(--navy);
+    z-index: 2;
+  }
+
+  .bar-threshold::after {
+    content: '80%';
+    position: absolute;
+    top: -18px;
+    left: -10px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--navy);
+  }
+
+  /* Fill-in-the-blanks */
+  .fib-box {
+    background: var(--light-blue);
+    border-left: 5px solid var(--blue);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .fib-box h3 {
+    color: var(--blue);
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+  }
+
+  .fib-item {
+    margin-bottom: 1.2rem;
+    font-size: 0.93rem;
+    line-height: 1.8;
+  }
+
+  .fib-item label {
+    font-weight: 600;
+    color: var(--navy);
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  .fib-item input[type="text"] {
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    padding: 0.35rem 0.65rem;
+    font-size: 0.9rem;
+    width: 180px;
+    transition: border-color 0.2s;
+  }
+
+  .fib-item input[type="text"]:focus {
+    outline: none;
+    border-color: var(--blue);
+  }
+
+  .fib-item input.correct {
+    border-color: var(--green);
+    background: var(--light-green);
+  }
+
+  .fib-item input.incorrect {
+    border-color: var(--red);
+    background: var(--light-red);
+  }
+
+  .fib-item .fib-feedback {
+    font-size: 0.83rem;
+    margin-top: 0.2rem;
+    min-height: 1.2em;
+  }
+
+  .fib-item .fib-feedback.correct-fb { color: var(--green); }
+  .fib-item .fib-feedback.incorrect-fb { color: var(--red); }
+
+  .fib-check-btn {
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 0.5rem;
+  }
+
+  .fib-check-btn:hover { background: var(--navy); }
+
+  .fib-score {
+    margin-top: 1rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    min-height: 1.5em;
+  }
+
+  /* Good practice box */
+  .good-practice-box {
+    background: var(--light-green);
+    border-left: 5px solid var(--green);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .good-practice-box h3 { color: var(--green); margin-top: 0; margin-bottom: 0.75rem; }
+  .good-practice-box .scenario { font-style: italic; margin-bottom: 1rem; }
+
+  .good-practice-box .gp-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.75rem 0;
+    font-size: 0.88rem;
+  }
+
+  .good-practice-box .gp-table th {
+    background: var(--green);
+    color: #fff;
+    padding: 0.5rem 0.65rem;
+    text-align: left;
+    font-weight: 600;
+  }
+
+  .good-practice-box .gp-table td {
+    padding: 0.45rem 0.65rem;
+    border-bottom: 1px solid #c6f6d5;
+  }
+
+  .good-practice-box .gp-table tr:last-child td { border-bottom: none; }
+
+  .why-annotation {
+    background: #fff;
+    border: 1px solid #c6f6d5;
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    margin-top: 0.75rem;
+    font-size: 0.88rem;
+  }
+
+  .why-annotation strong { color: var(--green); }
+
+  /* Warning box */
+  .warning-box {
+    background: var(--light-red);
+    border-left: 5px solid var(--red);
+    padding: 1rem 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 1.5rem 0;
+    font-size: 0.93rem;
+  }
+
+  .warning-box strong { color: var(--red); }
+
+  /* Page footer */
+  .page-footer {
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--gray);
+    font-size: 0.85rem;
+  }
+
+  /* Table 4 action prompt */
+  .table4-action {
+    background: #FFFBEB;
+    border-left: 5px solid #D97706;
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+
+  .table4-action h3 {
+    color: #B45309;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .table4-action .table4-icon { font-size: 1.3rem; }
+
+  .table4-action p {
+    font-size: 0.93rem;
+    margin-bottom: 0;
+  }
+
+  .table4-action .table4-intro {
+    font-size: 0.9rem;
+    color: #92400E;
+    font-style: italic;
+    margin-bottom: 0.5rem;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 1rem; }
+    .slt-grid { grid-template-columns: 1fr; }
+    .page-header h1 { font-size: 1.3rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<div class="page-nav">
+  <a href="08-physical-f2f.html">&larr; Previous</a>
+  <span class="page-label">Page 9 of 20</span>
+  <a href="10-slt-calculations.html">Next &rarr;</a>
+</div>
+
+<!-- HEADER -->
+<div class="page-header">
+  <div class="module-tag">Module 3 &bull; Planning and Designing Your ODL Course</div>
+  <h1>Student Learning Time (SLT) Framework</h1>
+  <p class="page-subtitle">Understanding how SLT drives credit allocation, course classification, and ODL compliance</p>
+</div>
+
+<!-- BRIDGE FROM MODULE 2 -->
+<p>In the previous module, you learned about the four delivery methods available in ODL and how each counts &mdash; or does not count &mdash; towards the ODL delivery requirement. Now it is time to put those methods together into a complete course design. The starting point is the Student Learning Time framework, because every planning decision you make in Table 4 flows from your SLT calculations.</p>
+
+<!-- WHAT IS SLT -->
+<h2>What Is Student Learning Time?</h2>
+
+<p>Student Learning Time (SLT) is the total number of hours required for a student to achieve the intended learning outcomes of a course. It includes <em>all</em> learning activities undertaken by students &mdash; whether those activities are facilitated by academic staff, conducted online, completed independently, or undertaken through physical face-to-face sessions.</p>
+
+<p>SLT is not the same as contact hours. Contact hours capture only the time students spend in direct interaction with academic staff. SLT captures the <em>complete</em> learning effort: watching videos, reading resources, participating in discussions, completing quizzes, preparing assignments, revising for assessments, and any physical sessions. It is the broadest measure of student workload and the foundation for credit allocation.</p>
+
+<div class="formula-box">
+  <div>At Sunway University, the credit-to-hours conversion is:</div>
+  <div class="formula">1 Credit = 40 SLT Hours</div>
+  <div class="formula-note">In accordance with the Malaysian Qualifications Framework (MQF)<br>
+  A 3-credit course = 120 SLT hours &bull; A 4-credit course = 160 SLT hours</div>
+</div>
+
+<p>This means that when you design a course, you work backwards from the credit value. A 3-credit course requires 120 hours of total student learning time. Your job is to distribute those 120 hours across appropriate learning activities &mdash; and to ensure that at least 80% of them qualify as ODL delivery.</p>
+
+<!-- COMPONENTS OF SLT -->
+<h2>Components of SLT</h2>
+
+<p>The total SLT of a course is assembled from several categories of learning activity. Each category contributes to the total SLT, but not all categories contribute equally to the ODL delivery requirement. Here are the components you will work with:</p>
+
+<div class="slt-grid">
+  <div class="slt-card odl-yes">
+    <div class="slt-icon">&#128187;</div>
+    <h4>Synchronous Online Learning</h4>
+    <p>Live online sessions: lectures, tutorials, webinars, virtual labs, consultations. Counts as contact hours, ODL delivery, and SLT.</p>
+  </div>
+  <div class="slt-card odl-yes">
+    <div class="slt-icon">&#128214;</div>
+    <h4>Asynchronous Online Learning</h4>
+    <p>Structured self-paced activities: recorded lectures, digital modules, discussion forums, multimedia resources. Counts as ODL delivery and SLT (not contact hours).</p>
+  </div>
+  <div class="slt-card odl-yes">
+    <div class="slt-icon">&#128221;</div>
+    <h4>Independent Learning</h4>
+    <p>Self-directed activities: reading, assignment preparation, research, revision. Always counts as SLT. May count as ODL when integrated into the ODL design.</p>
+  </div>
+  <div class="slt-card odl-no">
+    <div class="slt-icon">&#127979;</div>
+    <h4>Physical Face-to-Face Sessions</h4>
+    <p>On-campus activities: labs, clinical training, studio sessions, fieldwork. Counts as contact hours and SLT. Does NOT count as ODL delivery.</p>
+  </div>
+</div>
+
+<div class="key-point">
+  <strong>Assessment activities also count.</strong> Time spent on quizzes, tests, assignments, e-portfolios, presentations, and examination preparation is part of total SLT. Make sure you allocate hours for assessment in your SLT calculations &mdash; a common oversight is to account only for teaching and learning activities while forgetting the time students spend being assessed.
+</div>
+
+<!-- WHAT CONSTITUTES ODL SLT -->
+<h2>What Counts as ODL SLT?</h2>
+
+<p>Not every hour of SLT qualifies as ODL delivery. This distinction is critical because the classification of a course as an ODL course depends on the <em>proportion</em> of SLT delivered through ODL approaches &mdash; not on the number of online activities offered.</p>
+
+<table class="slt-table">
+  <thead>
+    <tr>
+      <th>Learning Activity</th>
+      <th>Counts as SLT?</th>
+      <th>Counts as ODL?</th>
+      <th>Counts as Contact Hours?</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Synchronous online learning</td>
+      <td><span class="tag-yes">Yes</span></td>
+      <td><span class="tag-yes">Yes</span></td>
+      <td><span class="tag-yes">Yes</span></td>
+    </tr>
+    <tr>
+      <td>Asynchronous online learning</td>
+      <td><span class="tag-yes">Yes</span></td>
+      <td><span class="tag-yes">Yes</span></td>
+      <td><span class="tag-no">No</span></td>
+    </tr>
+    <tr>
+      <td>Independent learning (structured, ODL-integrated)</td>
+      <td><span class="tag-yes">Yes</span></td>
+      <td><span class="tag-cond">Conditional</span></td>
+      <td><span class="tag-no">No</span></td>
+    </tr>
+    <tr>
+      <td>Independent learning (not ODL-integrated)</td>
+      <td><span class="tag-yes">Yes</span></td>
+      <td><span class="tag-no">No</span></td>
+      <td><span class="tag-no">No</span></td>
+    </tr>
+    <tr>
+      <td>Physical face-to-face sessions</td>
+      <td><span class="tag-yes">Yes</span></td>
+      <td><span class="tag-no">No</span></td>
+      <td><span class="tag-yes">Yes</span></td>
+    </tr>
+    <tr>
+      <td>Assessment activities (online)</td>
+      <td><span class="tag-yes">Yes</span></td>
+      <td><span class="tag-yes">Yes</span></td>
+      <td><span class="tag-no">No</span></td>
+    </tr>
+    <tr>
+      <td>Assessment activities (physical)</td>
+      <td><span class="tag-yes">Yes</span></td>
+      <td><span class="tag-no">No</span></td>
+      <td><span class="tag-no">No</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Notice the conditional entry for independent learning. Independent learning counts as ODL delivery only when it is intentionally designed and integrated into the ODL learning environment &mdash; for example, when students complete guided reading tasks linked to LMS resources, or prepare assignments using online materials and discussion forums. Unstructured independent learning that is unrelated to the planned ODL design does not count towards the 80% threshold.</p>
+
+<div class="warning-box">
+  <strong>Do not inflate ODL hours.</strong> All ODL SLT claimed must be supported by appropriate learning design, Self-Instructional Materials (SIMs), digital learning resources, online activities, assessments, and evidence of student engagement. You cannot simply label hours as "independent learning" and count them all as ODL without documentation.
+</div>
+
+<!-- WORKED EXAMPLE -->
+<h2>Worked Example: SLT Breakdown for a 3-Credit ODL Course</h2>
+
+<p>To make this concrete, consider a 3-credit course with 120 total SLT hours. Here is how one lecturer has distributed those hours across the five categories:</p>
+
+<div class="worked-example">
+  <h3>Example: Research Methods in Data Analytics (3 credits = 120 SLT hours)</h3>
+  <table class="we-table">
+    <thead>
+      <tr>
+        <th>Learning Activity</th>
+        <th>Hours</th>
+        <th>ODL?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Synchronous online (live lectures, tutorials, consultations)</td>
+        <td>24</td>
+        <td><span class="tag-yes">Yes</span></td>
+      </tr>
+      <tr>
+        <td>Asynchronous online (recorded lectures, forums, digital modules)</td>
+        <td>30</td>
+        <td><span class="tag-yes">Yes</span></td>
+      </tr>
+      <tr>
+        <td>Independent learning (guided reading, assignment prep, revision)</td>
+        <td>40</td>
+        <td><span class="tag-cond">Conditional</span></td>
+      </tr>
+      <tr>
+        <td>Assessment (online quizzes, assignment completion, e-portfolio)</td>
+        <td>16</td>
+        <td><span class="tag-yes">Yes</span></td>
+      </tr>
+      <tr>
+        <td>Physical face-to-face (none in this course)</td>
+        <td>0</td>
+        <td><span class="tag-no">N/A</span></td>
+      </tr>
+      <tr>
+        <td><strong>Independent learning counted as ODL (30 of 40 hrs)</strong></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><strong>Total ODL SLT = 24 + 30 + 30 + 16</strong></td>
+        <td><strong>100</strong></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><strong>Total SLT</strong></td>
+        <td><strong>120</strong></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><strong>ODL Percentage = 100 &divide; 120</strong></td>
+        <td><strong>83.3%</strong></td>
+        <td><span class="tag-yes">Qualifies</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- BAR VISUALIZATION -->
+<div class="bar-container">
+  <div class="bar-label">SLT Distribution</div>
+  <div class="bar-track">
+    <div class="bar-segment bar-sync" style="width: 20%;">24h Sync</div>
+    <div class="bar-segment bar-async" style="width: 25%;">30h Async</div>
+    <div class="bar-segment bar-indep" style="width: 25%;">30h Indep (ODL)</div>
+    <div class="bar-segment" style="width: 8.3%; background: #a0aec0;">10h Indep</div>
+    <div class="bar-segment bar-assess" style="width: 13.3%;">16h Assess</div>
+    <div class="bar-threshold" style="left: 80%;"></div>
+  </div>
+  <div class="bar-legend">
+    <span class="leg-sync">Synchronous (ODL)</span>
+    <span class="leg-async">Asynchronous (ODL)</span>
+    <span class="leg-indep">Independent &mdash; ODL portion</span>
+    <span class="leg-assess">Assessment (ODL)</span>
+    <span style="color: var(--gray);">&#9646; Independent &mdash; non-ODL portion</span>
+  </div>
+</div>
+
+<p>In this example, 10 of the 40 independent learning hours are not integrated into the ODL design (perhaps unstructured reading without LMS guidance). Those 10 hours still count as SLT, but they do not contribute to the ODL percentage. The result is 83.3% ODL delivery, which meets the 80% threshold.</p>
+
+<div class="key-point">
+  <strong>The 80% is calculated against total SLT, not against ODL activities only.</strong> The denominator is always the full 120 hours (or whatever the total SLT is for your course). The numerator includes only the hours that qualify as ODL delivery: synchronous online, asynchronous online, ODL-integrated independent learning, and online assessments.
+</div>
+
+<!-- GOOD PRACTICE EXAMPLE -->
+<p>Before looking at a common mistake, let's see what correct SLT planning looks like in practice.</p>
+
+<div class="good-practice-box">
+  <h3>Good Practice in Action: Dr. Aisyah's ODL Course</h3>
+  <p class="scenario">Dr. Aisyah is designing a 4-credit ODL course in Educational Technology (160 SLT hours). She begins by listing every learning activity her students will undertake, then carefully classifies each one according to whether it counts as ODL delivery.</p>
+
+  <table class="gp-table">
+    <thead>
+      <tr>
+        <th>Learning Activity</th>
+        <th>Hours</th>
+        <th>ODL?</th>
+        <th>Dr. Aisyah's Rationale</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Synchronous online (live lectures, webinars, group consultations)</td>
+        <td>30</td>
+        <td><span class="tag-yes">Yes</span></td>
+        <td>Real-time interaction via video conferencing</td>
+      </tr>
+      <tr>
+        <td>Asynchronous online (recorded mini-lectures, discussion forums, digital modules)</td>
+        <td>40</td>
+        <td><span class="tag-yes">Yes</span></td>
+        <td>Structured, CLO-aligned activities on the LMS</td>
+      </tr>
+      <tr>
+        <td>Independent learning &mdash; guided reading with LMS reflection prompts</td>
+        <td>35</td>
+        <td><span class="tag-yes">Yes</span></td>
+        <td>Linked to LMS resources; students submit reflections online</td>
+      </tr>
+      <tr>
+        <td>Independent learning &mdash; personal revision and exam preparation</td>
+        <td>15</td>
+        <td><span class="tag-no">No</span></td>
+        <td>Self-directed; not structured through the LMS</td>
+      </tr>
+      <tr>
+        <td>Assessment (online quizzes, e-portfolio, peer review)</td>
+        <td>20</td>
+        <td><span class="tag-yes">Yes</span></td>
+        <td>All assessments submitted and graded via the LMS</td>
+      </tr>
+      <tr>
+        <td>Physical F2F (one on-campus orientation workshop)</td>
+        <td>20</td>
+        <td><span class="tag-no">No</span></td>
+        <td>Face-to-face; pedagogically justified for team-building</td>
+      </tr>
+      <tr>
+        <td style="font-weight: 700;">Total ODL = 30 + 40 + 35 + 20</td>
+        <td style="font-weight: 700;">125</td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td style="font-weight: 700;">Total SLT</td>
+        <td style="font-weight: 700;">160</td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td style="font-weight: 700;">ODL % = 125 &divide; 160</td>
+        <td style="font-weight: 700;">78.1%</td>
+        <td><span class="tag-no">Below 80%</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p style="margin-top: 1rem;"><strong>Dr. Aisyah notices the 78.1% falls just short.</strong> Rather than inflating her independent learning hours, she takes a transparent approach: she converts 5 hours of the unstructured revision time into a guided online revision module on the LMS (with practice quizzes and discussion threads). This shifts those 5 hours from "non-ODL independent" to "ODL-integrated independent," bringing her ODL total to 130 out of 160 = <strong>81.3%</strong>.</p>
+
+  <div class="why-annotation">
+    <strong>Why this works:</strong> Dr. Aisyah correctly separates her independent learning into two rows &mdash; the LMS-integrated portion and the unstructured portion &mdash; so her ODL calculation is transparent and auditable. She also documents a rationale for every classification decision. When the initial calculation fell short, she addressed the gap by improving her learning design (adding a guided revision module) rather than by re-labelling hours. Her physical F2F component (20 hours = 12.5% of SLT) is within the 20% cap and has a clear pedagogical justification. This is exactly the kind of documentation that MQA assessors look for in Table 4.
+  </div>
+</div>
+
+<!-- TABLE 4 ACTION -->
+<p>Before you move on, take a moment to apply what you have learned.</p>
+
+<div class="table4-action">
+  <h3><span class="table4-icon">&#128221;</span> Update Your Table 4</h3>
+  <p class="table4-intro">Using the SLT formula from this page, begin calculating SLT for each learning activity in your course.</p>
+  <p>Enter the results in the SLT section of your Table 4. Remember: 1 credit = 40 SLT hours, and duration &ne; SLT.</p>
+</div>
+
+<!-- CASE SCENARIO -->
+<p>Now let's look at what happens when these principles are not followed.</p>
+
+<div class="case-box">
+  <h3>Case: Dr. Kumar's Credit Confusion</h3>
+  <p class="scenario">Dr. Kumar is designing a 4-credit ODL course (160 SLT hours). He allocates 40 hours of synchronous online sessions, 50 hours of asynchronous online activities, 50 hours of independent learning, and 20 hours of physical face-to-face lab sessions. He calculates his ODL delivery as follows: "40 + 50 + 50 = 140 hours of ODL out of 160 total. That's 87.5%, so the course qualifies." He submits his Table 4 with confidence.</p>
+  <p><strong>What's wrong here?</strong> Dr. Kumar has counted all 50 hours of independent learning as ODL delivery without checking whether those hours are integrated into the ODL design. If only 30 of the 50 independent learning hours are structured and ODL-integrated (linked to LMS resources, guided activities, discussion forums), the actual ODL calculation is: 40 (sync) + 50 (async) + 30 (structured independent) = 120 hours of ODL out of 160 total SLT = 75%. That falls below the 80% threshold. Additionally, the 20 hours of physical face-to-face sessions (12.5% of SLT) are within the 20% cap but do not count as ODL. Dr. Kumar needs to either increase his ODL-integrated independent learning hours, add more asynchronous activities, or reduce the non-ODL portion to reach 80%.</p>
+</div>
+
+<!-- TRANSITION TO QUIZ -->
+<p>With that case in mind, let's test your understanding of the SLT framework itself &mdash; the rules and calculations that underpin every course classification decision.</p>
+
+<!-- FILL-IN-THE-BLANKS QUIZ -->
+<div class="fib-box">
+  <h3>Check Your Understanding: Fill in the Blanks</h3>
+  <p style="margin-bottom: 1rem; font-size: 0.9rem;">Complete each statement below, then click "Check All" to see your score. Use numerals where numbers are required.</p>
+
+  <div class="fib-item">
+    <label>1. At Sunway University, one credit is equivalent to</label>
+    <input type="text" id="fib1" placeholder="___"> <span>SLT hours.</span>
+    <div class="fib-feedback" id="fb1"></div>
+  </div>
+
+  <div class="fib-item">
+    <label>2. A 3-credit course requires a total of</label>
+    <input type="text" id="fib2" placeholder="___"> <span>SLT hours.</span>
+    <div class="fib-feedback" id="fb2"></div>
+  </div>
+
+  <div class="fib-item">
+    <label>3. To qualify as an ODL course, at least</label>
+    <input type="text" id="fib3" placeholder="___%"> <span>of total SLT must be delivered through ODL approaches.</span>
+    <div class="fib-feedback" id="fb3"></div>
+  </div>
+
+  <div class="fib-item">
+    <label>4. Physical face-to-face sessions should generally not exceed</label>
+    <input type="text" id="fib4" placeholder="___%"> <span>of total SLT for an ODL course.</span>
+    <div class="fib-feedback" id="fb4"></div>
+  </div>
+
+  <div class="fib-item">
+    <label>5. Independent learning counts as ODL delivery only when it is</label>
+    <input type="text" id="fib5" placeholder="___" style="width: 240px;"> <span>into the ODL learning environment.</span>
+    <div class="fib-feedback" id="fb5"></div>
+  </div>
+
+  <button class="fib-check-btn" onclick="checkAllFib()">Check All</button>
+  <div class="fib-score" id="fibScore"></div>
+</div>
+
+<script>
+  const fibAnswers = {
+    fib1: { answers: ['40'], feedback: { correct: 'Correct. 1 credit = 40 SLT hours per the MQF.', incorrect: 'Not quite. At Sunway University, 1 credit = 40 SLT hours in accordance with the Malaysian Qualifications Framework.' }},
+    fib2: { answers: ['120'], feedback: { correct: 'Correct. 3 credits × 40 hours = 120 SLT hours.', incorrect: 'Not quite. 3 credits × 40 SLT hours per credit = 120 SLT hours.' }},
+    fib3: { answers: ['80'], feedback: { correct: 'Correct. The minimum threshold is 80% of total SLT via ODL approaches.', incorrect: 'Not quite. The minimum ODL delivery requirement is 80% of total SLT.' }},
+    fib4: { answers: ['20'], feedback: { correct: 'Correct. Physical F2F should generally not exceed 20% of total SLT.', incorrect: 'Not quite. Physical face-to-face activities should generally not exceed 20% of total SLT for an ODL course.' }},
+    fib5: { answers: ['integrated', 'structured', 'designed', 'incorporated', 'embedded'], feedback: { correct: 'Correct. Independent learning must be intentionally integrated into the ODL learning design to count as ODL delivery.', incorrect: 'Not quite. The key word is "integrated" — independent learning counts as ODL only when it is intentionally designed and integrated into the ODL learning environment.' }}
+  };
+
+  function checkAllFib() {
+    let score = 0;
+    let total = Object.keys(fibAnswers).length;
+
+    for (let id in fibAnswers) {
+      const input = document.getElementById(id);
+      const fb = document.getElementById('fb' + id.replace('fib',''));
+      const userVal = input.value.trim().toLowerCase();
+      const data = fibAnswers[id];
+
+      if (data.answers.some(a => userVal === a.toLowerCase())) {
+        input.classList.remove('incorrect');
+        input.classList.add('correct');
+        fb.textContent = data.feedback.correct;
+        fb.className = 'fib-feedback correct-fb';
+        score++;
+      } else {
+        input.classList.remove('correct');
+        input.classList.add('incorrect');
+        fb.textContent = data.feedback.incorrect;
+        fb.className = 'fib-feedback incorrect-fb';
+      }
+    }
+
+    const scoreEl = document.getElementById('fibScore');
+    if (score === total) {
+      scoreEl.textContent = score + '/' + total + ' — Excellent! You have a solid grasp of the SLT framework.';
+      scoreEl.style.color = 'var(--green)';
+    } else if (score >= 3) {
+      scoreEl.textContent = score + '/' + total + ' — Good effort. Review the incorrect items above.';
+      scoreEl.style.color = 'var(--orange)';
+    } else {
+      scoreEl.textContent = score + '/' + total + ' — Review this page carefully. The SLT framework is the foundation for everything in Module 3.';
+      scoreEl.style.color = 'var(--red)';
+    }
+  }
+</script>
+
+<!-- SUMMARY / BRIDGE -->
+<h2>Summary</h2>
+
+<p>Student Learning Time is the total time required for a student to achieve a course's learning outcomes. At Sunway, 1 credit equals 40 SLT hours. All learning activities &mdash; synchronous, asynchronous, independent, physical, and assessment &mdash; contribute to total SLT. However, only activities delivered through online and distance approaches (synchronous online, asynchronous online, structured and ODL-integrated independent learning, and online assessments) count towards the 80% ODL delivery threshold.</p>
+
+<p>Understanding SLT is the first step. In the next page, you will practise calculating SLT for different course scenarios, including the tricky cases where independent learning and assessment activities straddle the ODL boundary.</p>
+
+<!-- FOOTER -->
+<div class="page-footer">
+  <p>ODL Programme Development &bull; Page 9 of 20<br>
+  Part of the ODL Professional Development Series</p>
+</div>
+
+</body>
+</html>

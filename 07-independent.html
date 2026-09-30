@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Independent Learning in ODL — ODL Programme Development</title>
+<style>
+  :root {
+    --navy: #1a365d;
+    --blue: #2b6cb0;
+    --light-blue: #ebf4ff;
+    --green: #276749;
+    --light-green: #f0fff4;
+    --orange: #c05621;
+    --light-orange: #fffaf0;
+    --purple: #553c9a;
+    --light-purple: #faf5ff;
+    --teal: #285e61;
+    --light-teal: #e6fffa;
+    --red: #c53030;
+    --light-red: #fff5f5;
+    --yellow: #975a16;
+    --light-yellow: #fffff0;
+    --gray: #4a5568;
+    --light-gray: #f7fafc;
+    --border: #e2e8f0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #2d3748;
+    line-height: 1.7;
+    background: #fff;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .page-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page-nav a {
+    color: var(--blue);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--blue);
+    border-radius: 6px;
+    transition: background 0.2s;
+  }
+
+  .page-nav a:hover { background: var(--light-blue); }
+  .page-nav .page-label { font-size: 0.85rem; color: var(--gray); }
+
+  .page-header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--teal) 100%);
+    color: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+  }
+
+  .page-header .module-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    padding: 0.2rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .page-header h1 { font-size: 1.6rem; margin-bottom: 0.4rem; }
+  .page-header .page-subtitle { font-size: 0.95rem; opacity: 0.85; }
+
+  h2 {
+    color: var(--navy);
+    font-size: 1.3rem;
+    margin: 2rem 0 1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid var(--blue);
+    display: inline-block;
+  }
+
+  h3 { color: var(--navy); font-size: 1.05rem; margin: 1.5rem 0 0.5rem; }
+  p { margin-bottom: 1rem; }
+
+  .key-point {
+    background: var(--light-blue);
+    border-left: 5px solid var(--blue);
+    padding: 1rem 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 1.5rem 0;
+    font-size: 0.95rem;
+  }
+
+  .key-point strong { color: var(--navy); }
+
+  .warning-box {
+    background: var(--light-yellow);
+    border-left: 5px solid var(--yellow);
+    padding: 1rem 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 1.5rem 0;
+    font-size: 0.95rem;
+  }
+
+  .warning-box strong { color: var(--yellow); }
+
+  .case-box {
+    background: var(--light-orange);
+    border-left: 5px solid var(--orange);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .case-box h3 { color: var(--orange); margin-top: 0; margin-bottom: 0.75rem; }
+  .case-box .scenario { font-style: italic; margin-bottom: 1rem; }
+
+  /* Characteristics */
+  .char-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .char-item {
+    background: var(--light-gray);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+  }
+
+  .char-item h4 { color: var(--navy); font-size: 0.9rem; margin-bottom: 0.3rem; }
+  .char-item p { font-size: 0.85rem; color: var(--gray); margin: 0; }
+
+  /* Examples */
+  .examples-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.8rem;
+    margin: 1.5rem 0;
+  }
+
+  .example-chip {
+    background: var(--light-teal);
+    border: 1px solid #b2f5ea;
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    font-size: 0.88rem;
+    color: var(--teal);
+    font-weight: 600;
+    text-align: center;
+  }
+
+  /* Conditional card */
+  .conditional-card {
+    background: var(--light-yellow);
+    border: 2px solid #f6e05e;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    text-align: center;
+  }
+
+  .conditional-card h3 { color: var(--yellow); margin-top: 0; margin-bottom: 0.75rem; }
+
+  .conditional-tags {
+    display: flex;
+    justify-content: center;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+  }
+
+  .conditional-tag {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+
+  .conditional-tag.yes { background: var(--green); color: #fff; }
+  .conditional-tag.maybe { background: var(--yellow); color: #fff; }
+  .conditional-tag.no { background: #e2e8f0; color: var(--gray); text-decoration: line-through; }
+
+  /* Decision flowchart */
+  .decision-flow {
+    background: var(--light-gray);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .decision-flow h3 { margin-top: 0; text-align: center; }
+
+  .flow-steps {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0 0;
+  }
+
+  .flow-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed var(--border);
+    font-size: 0.92rem;
+  }
+
+  .flow-step:last-child { border-bottom: none; }
+
+  .flow-icon {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .flow-icon.q { background: var(--blue); }
+  .flow-icon.yes { background: var(--green); }
+  .flow-icon.no { background: var(--red); }
+
+  /* Three-method comparison */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.88rem;
+  }
+
+  .compare-table th {
+    background: var(--navy);
+    color: #fff;
+    padding: 0.7rem 0.8rem;
+    text-align: center;
+    font-size: 0.82rem;
+  }
+
+  .compare-table th:first-child { text-align: left; }
+
+  .compare-table td {
+    padding: 0.55rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+  }
+
+  .compare-table td:first-child {
+    text-align: left;
+    font-weight: 600;
+    color: var(--navy);
+  }
+
+  .compare-table tr:last-child td { border-bottom: none; }
+
+  .tick { color: var(--green); font-weight: 700; }
+  .cross { color: var(--red); font-weight: 700; }
+  .maybe-tick { color: var(--yellow); font-weight: 700; }
+
+  /* MCQ quiz */
+  .mcq-box {
+    background: var(--light-green);
+    border-left: 5px solid var(--green);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .mcq-box h3 { color: var(--green); margin-top: 0; margin-bottom: 0.75rem; }
+  .mcq-box .question { font-weight: 600; margin-bottom: 1rem; }
+
+  .mcq-box .options {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem;
+  }
+
+  .mcq-box .options li {
+    padding: 0.6rem 1rem;
+    margin-bottom: 0.4rem;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.93rem;
+  }
+
+  .mcq-box .options li:hover { border-color: var(--green); background: #f0fff4; }
+  .mcq-box .options li.correct { background: #c6f6d5; border-color: var(--green); font-weight: 600; }
+  .mcq-box .options li.incorrect { background: #fed7d7; border-color: var(--red); }
+
+  .mcq-box .feedback {
+    display: none;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-top: 0.5rem;
+    font-size: 0.92rem;
+  }
+
+  .mcq-box .feedback.show { display: block; }
+  .mcq-box .feedback.correct-fb { background: #c6f6d5; color: #22543d; }
+  .mcq-box .feedback.incorrect-fb { background: #fed7d7; color: #742a2a; }
+
+  .mcq-box .check-btn {
+    background: var(--green);
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+
+  .mcq-box .check-btn:hover { background: #22543d; }
+
+  .page-footer {
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--gray);
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 1rem; }
+    .page-header h1 { font-size: 1.3rem; }
+    .char-grid { grid-template-columns: 1fr; }
+    .examples-grid { grid-template-columns: 1fr; }
+    .compare-table { font-size: 0.8rem; }
+    .compare-table th, .compare-table td { padding: 0.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<div class="page-nav">
+  <a href="06-asynchronous.html">&larr; Previous</a>
+  <span class="page-label">Page 7 of 20</span>
+  <a href="08-physical-f2f.html">Next &rarr;</a>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="module-tag">Module 2 &bull; Delivery Methods</div>
+  <h1>Independent Learning in ODL</h1>
+  <p class="page-subtitle">The delivery method with the most nuance &mdash; when it counts towards ODL and when it doesn't</p>
+</div>
+
+<!-- BRIDGE FROM PREVIOUS PAGE -->
+<p>You have now covered the two online delivery methods: synchronous (real-time, instructor-led) and asynchronous (self-paced, staff-designed). Both count as ODL delivery. The third method &mdash; independent learning &mdash; is different. It is student-directed rather than staff-led, and whether it counts towards your ODL delivery percentage depends on how it is designed and integrated. This page explains the conditions under which independent learning qualifies, and the common mistakes that disqualify it.</p>
+
+<!-- DEFINITION -->
+<h2>What Is Independent Learning?</h2>
+
+<p>Independent learning refers to self-directed learning activities undertaken by students <strong>outside scheduled synchronous sessions</strong>. It represents the time students spend engaging with learning activities, applying knowledge, conducting research, completing assignments, reflecting on learning, and preparing for assessments in order to achieve the intended Course Learning Outcomes.</p>
+
+<p>Independent learning is a fundamental component of higher education and forms part of the total SLT allocated to a course. In an ODL environment, it supports flexibility, learner autonomy, critical thinking, and lifelong learning skills.</p>
+
+<div class="key-point">
+  <strong>How it differs from asynchronous learning:</strong> Asynchronous learning is <em>designed and facilitated by the lecturer</em> &mdash; the lecturer creates the materials and structures the activities. Independent learning is <em>directed by the student</em>, but within a framework of guidance, resources, and expectations established by the lecturer. The student drives the activity; the lecturer sets the boundaries.
+</div>
+
+<!-- CHARACTERISTICS -->
+<h2>Characteristics</h2>
+
+<div class="char-grid">
+  <div class="char-item">
+    <h4>Student-Directed</h4>
+    <p>Students take responsibility for managing their own learning time, choosing resources, and completing activities.</p>
+  </div>
+  <div class="char-item">
+    <h4>Lecturer-Guided</h4>
+    <p>Supported by appropriate guidance, learning resources, activities, and assessment requirements established by the lecturer.</p>
+  </div>
+  <div class="char-item">
+    <h4>Outside Scheduled Sessions</h4>
+    <p>Takes place independently of synchronous or structured asynchronous sessions &mdash; the student decides when and how.</p>
+  </div>
+  <div class="char-item">
+    <h4>CLO-Aligned</h4>
+    <p>Activities contribute to achieving specific Course Learning Outcomes and are connected to assessment requirements.</p>
+  </div>
+</div>
+
+<!-- EXAMPLES -->
+<h2>Examples of Independent Learning Activities</h2>
+
+<div class="examples-grid">
+  <div class="example-chip">Reading &amp; Literature Review</div>
+  <div class="example-chip">Assignment Preparation</div>
+  <div class="example-chip">Project Work</div>
+  <div class="example-chip">Revision &amp; Exam Prep</div>
+  <div class="example-chip">Portfolio Development</div>
+  <div class="example-chip">Research Activities</div>
+</div>
+
+<!-- THE CONDITIONAL RULE -->
+<h2>What Independent Learning Counts As</h2>
+
+<p>This is where independent learning becomes the most nuanced delivery method. Unlike synchronous and asynchronous learning, which always count as ODL delivery, independent learning <em>sometimes</em> counts.</p>
+
+<div class="conditional-card">
+  <h3>Independent Learning Counts As:</h3>
+  <div class="conditional-tags">
+    <span class="conditional-tag yes">Student Learning Time</span>
+    <span class="conditional-tag maybe">ODL Delivery (conditional)</span>
+    <span class="conditional-tag no">Contact Hours</span>
+  </div>
+</div>
+
+<p>Independent learning <strong>always</strong> counts as Student Learning Time &mdash; students are spending time on learning activities, and that time is legitimate regardless of the delivery mode.</p>
+
+<p>Independent learning <strong>never</strong> counts as contact hours &mdash; there is no direct interaction between academic staff and students.</p>
+
+<p>But whether independent learning counts towards the 80% ODL delivery threshold depends on one critical condition:</p>
+
+<!-- DECISION FLOW -->
+<div class="decision-flow">
+  <h3>Does Your Independent Learning Count Towards ODL Delivery?</h3>
+  <ul class="flow-steps">
+    <li class="flow-step">
+      <div class="flow-icon q">?</div>
+      <div>Is the independent learning activity <strong>intentionally designed and integrated</strong> into the ODL learning environment (e.g., linked from the LMS, aligned with specific CLOs, supported by guidance and resources)?</div>
+    </li>
+    <li class="flow-step">
+      <div class="flow-icon yes">&check;</div>
+      <div><strong>If yes:</strong> The activity counts as ODL delivery. It contributes towards the 80% threshold.</div>
+    </li>
+    <li class="flow-step">
+      <div class="flow-icon no">&times;</div>
+      <div><strong>If no:</strong> The activity counts as SLT only. It does <em>not</em> contribute to the 80% ODL threshold.</div>
+    </li>
+  </ul>
+</div>
+
+<div class="warning-box">
+  <strong>Do not inflate your numbers.</strong> Independent learning hours must not be used to artificially inflate ODL delivery percentages. Programmes must be able to demonstrate a clear relationship between the independent learning activities, Course Learning Outcomes, learning resources, assessment requirements, and expected student learning outcomes.
+</div>
+
+<!-- THREE-METHOD COMPARISON -->
+<h2>All Three Online Methods Compared</h2>
+
+<p>Now that you have covered all three online delivery methods, here is how they compare across the key counting categories:</p>
+
+<table class="compare-table">
+  <tr>
+    <th>Category</th>
+    <th>Synchronous</th>
+    <th>Asynchronous</th>
+    <th>Independent</th>
+  </tr>
+  <tr>
+    <td>Staff involvement</td>
+    <td>Facilitates live</td>
+    <td>Designs &amp; guides</td>
+    <td>Sets framework only</td>
+  </tr>
+  <tr>
+    <td>Real-time interaction</td>
+    <td><span class="tick">Yes</span></td>
+    <td><span class="cross">No</span></td>
+    <td><span class="cross">No</span></td>
+  </tr>
+  <tr>
+    <td>Counts as ODL delivery</td>
+    <td><span class="tick">Yes</span></td>
+    <td><span class="tick">Yes</span></td>
+    <td><span class="maybe-tick">Conditional</span></td>
+  </tr>
+  <tr>
+    <td>Counts as SLT</td>
+    <td><span class="tick">Yes</span></td>
+    <td><span class="tick">Yes</span></td>
+    <td><span class="tick">Yes</span></td>
+  </tr>
+  <tr>
+    <td>Counts as contact hours</td>
+    <td><span class="tick">Yes</span></td>
+    <td><span class="cross">No</span></td>
+    <td><span class="cross">No</span></td>
+  </tr>
+</table>
+
+<!-- TRANSITION TO APPLICATION -->
+<h2>Applying the Independent Learning Rule</h2>
+
+<p>You now understand the conditional nature of independent learning in ODL. The critical test is whether the activity is intentionally designed and integrated into the ODL learning environment. The two cases below illustrate the difference between independent learning that qualifies and independent learning that does not.</p>
+
+<!-- CASE SCENARIO -->
+<div class="case-box">
+  <h3>Case: Qualifying vs. Non-Qualifying Independent Learning</h3>
+  <p class="scenario"><strong>Course A (qualifying):</strong> Dr. Nadia allocates 20 hours of independent learning for her ODL course. On the LMS, she provides a curated reading list linked to specific CLOs, a structured assignment brief with marking rubric, weekly reflection prompts, and a discussion forum where students post their progress. The activities are clearly connected to assessments and CLOs.</p>
+  <p><strong>Why it qualifies:</strong> The independent learning is intentionally designed, integrated into the LMS, supported by guidance and resources, and has a clear relationship to CLOs and assessment. The 20 hours may count towards ODL delivery.</p>
+
+  <p class="scenario" style="margin-top: 1rem;"><strong>Course B (non-qualifying):</strong> Dr. Hafiz allocates 25 hours of independent learning. His instructions read: "Spend time researching topics related to this week's lecture." No reading list is provided, no structured activity is described, no connection to CLOs or assessments is stated, and there is no mechanism for tracking or guiding the activity.</p>
+  <p><strong>Why it does not qualify:</strong> The independent learning is vague, unstructured, and disconnected from the ODL learning design. There is no evidence of intentional integration. These 25 hours count as SLT only &mdash; they do not contribute to the 80% ODL threshold.</p>
+</div>
+
+<!-- TRANSITION TO QUIZ -->
+<p>Let's test whether you can identify when independent learning counts towards ODL delivery and when it does not.</p>
+
+<!-- MCQ QUIZ -->
+<div class="mcq-box" id="quiz1">
+  <h3>Check Your Understanding</h3>
+  <p class="question">Dr. Tan allocates 30 hours of independent learning in his ODL course. He provides students with a curated reading list, a structured research template, and a requirement to submit an annotated bibliography that is assessed as part of the coursework. The activities are clearly linked to CLO 2 and documented in Table 4. Which statement is correct?</p>
+  <ul class="options" id="options1">
+    <li onclick="selectOption('options1', this, 'A')">A. The 30 hours count as SLT only &mdash; independent learning never counts towards ODL delivery</li>
+    <li onclick="selectOption('options1', this, 'B')">B. The 30 hours count as contact hours because the reading list was prepared by the lecturer</li>
+    <li onclick="selectOption('options1', this, 'C')">C. The 30 hours count as both SLT and ODL delivery because the activities are intentionally designed, integrated into the learning design, and aligned with CLOs and assessment</li>
+    <li onclick="selectOption('options1', this, 'D')">D. The 30 hours count as ODL delivery only if students complete them during synchronous sessions</li>
+  </ul>
+  <button class="check-btn" onclick="checkAnswer('quiz1', 'options1', 'C')">Check Answer</button>
+  <div class="feedback" id="feedback-quiz1"></div>
+</div>
+
+<script>
+  let selectedOptions = {};
+
+  const feedbackData = {
+    quiz1: {
+      correct: '<strong>Correct.</strong> Dr. Tan\'s independent learning qualifies as ODL delivery because it meets all the conditions: it is intentionally designed (curated reading list, structured template), integrated into the learning design (documented in Table 4), aligned with CLOs (CLO 2), and connected to assessment (annotated bibliography is graded). The activities are clearly not arbitrary &mdash; there is a demonstrable relationship between the activities, resources, outcomes, and expectations.',
+      incorrect: '<strong>Not quite.</strong> The correct answer is <strong>C</strong>. Option A is wrong because independent learning <em>can</em> count towards ODL delivery when intentionally integrated &mdash; it is not an absolute exclusion. Option B is wrong because independent learning never counts as contact hours regardless of who prepared the materials. Option D is wrong because independent learning by definition occurs outside synchronous sessions &mdash; requiring it during live sessions would make it synchronous, not independent.'
+    }
+  };
+
+  function selectOption(qId, el, letter) {
+    const container = document.getElementById(qId);
+    container.querySelectorAll('.options li').forEach(li => li.style.border = '1px solid #e2e8f0');
+    el.style.border = '2px solid #2b6cb0';
+    selectedOptions[qId] = letter;
+  }
+
+  function checkAnswer(quizId, optId, correct) {
+    const container = document.getElementById(optId);
+    const feedback = document.getElementById('feedback-' + quizId);
+    const selected = selectedOptions[quizId];
+
+    if (!selected) {
+      feedback.textContent = 'Please select an answer before checking.';
+      feedback.className = 'feedback show incorrect-fb';
+      return;
+    }
+
+    const options = container.querySelectorAll('.options li');
+    options.forEach((li, idx) => {
+      const letter = String.fromCharCode(65 + idx);
+      li.classList.remove('correct', 'incorrect');
+      if (letter === correct) li.classList.add('correct');
+      else if (letter === selected && selected !== correct) li.classList.add('incorrect');
+    });
+
+    const data = feedbackData[quizId];
+    if (selected === correct) {
+      feedback.innerHTML = data.correct;
+      feedback.className = 'feedback show correct-fb';
+    } else {
+      feedback.innerHTML = data.incorrect;
+      feedback.className = 'feedback show incorrect-fb';
+    }
+  }
+</script>
+
+<!-- SUMMARY / BRIDGE -->
+<h2>Summary</h2>
+
+<p>Independent learning is the most conditional delivery method. It always counts as SLT, never counts as contact hours, and counts towards ODL delivery only when intentionally designed and integrated into the ODL learning environment. The key test is whether there is a clear, demonstrable relationship between the activity, the CLOs, the learning resources, and the assessment requirements.</p>
+
+<p>In the next page, you will explore the fourth and final delivery method: physical face-to-face sessions &mdash; the only method that does not count as ODL delivery at all.</p>
+
+<!-- FOOTER -->
+<div class="page-footer">
+  <p>ODL Programme Development &bull; Page 7 of 20<br>
+  Part of the ODL Professional Development Series</p>
+</div>
+
+</body>
+</html>

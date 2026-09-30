@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLT Calculations &amp; Worked Examples — ODL Programme Development</title>
+<style>
+  :root {
+    --navy: #1a365d;
+    --blue: #2b6cb0;
+    --light-blue: #ebf4ff;
+    --green: #276749;
+    --light-green: #f0fff4;
+    --orange: #c05621;
+    --light-orange: #fffaf0;
+    --purple: #553c9a;
+    --light-purple: #faf5ff;
+    --teal: #285e61;
+    --light-teal: #e6fffa;
+    --red: #c53030;
+    --light-red: #fff5f5;
+    --gray: #4a5568;
+    --light-gray: #f7fafc;
+    --border: #e2e8f0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #2d3748;
+    line-height: 1.7;
+    background: #fff;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .page-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page-nav a {
+    color: var(--blue);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--blue);
+    border-radius: 6px;
+    transition: background 0.2s;
+  }
+
+  .page-nav a:hover { background: var(--light-blue); }
+  .page-nav .page-label { font-size: 0.85rem; color: var(--gray); }
+
+  .page-header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--green) 100%);
+    color: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+  }
+
+  .page-header .module-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    padding: 0.2rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .page-header h1 { font-size: 1.6rem; margin-bottom: 0.4rem; }
+  .page-header .page-subtitle { font-size: 0.95rem; opacity: 0.85; }
+
+  h2 {
+    color: var(--navy);
+    font-size: 1.3rem;
+    margin: 2rem 0 1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid var(--blue);
+    display: inline-block;
+  }
+
+  h3 { color: var(--navy); font-size: 1.05rem; margin: 1.5rem 0 0.5rem; }
+  p { margin-bottom: 1rem; }
+
+  .key-point {
+    background: var(--light-blue);
+    border-left: 5px solid var(--blue);
+    padding: 1rem 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 1.5rem 0;
+    font-size: 0.95rem;
+  }
+
+  .key-point strong { color: var(--navy); }
+
+  .case-box {
+    background: var(--light-orange);
+    border-left: 5px solid var(--orange);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .case-box h3 { color: var(--orange); margin-top: 0; margin-bottom: 0.75rem; }
+  .case-box .scenario { font-style: italic; margin-bottom: 1rem; }
+
+  /* Warning box */
+  .warning-box {
+    background: var(--light-red);
+    border-left: 5px solid var(--red);
+    padding: 1rem 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 1.5rem 0;
+    font-size: 0.93rem;
+  }
+
+  .warning-box strong { color: var(--red); }
+
+  /* Equivalency table */
+  .equiv-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+  }
+
+  .equiv-table th {
+    background: var(--navy);
+    color: #fff;
+    padding: 0.6rem 0.75rem;
+    text-align: left;
+    font-weight: 600;
+  }
+
+  .equiv-table td {
+    padding: 0.55rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  .equiv-table tr:nth-child(even) { background: var(--light-gray); }
+
+  .equiv-table .range {
+    font-weight: 700;
+    color: var(--green);
+    white-space: nowrap;
+  }
+
+  /* Worked example boxes */
+  .we-box {
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    overflow: hidden;
+  }
+
+  .we-box h3 { margin-top: 0; }
+
+  .we-box.we-pass { border-color: var(--green); }
+  .we-box.we-pass h3 { color: var(--green); }
+  .we-box.we-fail { border-color: var(--red); }
+  .we-box.we-fail h3 { color: var(--red); }
+
+  .we-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.75rem 0;
+    font-size: 0.88rem;
+  }
+
+  .we-table th {
+    padding: 0.5rem 0.6rem;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .we-pass .we-table th { color: var(--green); }
+  .we-fail .we-table th { color: var(--red); }
+
+  .we-table td {
+    padding: 0.4rem 0.6rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .we-table tr.total-row td {
+    border-top: 2px solid var(--border);
+    font-weight: 700;
+    padding-top: 0.5rem;
+  }
+
+  .we-result {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .we-pass .we-result { background: var(--light-green); color: var(--green); }
+  .we-fail .we-result { background: var(--light-red); color: var(--red); }
+
+  .we-result .verdict {
+    padding: 0.2rem 0.7rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+
+  .we-pass .verdict { background: var(--green); color: #fff; }
+  .we-fail .verdict { background: var(--red); color: #fff; }
+
+  /* Bar visual */
+  .bar-container { margin: 1rem 0; }
+
+  .bar-label {
+    font-size: 0.82rem;
+    color: var(--gray);
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+  }
+
+  .bar-track {
+    height: 32px;
+    background: var(--light-gray);
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    position: relative;
+    margin-bottom: 0.5rem;
+  }
+
+  .bar-seg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 600;
+    white-space: nowrap;
+    min-width: 20px;
+  }
+
+  .bar-sync { background: var(--blue); }
+  .bar-async { background: var(--teal); }
+  .bar-indep-odl { background: var(--green); }
+  .bar-indep-non { background: #a0aec0; }
+  .bar-assess-odl { background: var(--purple); }
+  .bar-f2f { background: var(--red); }
+
+  .bar-threshold {
+    position: absolute;
+    top: -4px;
+    bottom: -4px;
+    width: 2px;
+    background: var(--navy);
+    z-index: 2;
+  }
+
+  .bar-threshold::after {
+    content: '80%';
+    position: absolute;
+    top: -16px;
+    left: -10px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--navy);
+  }
+
+  /* Matching quiz */
+  .match-box {
+    background: var(--light-blue);
+    border-left: 5px solid var(--blue);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .match-box h3 {
+    color: var(--blue);
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+  }
+
+  .match-instructions {
+    font-size: 0.9rem;
+    color: var(--gray);
+    margin-bottom: 1rem;
+  }
+
+  .match-grid {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .match-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .match-row:last-child { border-bottom: none; }
+
+  .match-term {
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  .match-arrow {
+    color: var(--gray);
+    font-size: 0.9rem;
+  }
+
+  .match-row select {
+    width: 100%;
+    padding: 0.4rem 0.5rem;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    background: #fff;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+
+  .match-row select:focus { border-color: var(--blue); outline: none; }
+  .match-row select.correct { border-color: var(--green); background: var(--light-green); }
+  .match-row select.incorrect { border-color: var(--red); background: var(--light-red); }
+
+  .match-feedback {
+    font-size: 0.8rem;
+    margin-top: 0.15rem;
+    min-height: 1em;
+  }
+
+  .match-feedback.correct-fb { color: var(--green); }
+  .match-feedback.incorrect-fb { color: var(--red); }
+
+  .match-btn {
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 1rem;
+  }
+
+  .match-btn:hover { background: var(--navy); }
+
+  .match-score {
+    margin-top: 1rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    min-height: 1.5em;
+  }
+
+  /* Good practice box */
+  .good-practice-box {
+    background: var(--light-green);
+    border-left: 5px solid var(--green);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .good-practice-box h3 { color: var(--green); margin-top: 0; margin-bottom: 0.75rem; }
+  .good-practice-box .scenario { font-style: italic; margin-bottom: 1rem; }
+
+  .why-annotation {
+    background: #fff;
+    border: 1px solid #c6f6d5;
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    margin-top: 0.75rem;
+    font-size: 0.88rem;
+  }
+
+  .why-annotation strong { color: var(--green); }
+
+  /* Step cards */
+  .step-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .step-card {
+    text-align: center;
+    padding: 1rem;
+    background: var(--light-gray);
+    border-radius: 8px;
+    border-top: 4px solid var(--blue);
+  }
+
+  .step-card .step-num {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--blue);
+    line-height: 1;
+  }
+
+  .step-card h4 {
+    color: var(--navy);
+    font-size: 0.88rem;
+    margin: 0.4rem 0 0.2rem;
+  }
+
+  .step-card p {
+    font-size: 0.82rem;
+    color: var(--gray);
+    margin: 0;
+  }
+
+  /* Tag styles reused */
+  .tag-yes {
+    background: var(--light-green);
+    color: var(--green);
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.82rem;
+  }
+
+  .tag-no {
+    background: var(--light-red);
+    color: var(--red);
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.82rem;
+  }
+
+  .tag-cond {
+    background: var(--light-orange);
+    color: var(--orange);
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.82rem;
+  }
+
+  /* MCQ quiz */
+  .mcq-box {
+    background: var(--light-blue);
+    border-left: 5px solid var(--blue);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .mcq-box h3 { color: var(--blue); margin-top: 0; margin-bottom: 0.5rem; }
+  .mcq-box .question { font-weight: 500; margin-bottom: 0.75rem; }
+
+  .mcq-box .options {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 0.75rem;
+  }
+
+  .mcq-box .options li {
+    padding: 0.55rem 0.85rem;
+    margin-bottom: 0.4rem;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    font-size: 0.9rem;
+  }
+
+  .mcq-box .options li:hover { border-color: var(--blue); background: var(--light-blue); }
+  .mcq-box .options li.selected { border-color: var(--blue); background: var(--light-blue); }
+  .mcq-box .options li.correct { border-color: var(--green); background: var(--light-green); }
+  .mcq-box .options li.incorrect { border-color: var(--red); background: var(--light-red); }
+
+  .mcq-btn {
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    padding: 0.45rem 1.25rem;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .mcq-btn:hover { background: var(--navy); }
+
+  .feedback {
+    margin-top: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    display: none;
+  }
+
+  .feedback.show { display: block; }
+  .feedback.correct-fb { background: var(--light-green); color: var(--green); border: 1px solid var(--green); }
+  .feedback.incorrect-fb { background: var(--light-red); color: var(--red); border: 1px solid var(--red); }
+
+  /* Page footer */
+  .page-footer {
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--gray);
+    font-size: 0.85rem;
+  }
+
+  /* Table 4 action prompt */
+  .table4-action {
+    background: #FFFBEB;
+    border-left: 5px solid #D97706;
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+
+  .table4-action h3 {
+    color: #B45309;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .table4-action .table4-icon { font-size: 1.3rem; }
+
+  .table4-action p {
+    font-size: 0.93rem;
+    margin-bottom: 0;
+  }
+
+  .table4-action .table4-intro {
+    font-size: 0.9rem;
+    color: #92400E;
+    font-style: italic;
+    margin-bottom: 0.5rem;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 1rem; }
+    .step-strip { grid-template-columns: 1fr; }
+    .match-row { grid-template-columns: 1fr; }
+    .page-header h1 { font-size: 1.3rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<div class="page-nav">
+  <a href="09-slt-framework.html">&larr; Previous</a>
+  <span class="page-label">Page 10 of 20</span>
+  <a href="11-table-4.html">Next &rarr;</a>
+</div>
+
+<!-- HEADER -->
+<div class="page-header">
+  <div class="module-tag">Module 3 &bull; Planning and Designing Your ODL Course</div>
+  <h1>SLT Calculations &amp; Worked Examples</h1>
+  <p class="page-subtitle">Practising the calculations that determine whether your course qualifies as ODL</p>
+</div>
+
+<!-- BRIDGE FROM PAGE 09 -->
+<p>On the previous page, you learned what Student Learning Time is, how it maps to credits, and which activities count towards the ODL delivery requirement. This page is about putting that knowledge into practice. You will work through the process of estimating SLT for individual activities, assembling those into a complete course profile, and then calculating the ODL percentage. Along the way, you will see two fully worked examples &mdash; one that qualifies and one that does not &mdash; so you can compare what separates a compliant design from one that falls short.</p>
+
+<!-- DURATION ≠ SLT -->
+<h2>Duration Does Not Equal SLT</h2>
+
+<p>One of the most common mistakes in ODL planning is treating the duration of a learning resource as the SLT allocation. A 1-hour recorded lecture does not automatically equal 1 hour of Student Learning Time. Students do not simply press play and listen &mdash; they pause, rewind, take notes, re-watch difficult sections, consult supplementary readings, and complete associated activities.</p>
+
+<p>SLT must reflect the <em>total time reasonably required</em> for a student to achieve the intended learning outcomes through meaningful engagement with the material. This includes viewing or reading, processing, practising, discussing, reflecting, and preparing assessments.</p>
+
+<div class="warning-box">
+  <strong>Avoid the duration trap.</strong> Assigning SLT solely based on the length of videos or online lectures will understate the actual student workload and may lead to a course that does not meet its credit-value obligations. Always consider the complete learning experience, not just the media runtime.
+</div>
+
+<!-- EQUIVALENCY GUIDE -->
+<h2>An SLT Equivalency Reference</h2>
+
+<p>The table below provides a general guide for estimating SLT from common ODL activities. These are indicative ranges &mdash; the actual allocation depends on the complexity of the material, the level of the course, and the specific learning activities designed around each resource.</p>
+
+<table class="equiv-table">
+  <thead>
+    <tr>
+      <th>Learning Activity</th>
+      <th>Resource / Input</th>
+      <th>Estimated SLT</th>
+      <th>What the SLT Includes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Recorded lecture (video)</td>
+      <td>1 hour of video</td>
+      <td><span class="range">2 &ndash; 3 hours</span></td>
+      <td>Viewing, pausing, note-taking, re-watching key sections, completing embedded questions</td>
+    </tr>
+    <tr>
+      <td>Instructional video (short)</td>
+      <td>15 &ndash; 20 min video</td>
+      <td><span class="range">45 &ndash; 60 min</span></td>
+      <td>Viewing, processing, applying the concept to a short exercise</td>
+    </tr>
+    <tr>
+      <td>Academic reading</td>
+      <td>10 pages of text</td>
+      <td><span class="range">2 &ndash; 3 hours</span></td>
+      <td>Reading, annotating, looking up references, summarising key arguments</td>
+    </tr>
+    <tr>
+      <td>Discussion forum</td>
+      <td>1 structured discussion</td>
+      <td><span class="range">1 &ndash; 2 hours</span></td>
+      <td>Reading peers' posts, composing a response, providing feedback, follow-up replies</td>
+    </tr>
+    <tr>
+      <td>Online quiz (formative)</td>
+      <td>10 &ndash; 15 questions</td>
+      <td><span class="range">45 &ndash; 60 min</span></td>
+      <td>Reviewing relevant material, attempting the quiz, reviewing feedback</td>
+    </tr>
+    <tr>
+      <td>Assignment preparation</td>
+      <td>One written assignment</td>
+      <td><span class="range">8 &ndash; 15 hours</span></td>
+      <td>Research, reading, drafting, revising, formatting, submission</td>
+    </tr>
+    <tr>
+      <td>Synchronous online session</td>
+      <td>1 hour live session</td>
+      <td><span class="range">1 &ndash; 1.5 hours</span></td>
+      <td>Live participation plus pre-reading or post-session consolidation</td>
+    </tr>
+    <tr>
+      <td>E-portfolio entry</td>
+      <td>One reflective entry</td>
+      <td><span class="range">2 &ndash; 4 hours</span></td>
+      <td>Reflection, evidence gathering, writing, uploading artefacts</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="key-point">
+  <strong>These are guides, not rules.</strong> The exact SLT for each activity depends on your course context, the complexity of the material, and what you ask students to do with it. The important thing is that your allocations are reasonable, defensible, and clearly documented in your SIM and Table 4.
+</div>
+
+<!-- THREE-STEP PROCESS -->
+<h2>A Three-Step Calculation Process</h2>
+
+<p>Calculating SLT and the ODL percentage for your course involves three steps. Every ODL course design follows this same sequence:</p>
+
+<div class="step-strip">
+  <div class="step-card">
+    <div class="step-num">1</div>
+    <h4>Allocate SLT</h4>
+    <p>Estimate the total hours for each activity using the equivalency guide. Sum to match the course credit value.</p>
+  </div>
+  <div class="step-card">
+    <div class="step-num">2</div>
+    <h4>Classify as ODL or Not</h4>
+    <p>Mark each activity as ODL delivery (sync, async, structured independent, online assessment) or non-ODL (physical F2F, unstructured independent).</p>
+  </div>
+  <div class="step-card">
+    <div class="step-num">3</div>
+    <h4>Calculate the Percentage</h4>
+    <p>Sum ODL hours &divide; total SLT &times; 100. Check that the result is at least 80% and that physical F2F does not exceed 20%.</p>
+  </div>
+</div>
+
+<!-- WORKED EXAMPLES -->
+<h2>Worked Examples</h2>
+
+<p>Let's apply the three-step process to two contrasting courses. Both are 3-credit courses (120 SLT hours), but they reach very different outcomes.</p>
+
+<!-- EXAMPLE 1: QUALIFIES -->
+<div class="we-box we-pass">
+  <h3>Example A: MSc Advanced Data Analytics — Machine Learning Module (3 credits = 120 SLT hours)</h3>
+
+  <table class="we-table">
+    <thead>
+      <tr>
+        <th>Learning Activity</th>
+        <th>Hours</th>
+        <th>ODL?</th>
+        <th>Rationale</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Synchronous online (live lectures + tutorials, 2 hrs &times; 14 weeks)</td>
+        <td>28</td>
+        <td><span class="tag-yes">Yes</span></td>
+        <td>Real-time instruction and Q&amp;A via video conferencing</td>
+      </tr>
+      <tr>
+        <td>Asynchronous online (recorded demos, interactive coding modules, forums)</td>
+        <td>24</td>
+        <td><span class="tag-yes">Yes</span></td>
+        <td>Structured self-paced modules on the LMS</td>
+      </tr>
+      <tr>
+        <td>Independent learning &mdash; guided exercises with LMS datasets and reflection journals</td>
+        <td>28</td>
+        <td><span class="tag-yes">Yes</span></td>
+        <td>Linked to LMS; submissions and peer feedback required</td>
+      </tr>
+      <tr>
+        <td>Independent learning &mdash; personal revision for final assessment</td>
+        <td>10</td>
+        <td><span class="tag-no">No</span></td>
+        <td>Self-directed; not structured through the LMS</td>
+      </tr>
+      <tr>
+        <td>Assessment (online quizzes, coding assignments, e-portfolio)</td>
+        <td>22</td>
+        <td><span class="tag-yes">Yes</span></td>
+        <td>All submitted and graded via the LMS</td>
+      </tr>
+      <tr>
+        <td>Physical F2F (one on-campus bootcamp day)</td>
+        <td>8</td>
+        <td><span class="tag-no">No</span></td>
+        <td>Pedagogically justified: team formation, hands-on hardware</td>
+      </tr>
+      <tr class="total-row">
+        <td>Total ODL = 28 + 24 + 28 + 22</td>
+        <td>102</td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr class="total-row">
+        <td>Total SLT</td>
+        <td>120</td>
+        <td></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="we-result">
+    ODL % = 102 &divide; 120 = 85.0% &nbsp;&nbsp;|&nbsp;&nbsp; Physical F2F = 8 &divide; 120 = 6.7%
+    <span class="verdict">QUALIFIES</span>
+  </div>
+
+  <div class="bar-container">
+    <div class="bar-label">SLT Distribution &mdash; Example A</div>
+    <div class="bar-track">
+      <div class="bar-seg bar-sync" style="width: 23.3%;">28h Sync</div>
+      <div class="bar-seg bar-async" style="width: 20%;">24h Async</div>
+      <div class="bar-seg bar-indep-odl" style="width: 23.3%;">28h Indep (ODL)</div>
+      <div class="bar-seg bar-indep-non" style="width: 8.3%;">10h</div>
+      <div class="bar-seg bar-assess-odl" style="width: 18.3%;">22h Assess</div>
+      <div class="bar-seg bar-f2f" style="width: 6.7%;">8h F2F</div>
+      <div class="bar-threshold" style="left: 80%;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- EXAMPLE 2: DOES NOT QUALIFY -->
+<div class="we-box we-fail">
+  <h3>Example B: MBA Strategic Management (3 credits = 120 SLT hours)</h3>
+
+  <table class="we-table">
+    <thead>
+      <tr>
+        <th>Learning Activity</th>
+        <th>Hours</th>
+        <th>ODL?</th>
+        <th>Rationale</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Synchronous online (live case discussions, 1.5 hrs &times; 14 weeks)</td>
+        <td>21</td>
+        <td><span class="tag-yes">Yes</span></td>
+        <td>Real-time case analysis via video conferencing</td>
+      </tr>
+      <tr>
+        <td>Asynchronous online (recorded lectures, reading packs)</td>
+        <td>20</td>
+        <td><span class="tag-yes">Yes</span></td>
+        <td>Available on the LMS for self-paced access</td>
+      </tr>
+      <tr>
+        <td>Independent learning &mdash; reading and case preparation</td>
+        <td>30</td>
+        <td><span class="tag-cond">Partial</span></td>
+        <td>Only 10 hours are LMS-integrated; 20 hours are unstructured</td>
+      </tr>
+      <tr>
+        <td>Assessment (group project report, online quiz)</td>
+        <td>14</td>
+        <td><span class="tag-yes">Yes</span></td>
+        <td>Submitted via the LMS</td>
+      </tr>
+      <tr>
+        <td>Physical F2F (on-campus workshops, 2.5 hrs &times; 14 weeks)</td>
+        <td>35</td>
+        <td><span class="tag-no">No</span></td>
+        <td>Face-to-face case simulations and presentations</td>
+      </tr>
+      <tr class="total-row">
+        <td>Total ODL = 21 + 20 + 10 + 14</td>
+        <td>65</td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr class="total-row">
+        <td>Total SLT</td>
+        <td>120</td>
+        <td></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="we-result">
+    ODL % = 65 &divide; 120 = 54.2% &nbsp;&nbsp;|&nbsp;&nbsp; Physical F2F = 35 &divide; 120 = 29.2%
+    <span class="verdict">DOES NOT QUALIFY</span>
+  </div>
+
+  <div class="bar-container">
+    <div class="bar-label">SLT Distribution &mdash; Example B</div>
+    <div class="bar-track">
+      <div class="bar-seg bar-sync" style="width: 17.5%;">21h Sync</div>
+      <div class="bar-seg bar-async" style="width: 16.7%;">20h Async</div>
+      <div class="bar-seg bar-indep-odl" style="width: 8.3%;">10h Indep</div>
+      <div class="bar-seg bar-indep-non" style="width: 16.7%;">20h</div>
+      <div class="bar-seg bar-assess-odl" style="width: 11.7%;">14h Assess</div>
+      <div class="bar-seg bar-f2f" style="width: 29.2%;">35h F2F</div>
+      <div class="bar-threshold" style="left: 80%;"></div>
+    </div>
+  </div>
+
+  <p style="margin-top: 1rem; font-size: 0.9rem;">This course fails on two counts: the ODL percentage (54.2%) is well below 80%, and the physical face-to-face component (29.2%) exceeds the 20% cap. The large block of on-campus workshops and the unstructured independent learning are the main contributors. To convert this course to ODL, the lecturer would need to move some workshop content online, integrate more independent learning activities into the LMS, or increase asynchronous offerings.</p>
+</div>
+
+<!-- GOOD PRACTICE -->
+<p>Let's look at what careful SLT estimation looks like in practice &mdash; specifically, how an experienced lecturer avoids the duration trap.</p>
+
+<div class="good-practice-box">
+  <h3>Good Practice: Dr. Mei Lin's Estimation Process</h3>
+  <p class="scenario">Dr. Mei Lin is allocating SLT for a recorded video lecture on regression analysis in her MSc Data Analytics course. The video is 45 minutes long. Rather than assigning 45 minutes of SLT, she considers what students will actually do with the video.</p>
+
+  <p style="margin-bottom: 0.5rem;"><strong>Her SLT breakdown for one 45-minute video:</strong></p>
+  <ul style="padding-left: 1.5rem; margin-bottom: 1rem; font-size: 0.9rem;">
+    <li>First viewing (with pausing and note-taking): 75 minutes</li>
+    <li>Re-watching key sections on standard error and confidence intervals: 15 minutes</li>
+    <li>Completing the embedded practice dataset and checking answers: 30 minutes</li>
+    <li>Posting a question or reflection to the discussion forum: 15 minutes</li>
+    <li><strong>Total SLT for this single video: 2 hours 15 minutes</strong></li>
+  </ul>
+
+  <p>She documents this breakdown in her SIM so that both the instructional designer and the MQA assessor can see how the allocation was derived.</p>
+
+  <div class="why-annotation">
+    <strong>Why this works:</strong> Dr. Mei Lin considers the complete learning experience &mdash; not just the video runtime. Her SLT is approximately 3 times the video duration, which is consistent with the equivalency guide. She also documents her reasoning, making the allocation transparent and defensible during accreditation. Participants in her course will not be surprised by the workload because the expectations are clearly stated upfront.
+  </div>
+</div>
+
+<!-- TABLE 4 ACTION -->
+<p>Before you move on, take a moment to apply what you have learned.</p>
+
+<div class="table4-action">
+  <h3><span class="table4-icon">&#128221;</span> Update Your Table 4</h3>
+  <p class="table4-intro">Complete your full SLT calculation in Table 4.</p>
+  <p>For each activity, apply the multiplication factor (2&ndash;3&times;) to convert duration to SLT. Sum all ODL hours (synchronous + asynchronous + LMS-integrated independent + online assessment) and verify that the total is &ge; 80% of your course SLT. If it falls short, identify activities you can convert from F2F to online.</p>
+</div>
+
+<!-- CASE SCENARIO -->
+<p>Now let's see what happens when this careful estimation process is skipped.</p>
+
+<div class="case-box">
+  <h3>Case: Prof. Hassan's Shortcut</h3>
+  <p class="scenario">Prof. Hassan is designing a 3-credit ODL course (120 SLT hours). He has 20 hours of recorded video lectures, so he allocates exactly 20 hours of SLT for "asynchronous online learning." He also has 15 hours of live online tutorials (SLT = 15 hours), 40 hours of independent reading (SLT = 40 hours, all counted as ODL), 25 hours of physical lab sessions (SLT = 25 hours), and 20 hours of assessment (SLT = 20 hours). His ODL calculation: 20 + 15 + 40 = 75 hours &divide; 120 = 62.5%. He is confused &mdash; he thought having plenty of recorded content would make the course ODL.</p>
+  <p><strong>What went wrong?</strong> Prof. Hassan made three errors. First, he assigned SLT equal to video duration (20 hours of video = 20 hours SLT), ignoring the additional time students spend pausing, note-taking, and completing activities. Using the equivalency guide, 20 hours of recorded lectures should yield approximately 40&ndash;60 hours of SLT. Second, he counted all 40 hours of independent reading as ODL without verifying that they are integrated into the LMS. Third, his physical F2F component (25 hours = 20.8%) slightly exceeds the 20% cap. If he corrected the video SLT to 40 hours (using a 2x multiplier), properly classified his independent learning (say, 25 of 40 hours are LMS-integrated), and reduced F2F to 24 hours, his revised ODL calculation would be: 15 (sync) + 40 (async) + 25 (structured independent) + 20 (assessment) = 100 &divide; 120 = 83.3%. The course would qualify.</p>
+</div>
+
+<!-- TRANSITION TO QUIZ -->
+<p>You have now seen how SLT estimation works in practice and where common mistakes arise. Let's check whether you can match learning activities to their appropriate SLT allocations.</p>
+
+<!-- MATCHING QUIZ -->
+<div class="match-box" id="matchQuiz">
+  <h3>Check Your Understanding: Match the SLT Allocations</h3>
+  <p class="match-instructions">For each learning activity on the left, select the most appropriate SLT allocation from the dropdown on the right. Then click "Check All" to see your score.</p>
+
+  <div class="match-grid" id="matchGrid">
+
+    <div class="match-row" id="row1">
+      <div class="match-term">A 1-hour recorded video lecture (with embedded questions)</div>
+      <span class="match-arrow">&rarr;</span>
+      <div>
+        <select id="sel1">
+          <option value="">Select...</option>
+          <option value="a">1 hour SLT</option>
+          <option value="b">2 &ndash; 3 hours SLT</option>
+          <option value="c">45 &ndash; 60 min SLT</option>
+          <option value="d">4 &ndash; 6 hours SLT</option>
+          <option value="e">30 min SLT</option>
+          <option value="f">8 &ndash; 15 hours SLT</option>
+        </select>
+        <div class="match-feedback" id="fb1"></div>
+      </div>
+    </div>
+
+    <div class="match-row" id="row2">
+      <div class="match-term">A 1-hour live online tutorial (real-time video session)</div>
+      <span class="match-arrow">&rarr;</span>
+      <div>
+        <select id="sel2">
+          <option value="">Select...</option>
+          <option value="a">1 hour SLT</option>
+          <option value="b">2 &ndash; 3 hours SLT</option>
+          <option value="c">45 &ndash; 60 min SLT</option>
+          <option value="d">1 &ndash; 1.5 hours SLT</option>
+          <option value="e">30 min SLT</option>
+          <option value="f">8 &ndash; 15 hours SLT</option>
+        </select>
+        <div class="match-feedback" id="fb2"></div>
+      </div>
+    </div>
+
+    <div class="match-row" id="row3">
+      <div class="match-term">10 pages of academic reading with annotation tasks</div>
+      <span class="match-arrow">&rarr;</span>
+      <div>
+        <select id="sel3">
+          <option value="">Select...</option>
+          <option value="a">1 hour SLT</option>
+          <option value="b">2 &ndash; 3 hours SLT</option>
+          <option value="c">45 &ndash; 60 min SLT</option>
+          <option value="d">4 &ndash; 6 hours SLT</option>
+          <option value="e">30 min SLT</option>
+          <option value="f">10 hours SLT</option>
+        </select>
+        <div class="match-feedback" id="fb3"></div>
+      </div>
+    </div>
+
+    <div class="match-row" id="row4">
+      <div class="match-term">One formative online quiz (10 &ndash; 15 questions)</div>
+      <span class="match-arrow">&rarr;</span>
+      <div>
+        <select id="sel4">
+          <option value="">Select...</option>
+          <option value="a">1 hour SLT</option>
+          <option value="b">2 &ndash; 3 hours SLT</option>
+          <option value="c">45 &ndash; 60 min SLT</option>
+          <option value="d">4 &ndash; 6 hours SLT</option>
+          <option value="e">30 min SLT</option>
+          <option value="f">15 min SLT</option>
+        </select>
+        <div class="match-feedback" id="fb4"></div>
+      </div>
+    </div>
+
+    <div class="match-row" id="row5">
+      <div class="match-term">A written assignment (research, draft, revise, submit)</div>
+      <span class="match-arrow">&rarr;</span>
+      <div>
+        <select id="sel5">
+          <option value="">Select...</option>
+          <option value="a">1 hour SLT</option>
+          <option value="b">2 &ndash; 3 hours SLT</option>
+          <option value="c">45 &ndash; 60 min SLT</option>
+          <option value="d">4 &ndash; 6 hours SLT</option>
+          <option value="e">30 min SLT</option>
+          <option value="f">8 &ndash; 15 hours SLT</option>
+        </select>
+        <div class="match-feedback" id="fb5"></div>
+      </div>
+    </div>
+
+    <div class="match-row" id="row6">
+      <div class="match-term">One structured discussion forum (post, read, reply)</div>
+      <span class="match-arrow">&rarr;</span>
+      <div>
+        <select id="sel6">
+          <option value="">Select...</option>
+          <option value="a">1 &ndash; 2 hours SLT</option>
+          <option value="b">2 &ndash; 3 hours SLT</option>
+          <option value="c">45 &ndash; 60 min SLT</option>
+          <option value="d">4 &ndash; 6 hours SLT</option>
+          <option value="e">30 min SLT</option>
+          <option value="f">15 min SLT</option>
+        </select>
+        <div class="match-feedback" id="fb6"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <button class="match-btn" onclick="checkMatching()">Check All</button>
+  <div class="match-score" id="matchScore"></div>
+</div>
+
+<script>
+  const matchAnswers = {
+    sel1: { correct: 'b', explanation: 'A 1-hour recorded video typically requires 2–3 hours SLT (viewing, pausing, note-taking, embedded questions).' },
+    sel2: { correct: 'd', explanation: 'A 1-hour live session typically requires 1–1.5 hours SLT (live participation plus pre/post-session work).' },
+    sel3: { correct: 'b', explanation: '10 pages of academic reading with annotation tasks typically require 2–3 hours SLT.' },
+    sel4: { correct: 'c', explanation: 'A formative quiz of 10–15 questions typically requires 45–60 minutes SLT (review, attempt, review feedback).' },
+    sel5: { correct: 'f', explanation: 'A written assignment (research, draft, revise, submit) typically requires 8–15 hours SLT.' },
+    sel6: { correct: 'a', explanation: 'A structured discussion forum (post, read, reply) typically requires 1–2 hours SLT.' }
+  };
+
+  function checkMatching() {
+    let score = 0;
+    let total = Object.keys(matchAnswers).length;
+
+    for (let id in matchAnswers) {
+      const sel = document.getElementById(id);
+      const fb = document.getElementById('fb' + id.replace('sel', ''));
+      const data = matchAnswers[id];
+      const userVal = sel.value;
+
+      sel.classList.remove('correct', 'incorrect');
+
+      if (!userVal) {
+        sel.classList.add('incorrect');
+        fb.textContent = 'Please select an answer. ' + data.explanation;
+        fb.className = 'match-feedback incorrect-fb';
+        continue;
+      }
+
+      if (userVal === data.correct) {
+        sel.classList.add('correct');
+        fb.textContent = 'Correct. ' + data.explanation;
+        fb.className = 'match-feedback correct-fb';
+        score++;
+      } else {
+        sel.classList.add('incorrect');
+        fb.textContent = 'Not quite. ' + data.explanation;
+        fb.className = 'match-feedback incorrect-fb';
+      }
+    }
+
+    const scoreEl = document.getElementById('matchScore');
+    if (score === total) {
+      scoreEl.textContent = score + '/' + total + ' — Perfect! You can estimate SLT accurately across activity types.';
+      scoreEl.style.color = 'var(--green)';
+    } else if (score >= 4) {
+      scoreEl.textContent = score + '/' + total + ' — Good effort. Review the mismatches and compare with the equivalency table above.';
+      scoreEl.style.color = 'var(--orange)';
+    } else {
+      scoreEl.textContent = score + '/' + total + ' — Revisit the equivalency reference table. Remember: SLT reflects total student engagement time, not just media duration.';
+      scoreEl.style.color = 'var(--red)';
+    }
+  }
+</script>
+
+<!-- TRANSITION TO MCQs -->
+<p>The matching exercise tested your ability to estimate SLT for individual activities. The next two questions ask you to put those estimates together and calculate whether a course qualifies as ODL &mdash; and to spot a common error in SLT estimation.</p>
+
+<!-- MCQ QUIZ 1 -->
+<div class="mcq-box" id="quiz1">
+  <h3>Quiz: Calculate the ODL Percentage</h3>
+  <p class="question">Dr. Roslan is finalising the SLT allocation for her 3-credit ODL course (120 total SLT hours). Her breakdown is as follows: 24 hours of synchronous online sessions, 28 hours of asynchronous online activities, 28 hours of LMS-integrated independent learning (with guided reflection prompts and linked resources), 10 hours of unstructured personal revision, 20 hours of online assessment, and 10 hours of physical face-to-face lab sessions. What is the ODL delivery percentage, and does the course qualify?</p>
+  <ul class="options" id="opts1">
+    <li onclick="selectOpt('q1','opts1','A')" id="opts1-0">A. 91.7% &mdash; the course qualifies as an ODL course</li>
+    <li onclick="selectOpt('q1','opts1','B')" id="opts1-1">B. 75.0% &mdash; the course does not qualify as an ODL course</li>
+    <li onclick="selectOpt('q1','opts1','C')" id="opts1-2">C. 83.3% &mdash; the course qualifies as an ODL course</li>
+    <li onclick="selectOpt('q1','opts1','D')" id="opts1-3">D. 66.7% &mdash; the course does not qualify as an ODL course</li>
+  </ul>
+  <button class="mcq-btn" onclick="checkMCQ('quiz1','q1','opts1','C')">Check Answer</button>
+  <div class="feedback" id="feedback-quiz1"></div>
+</div>
+
+<!-- MCQ QUIZ 2 -->
+<div class="mcq-box" id="quiz2">
+  <h3>Quiz: Spot the SLT Error</h3>
+  <p class="question">Dr. Lim has recorded 10 one-hour video lectures for her ODL course. In her Table 4, she allocates exactly 10 hours of SLT for "asynchronous online learning" based on these videos. She states: "10 hours of video content = 10 hours of asynchronous SLT." What is the fundamental problem with this allocation?</p>
+  <ul class="options" id="opts2">
+    <li onclick="selectOpt('q2','opts2','A')" id="opts2-0">A. Recorded video lectures should be classified as synchronous online learning, not asynchronous</li>
+    <li onclick="selectOpt('q2','opts2','B')" id="opts2-1">B. She has treated video duration as equivalent to SLT, ignoring the additional time students spend pausing, note-taking, re-watching, and completing associated activities</li>
+    <li onclick="selectOpt('q2','opts2','C')" id="opts2-2">C. Video lectures cannot count as ODL delivery unless they are accompanied by physical face-to-face sessions</li>
+    <li onclick="selectOpt('q2','opts2','D')" id="opts2-3">D. The 10 hours should be split evenly between asynchronous and independent learning categories</li>
+  </ul>
+  <button class="mcq-btn" onclick="checkMCQ('quiz2','q2','opts2','B')">Check Answer</button>
+  <div class="feedback" id="feedback-quiz2"></div>
+</div>
+
+<script>
+  var mcqSelected = {};
+
+  var mcqFeedback = {
+    quiz1: {
+      correct: '<strong>Correct.</strong> The ODL hours are: 24 (synchronous) + 28 (asynchronous) + 28 (LMS-integrated independent) + 20 (online assessment) = 100 hours out of 120 total SLT. ODL percentage = 100 &divide; 120 = 83.3%. This meets the 80% threshold, so the course qualifies. The physical F2F component (10 hours = 8.3%) is well within the 20% cap. The 10 hours of unstructured personal revision count as SLT but do NOT count as ODL delivery because they are not integrated into the LMS.',
+      incorrect: '<strong>Not quite.</strong> The correct answer is <strong>C: 83.3%</strong>. Calculate step by step: synchronous (24) + asynchronous (28) + LMS-integrated independent (28) + online assessment (20) = 100 hours of ODL. Total SLT = 120. ODL percentage = 100 &divide; 120 = 83.3%. Option A (91.7%) comes from counting all 38 hours of independent learning (28 LMS-integrated + 10 unstructured) as ODL &mdash; but the 10 hours of unstructured revision do not qualify because they are not LMS-integrated. Option B (75.0%) does not correspond to any valid calculation from the data provided &mdash; the 80% threshold is a strict rule, not a guideline that can be rounded. Option D (66.7%) comes from excluding the online assessment hours from the ODL count (24 + 28 + 28 = 80 &divide; 120 = 66.7%) &mdash; but online assessments submitted via the LMS do count as ODL delivery.'
+    },
+    quiz2: {
+      correct: '<strong>Correct.</strong> The fundamental error is treating video duration as SLT. A 1-hour video lecture typically requires 2&ndash;3 hours of student engagement time when you account for pausing, note-taking, re-watching difficult sections, and completing associated activities. Dr. Lim should have estimated approximately 20&ndash;30 hours of SLT for her 10 hours of recorded video, not 10 hours. Option A is wrong because recorded lectures are asynchronous (not synchronous). Option C is wrong because video lectures absolutely count as ODL delivery. Option D is wrong because there is no requirement to split hours between categories.',
+      incorrect: '<strong>Not quite.</strong> The correct answer is <strong>B</strong>. Dr. Lim\'s fundamental error is treating video duration as SLT. The guiding principle on this page states clearly: "The duration of a learning resource alone does not necessarily represent the total SLT." A 1-hour video typically requires 2&ndash;3 hours of SLT when you account for the complete learning experience (pausing, note-taking, re-watching, embedded activities). Option A is wrong because recorded lectures are correctly classified as asynchronous. Option C is wrong because video lectures can count as ODL delivery on their own. Option D is wrong because there is no rule requiring an even split.'
+    }
+  };
+
+  function selectOpt(qId, optsId, letter) {
+    mcqSelected[qId] = letter;
+    var container = document.getElementById(optsId);
+    var items = container.querySelectorAll('li');
+    items.forEach(function(li, idx) {
+      li.classList.remove('selected');
+      if (String.fromCharCode(65 + idx) === letter) li.classList.add('selected');
+    });
+  }
+
+  function checkMCQ(quizId, qId, optsId, correct) {
+    var container = document.getElementById(optsId);
+    var feedback = document.getElementById('feedback-' + quizId);
+    var selected = mcqSelected[qId];
+
+    if (!selected) {
+      feedback.textContent = 'Please select an answer before checking.';
+      feedback.className = 'feedback show incorrect-fb';
+      return;
+    }
+
+    var items = container.querySelectorAll('li');
+    items.forEach(function(li, idx) {
+      var letter = String.fromCharCode(65 + idx);
+      li.classList.remove('correct', 'incorrect');
+      if (letter === correct) li.classList.add('correct');
+      else if (letter === selected && selected !== correct) li.classList.add('incorrect');
+    });
+
+    var data = mcqFeedback[quizId];
+    if (selected === correct) {
+      feedback.innerHTML = data.correct;
+      feedback.className = 'feedback show correct-fb';
+    } else {
+      feedback.innerHTML = data.incorrect;
+      feedback.className = 'feedback show incorrect-fb';
+    }
+  }
+</script>
+
+<!-- SUMMARY / BRIDGE -->
+<h2>Summary</h2>
+
+<p>SLT allocation is about estimating the total time a student reasonably needs to engage with each learning activity &mdash; not about measuring the duration of a video or the length of a reading. The equivalency guide provides starting points, but your own course context determines the final numbers. Once SLT is allocated and classified, the ODL percentage follows from a straightforward calculation: ODL hours divided by total SLT.</p>
+
+<p>You now have the calculation skills to design a compliant ODL course. In the next page, you will learn to document all of these decisions in Table 4 &mdash; the primary course planning document required by MQA for ODL accreditation.</p>
+
+<!-- FOOTER -->
+<div class="page-footer">
+  <p>ODL Programme Development &bull; Page 10 of 20<br>
+  Part of the ODL Professional Development Series</p>
+</div>
+
+</body>
+</html>

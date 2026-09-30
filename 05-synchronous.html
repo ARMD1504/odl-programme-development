@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Synchronous Online Learning — ODL Programme Development</title>
+<style>
+  :root {
+    --navy: #1a365d;
+    --blue: #2b6cb0;
+    --light-blue: #ebf4ff;
+    --green: #276749;
+    --light-green: #f0fff4;
+    --orange: #c05621;
+    --light-orange: #fffaf0;
+    --purple: #553c9a;
+    --light-purple: #faf5ff;
+    --teal: #285e61;
+    --light-teal: #e6fffa;
+    --red: #c53030;
+    --light-red: #fff5f5;
+    --gray: #4a5568;
+    --light-gray: #f7fafc;
+    --border: #e2e8f0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #2d3748;
+    line-height: 1.7;
+    background: #fff;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .page-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page-nav a {
+    color: var(--blue);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--blue);
+    border-radius: 6px;
+    transition: background 0.2s;
+  }
+
+  .page-nav a:hover { background: var(--light-blue); }
+  .page-nav .page-label { font-size: 0.85rem; color: var(--gray); }
+
+  .page-header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--teal) 100%);
+    color: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+  }
+
+  .page-header .module-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    padding: 0.2rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .page-header h1 { font-size: 1.6rem; margin-bottom: 0.4rem; }
+  .page-header .page-subtitle { font-size: 0.95rem; opacity: 0.85; }
+
+  h2 {
+    color: var(--navy);
+    font-size: 1.3rem;
+    margin: 2rem 0 1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid var(--blue);
+    display: inline-block;
+  }
+
+  h3 { color: var(--navy); font-size: 1.05rem; margin: 1.5rem 0 0.5rem; }
+  p { margin-bottom: 1rem; }
+
+  .key-point {
+    background: var(--light-blue);
+    border-left: 5px solid var(--blue);
+    padding: 1rem 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 1.5rem 0;
+    font-size: 0.95rem;
+  }
+
+  .key-point strong { color: var(--navy); }
+
+  .case-box {
+    background: var(--light-orange);
+    border-left: 5px solid var(--orange);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .case-box h3 { color: var(--orange); margin-top: 0; margin-bottom: 0.75rem; }
+  .case-box .scenario { font-style: italic; margin-bottom: 1rem; }
+
+  /* Triple-count card */
+  .triple-card {
+    background: var(--light-green);
+    border: 2px solid #c6f6d5;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    text-align: center;
+  }
+
+  .triple-card h3 { color: var(--green); margin-top: 0; margin-bottom: 0.75rem; }
+
+  .triple-tags {
+    display: flex;
+    justify-content: center;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+  }
+
+  .triple-tag {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+
+  .triple-tag.yes { background: var(--green); color: #fff; }
+  .triple-tag.also-yes { background: var(--blue); color: #fff; }
+
+  /* Characteristics list */
+  .char-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .char-item {
+    background: var(--light-gray);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+  }
+
+  .char-item h4 {
+    color: var(--navy);
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .char-item p {
+    font-size: 0.85rem;
+    color: var(--gray);
+    margin: 0;
+  }
+
+  /* Examples list */
+  .examples-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.8rem;
+    margin: 1.5rem 0;
+  }
+
+  .example-chip {
+    background: var(--light-teal);
+    border: 1px solid #b2f5ea;
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    font-size: 0.88rem;
+    color: var(--teal);
+    font-weight: 600;
+    text-align: center;
+  }
+
+  /* Requirements box */
+  .req-box {
+    background: var(--light-purple);
+    border: 1px solid #e9d8fd;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .req-box h3 { color: var(--purple); margin-top: 0; }
+
+  .req-box ul { padding-left: 1.5rem; margin: 0; }
+  .req-box li { margin-bottom: 0.5rem; font-size: 0.92rem; }
+
+  /* Fill-in-the-blanks quiz */
+  .fib-box {
+    background: var(--light-green);
+    border-left: 5px solid var(--green);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .fib-box h3 { color: var(--green); margin-top: 0; margin-bottom: 0.5rem; }
+
+  .fib-instructions {
+    font-size: 0.9rem;
+    color: var(--gray);
+    margin-bottom: 1.2rem;
+  }
+
+  .fib-item {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 0.8rem;
+    font-size: 0.93rem;
+    line-height: 1.8;
+  }
+
+  .fib-item .fib-num {
+    font-weight: 700;
+    color: var(--green);
+    margin-right: 0.3rem;
+  }
+
+  .fib-item input[type="text"] {
+    border: none;
+    border-bottom: 2px solid var(--border);
+    padding: 0.2rem 0.5rem;
+    font-size: 0.9rem;
+    font-family: inherit;
+    width: 120px;
+    text-align: center;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+
+  .fib-item input[type="text"]:focus { border-bottom-color: var(--green); }
+  .fib-item input[type="text"].correct-input { border-bottom-color: var(--green); background: #c6f6d5; font-weight: 600; }
+  .fib-item input[type="text"].wrong-input { border-bottom-color: var(--red); background: #fed7d7; }
+
+  .fib-btn {
+    background: var(--green);
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    transition: background 0.2s;
+  }
+
+  .fib-btn:hover { background: #22543d; }
+
+  .fib-feedback {
+    display: none;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-top: 1rem;
+    font-size: 0.92rem;
+  }
+
+  .fib-feedback.show { display: block; }
+  .fib-feedback.perfect { background: #c6f6d5; color: #22543d; }
+  .fib-feedback.partial { background: #feebc8; color: #744210; }
+
+  .fib-score { font-weight: 700; font-size: 1rem; margin-bottom: 0.5rem; }
+
+  .page-footer {
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--gray);
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 1rem; }
+    .page-header h1 { font-size: 1.3rem; }
+    .char-grid { grid-template-columns: 1fr; }
+    .examples-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<div class="page-nav">
+  <a href="04-classifying-courses.html">&larr; Previous</a>
+  <span class="page-label">Page 5 of 20</span>
+  <a href="06-asynchronous.html">Next &rarr;</a>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="module-tag">Module 2 &bull; Delivery Methods</div>
+  <h1>Synchronous Online Learning</h1>
+  <p class="page-subtitle">Real-time, instructor-led online sessions that replicate the classroom experience</p>
+</div>
+
+<!-- BRIDGE FROM PREVIOUS MODULE -->
+<p>You have now completed Module 1, where you learned to classify ODL programmes and courses. You know the two thresholds (&gt;60% and &ge;80%) and how to calculate them. Module 2 takes you deeper into the four delivery methods that make up those calculations. We begin with the most familiar: synchronous online learning &mdash; the method that comes closest to replicating a traditional classroom in an online environment.</p>
+
+<!-- DEFINITION -->
+<h2>What Is Synchronous Online Learning?</h2>
+
+<p>Synchronous online learning refers to teaching and learning activities conducted in <strong>real time</strong> through online platforms, where academic staff and students participate simultaneously and interact directly with one another regardless of their physical location.</p>
+
+<p>Synchronous learning replicates many aspects of a conventional classroom environment by enabling immediate communication, discussion, feedback, collaboration, clarification of concepts, and active engagement between students and academic staff. Although lecturers and students are not physically co-located, the real-time interaction provides the immediacy and structure that characterise face-to-face teaching.</p>
+
+<div class="key-point">
+  <strong>Key distinction:</strong> The word "synchronous" means <em>at the same time</em>. If students and the lecturer are interacting simultaneously through a digital platform, the activity is synchronous. If students access the material at different times, it is asynchronous (which we will cover on the next page).
+</div>
+
+<!-- CHARACTERISTICS -->
+<h2>Characteristics</h2>
+
+<p>For an activity to qualify as synchronous online learning, it should generally demonstrate the following characteristics:</p>
+
+<div class="char-grid">
+  <div class="char-item">
+    <h4>Real-Time Interaction</h4>
+    <p>Academic staff and students participate simultaneously, enabling immediate communication and feedback.</p>
+  </div>
+  <div class="char-item">
+    <h4>Structured Facilitation</h4>
+    <p>The session is planned, guided, and facilitated by academic staff with clear learning objectives.</p>
+  </div>
+  <div class="char-item">
+    <h4>Active Engagement</h4>
+    <p>Students are expected to participate actively through discussion, questions, activities, or collaboration.</p>
+  </div>
+  <div class="char-item">
+    <h4>Digital Platform</h4>
+    <p>The session is conducted through an approved online platform (e.g., video conferencing, virtual classroom tools).</p>
+  </div>
+</div>
+
+<!-- EXAMPLES -->
+<h2>Examples of Synchronous Activities</h2>
+
+<p>The following are recognised as synchronous online learning activities because they are conducted in real time, require simultaneous participation, and provide opportunities for direct interaction:</p>
+
+<div class="examples-grid">
+  <div class="example-chip">Live Online Lectures</div>
+  <div class="example-chip">Virtual Tutorials</div>
+  <div class="example-chip">Live Webinars</div>
+  <div class="example-chip">Real-Time Discussions</div>
+  <div class="example-chip">Virtual Laboratories</div>
+  <div class="example-chip">Online Presentations</div>
+  <div class="example-chip">Live Q&amp;A Sessions</div>
+  <div class="example-chip">Online Consultations</div>
+</div>
+
+<!-- WHAT IT COUNTS AS -->
+<h2>What Synchronous Online Learning Counts As</h2>
+
+<p>Synchronous online learning is unique among the ODL delivery methods because it counts towards <em>three</em> things simultaneously:</p>
+
+<div class="triple-card">
+  <h3>Synchronous Online Learning Counts As:</h3>
+  <div class="triple-tags">
+    <span class="triple-tag yes">Contact Hours</span>
+    <span class="triple-tag yes">ODL Delivery</span>
+    <span class="triple-tag also-yes">Student Learning Time</span>
+  </div>
+</div>
+
+<p>Because synchronous sessions involve direct, real-time interaction between academic staff and students, they are recognised as the online equivalent of traditional face-to-face classroom contact. This means they qualify as <strong>contact hours</strong> for teaching and learning purposes. They also count as <strong>ODL delivery</strong> because the learning takes place through digital technologies rather than physical attendance. And they form part of the total <strong>Student Learning Time</strong> of the course.</p>
+
+<p>Synchronous online learning also serves as an important mechanism for demonstrating <strong>Regular and Substantive Interaction (RSI)</strong> between academic staff and students &mdash; a key quality requirement for effective ODL delivery under MQA COPPA.</p>
+
+<div class="key-point">
+  <strong>The only method that counts as contact hours <em>and</em> ODL delivery:</strong> Of the four delivery methods, only synchronous online learning qualifies as both. Asynchronous learning counts as ODL delivery but not contact hours. Independent learning counts as SLT but not contact hours. Physical F2F counts as contact hours but not ODL delivery.
+</div>
+
+<!-- REQUIREMENTS -->
+<h2>Requirements for Counting Synchronous Hours</h2>
+
+<p>To ensure consistency and compliance with MQA COPPA requirements, synchronous online learning sessions should satisfy the following:</p>
+
+<div class="req-box">
+  <h3>Requirements</h3>
+  <ul>
+    <li>Sessions must be <strong>structured and planned</strong>, with clear learning objectives aligned to Course Learning Outcomes (CLOs).</li>
+    <li>Sessions must be <strong>facilitated by academic staff</strong> &mdash; not simply a recording played during a scheduled time.</li>
+    <li>Students must be required to <strong>participate actively</strong> &mdash; passive viewing without interaction does not qualify.</li>
+    <li>Attendance and participation should be <strong>documented and tracked</strong> as evidence of engagement.</li>
+    <li>Sessions must be delivered through the University's <strong>approved digital platforms</strong>.</li>
+    <li>Session schedules, duration, and learning activities must be <strong>clearly indicated in Table 4</strong> and the SIM.</li>
+  </ul>
+</div>
+
+<!-- TRANSITION TO APPLICATION -->
+<h2>Where Synchronous Learning Fits in Your Course Design</h2>
+
+<p>You now understand what synchronous online learning is, what it counts as, and what requirements it must meet. In practice, synchronous sessions are often the backbone of learner engagement in ODL courses &mdash; they provide the real-time human connection that keeps students motivated and gives lecturers the opportunity to clarify difficult concepts, facilitate discussion, and respond to questions immediately.</p>
+
+<p>However, ODL courses should not rely on synchronous sessions alone. The case below illustrates a common pitfall when a course designer over-invests in live sessions without balancing them with other delivery methods.</p>
+
+<!-- CASE SCENARIO -->
+<div class="case-box">
+  <h3>Case: The Live-Only Course</h3>
+  <p class="scenario">Dr. Rahim designs his 3-credit ODL course (120 hours SLT) almost entirely around synchronous online sessions. He schedules three 2-hour live lectures per week across a 14-week semester (84 hours of synchronous learning). He adds 16 hours of assignment preparation as independent learning and 20 hours of online quizzes as asynchronous learning. His ODL delivery is 100%, and he is confident the course meets all requirements.</p>
+  <p><strong>What's the concern?</strong> While Dr. Rahim's course technically meets the 80% ODL threshold (in fact, 100% of SLT is ODL), his design raises quality and practicality issues. First, 84 hours of live sessions over 14 weeks is an extremely heavy synchronous load that may not be sustainable for students in different time zones or with work commitments &mdash; flexibility is a core principle of ODL. Second, the course lacks adequate asynchronous learning materials (recorded content, structured modules, SIM) for students who miss a session or need to review. Third, only 16 hours of independent learning suggests students are not being guided to develop self-directed learning skills. A more balanced design would reduce the synchronous hours, add asynchronous materials and guided independent learning, and reserve live sessions for activities that genuinely benefit from real-time interaction.</p>
+</div>
+
+<!-- TRANSITION TO QUIZ -->
+<p>Let's now check how well you understand the characteristics, counting rules, and requirements for synchronous online learning.</p>
+
+<!-- FILL-IN-THE-BLANKS QUIZ -->
+<div class="fib-box" id="fibQuiz">
+  <h3>Check Your Understanding: Fill in the Blanks</h3>
+  <p class="fib-instructions">Type the correct word or phrase in each blank. Click "Check Answers" when done.</p>
+
+  <div class="fib-item">
+    <span class="fib-num">1.</span> Synchronous online learning involves teaching and learning activities conducted in <input type="text" id="fib0" placeholder="___" style="width: 100px;"> time through digital platforms.
+  </div>
+
+  <div class="fib-item">
+    <span class="fib-num">2.</span> Synchronous online learning counts as contact hours, Student Learning Time, and <input type="text" id="fib1" placeholder="___" style="width: 130px;"> delivery.
+  </div>
+
+  <div class="fib-item">
+    <span class="fib-num">3.</span> For synchronous sessions to qualify, students must be required to participate <input type="text" id="fib2" placeholder="___" style="width: 110px;">, not just passively watch.
+  </div>
+
+  <div class="fib-item">
+    <span class="fib-num">4.</span> Synchronous online learning is an important mechanism for demonstrating <input type="text" id="fib3" placeholder="___" style="width: 170px;"> and Substantive Interaction (RSI) between staff and students.
+  </div>
+
+  <div class="fib-item">
+    <span class="fib-num">5.</span> Of the four delivery methods, synchronous online learning is the only one that qualifies as both contact hours and <input type="text" id="fib4" placeholder="___" style="width: 120px;"> delivery.
+  </div>
+
+  <button class="fib-btn" onclick="checkFib()">Check Answers</button>
+  <div class="fib-feedback" id="fibFeedback"></div>
+</div>
+
+<script>
+  function normalise(str) {
+    return str.trim().toLowerCase().replace(/\s+/g, ' ');
+  }
+
+  function checkFib() {
+    const answers = [
+      { id: 'fib0', correct: ['real', 'real-time'], display: 'real' },
+      { id: 'fib1', correct: ['odl', 'odl delivery', 'online'], display: 'ODL' },
+      { id: 'fib2', correct: ['actively', 'active'], display: 'actively' },
+      { id: 'fib3', correct: ['regular', 'regular and substantive'], display: 'Regular' },
+      { id: 'fib4', correct: ['odl', 'odl delivery', 'online'], display: 'ODL' }
+    ];
+
+    let score = 0;
+
+    answers.forEach(a => {
+      const input = document.getElementById(a.id);
+      const val = normalise(input.value);
+      const isCorrect = a.correct.some(c => normalise(c) === val);
+
+      input.classList.remove('correct-input', 'wrong-input');
+      if (isCorrect) {
+        score++;
+        input.classList.add('correct-input');
+      } else {
+        input.classList.add('wrong-input');
+      }
+    });
+
+    const fb = document.getElementById('fibFeedback');
+    if (score === answers.length) {
+      fb.innerHTML = '<div class="fib-score">Perfect: ' + score + ' / ' + answers.length + '</div>All blanks filled correctly. You have a solid understanding of synchronous online learning and its role in ODL delivery.';
+      fb.className = 'fib-feedback show perfect';
+    } else {
+      let hint = '<div class="fib-score">Score: ' + score + ' / ' + answers.length + '</div>';
+      hint += 'Review the incorrect blanks. Key answers: (1) real, (2) ODL, (3) actively, (4) Regular, (5) ODL.';
+      fb.innerHTML = hint;
+      fb.className = 'fib-feedback show partial';
+    }
+  }
+</script>
+
+<!-- SUMMARY / BRIDGE -->
+<h2>Summary</h2>
+
+<p>Synchronous online learning is real-time, instructor-facilitated, and the only delivery method that counts simultaneously as contact hours, ODL delivery, and SLT. It is the backbone of real-time engagement and RSI in ODL courses. However, effective ODL design requires balancing synchronous sessions with asynchronous materials and independent learning to provide flexibility and support self-directed study.</p>
+
+<p>In the next page, you will explore the second delivery method: asynchronous online learning &mdash; structured activities that students complete at their own pace.</p>
+
+<!-- FOOTER -->
+<div class="page-footer">
+  <p>ODL Programme Development &bull; Page 5 of 20<br>
+  Part of the ODL Professional Development Series</p>
+</div>
+
+</body>
+</html>

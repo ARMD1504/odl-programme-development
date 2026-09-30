@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ODL Programme Development</title>
+<style>
+  :root {
+    --navy: #1a365d;
+    --blue: #2b6cb0;
+    --light-blue: #ebf4ff;
+    --green: #276749;
+    --light-green: #f0fff4;
+    --orange: #c05621;
+    --light-orange: #fffaf0;
+    --purple: #553c9a;
+    --light-purple: #faf5ff;
+    --teal: #285e61;
+    --light-teal: #e6fffa;
+    --red: #c53030;
+    --light-red: #fff5f5;
+    --gray: #4a5568;
+    --light-gray: #f7fafc;
+    --border: #e2e8f0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #2d3748;
+    line-height: 1.7;
+    background: #fff;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  /* Header */
+  .course-header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+    color: #fff;
+    padding: 2.5rem 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .course-header .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    padding: 0.25rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .course-header h1 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+  }
+
+  .course-header .subtitle {
+    font-size: 1.05rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .course-meta {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .course-meta .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    opacity: 0.9;
+  }
+
+  /* Section headings */
+  h2 {
+    color: var(--navy);
+    font-size: 1.4rem;
+    margin: 2.5rem 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 3px solid var(--blue);
+    display: inline-block;
+  }
+
+  h3 {
+    color: var(--navy);
+    font-size: 1.1rem;
+    margin: 1.5rem 0 0.5rem;
+  }
+
+  p { margin-bottom: 1rem; }
+
+  /* Intro box */
+  .intro-box {
+    background: var(--light-blue);
+    border-left: 5px solid var(--blue);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 2rem;
+  }
+
+  .intro-box p:last-child { margin-bottom: 0; }
+
+  /* Outcomes box */
+  .outcomes-box {
+    background: var(--light-green);
+    border-left: 5px solid var(--green);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 2rem;
+  }
+
+  .outcomes-box h3 {
+    color: var(--green);
+    margin-top: 0;
+  }
+
+  .outcomes-box ol {
+    padding-left: 1.5rem;
+    margin: 0;
+  }
+
+  .outcomes-box li {
+    margin-bottom: 0.5rem;
+  }
+
+  /* Who is this for */
+  .audience-box {
+    background: var(--light-purple);
+    border-left: 5px solid var(--purple);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 2rem;
+  }
+
+  .audience-box h3 {
+    color: var(--purple);
+    margin-top: 0;
+  }
+
+  .scope-note {
+    background: #f0f4f8;
+    border-left: 5px solid var(--blue);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 2rem;
+  }
+  .scope-note h3 {
+    color: var(--navy);
+    margin-top: 0;
+    font-size: 1.05rem;
+  }
+  .scope-note p {
+    margin-bottom: 0.75rem;
+    line-height: 1.65;
+  }
+  .scope-note p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Module navigation */
+  .module-grid {
+    display: grid;
+    gap: 1.5rem;
+    margin: 1.5rem 0 2rem;
+  }
+
+  .module-card {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+
+  .module-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+
+  .module-header {
+    padding: 1rem 1.5rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .module-header .module-num {
+    background: rgba(255,255,255,0.25);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+
+  .module-header h3 {
+    color: #fff;
+    margin: 0;
+    font-size: 1.05rem;
+  }
+
+  .module-body {
+    padding: 1rem 1.5rem;
+  }
+
+  .module-body p {
+    font-size: 0.92rem;
+    color: var(--gray);
+    margin-bottom: 0.75rem;
+  }
+
+  .page-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .page-list li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.92rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .page-list li:last-child { border-bottom: none; }
+
+  .page-list .page-num {
+    background: var(--light-gray);
+    color: var(--navy);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  /* Module colour themes */
+  .mod-foundations .module-header { background: var(--blue); }
+  .mod-foundations .module-body { background: var(--light-blue); }
+
+  .mod-delivery .module-header { background: var(--teal); }
+  .mod-delivery .module-body { background: var(--light-teal); }
+
+  .mod-planning .module-header { background: var(--green); }
+  .mod-planning .module-body { background: var(--light-green); }
+
+  .mod-assessment .module-header { background: var(--orange); }
+  .mod-assessment .module-body { background: var(--light-orange); }
+
+  .mod-quality .module-header { background: var(--purple); }
+  .mod-quality .module-body { background: var(--light-purple); }
+
+  .mod-capstone .module-header { background: var(--red); }
+  .mod-capstone .module-body { background: var(--light-red); }
+
+  /* How to use this course */
+  .how-box {
+    background: var(--light-gray);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+  }
+
+  .how-box h3 { margin-top: 0; }
+
+  .step-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .step-item {
+    text-align: center;
+    padding: 1rem;
+  }
+
+  .step-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .step-item h4 {
+    color: var(--navy);
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .step-item p {
+    font-size: 0.85rem;
+    color: var(--gray);
+    margin: 0;
+  }
+
+  /* Template download */
+  .template-box {
+    background: var(--light-orange);
+    border-left: 5px solid var(--orange);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .template-box .template-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+  }
+
+  .template-box h3 { margin-top: 0; color: var(--orange); }
+  .template-box p { margin-bottom: 0; font-size: 0.92rem; }
+
+  /* Key point */
+  .key-point {
+    background: var(--light-blue);
+    border-left: 5px solid var(--blue);
+    padding: 1rem 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 1.5rem 0;
+    font-size: 0.95rem;
+  }
+
+  .key-point strong { color: var(--navy); }
+
+  /* Footer */
+  .course-footer {
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--gray);
+    font-size: 0.85rem;
+  }
+
+  /* ODL Series Section */
+  .series-section {
+    margin: 2.5rem 0;
+  }
+
+  .series-section > h2 {
+    text-align: center;
+    display: block;
+    border-bottom: none;
+    margin-bottom: 0.5rem;
+  }
+
+  .series-intro {
+    text-align: center;
+    max-width: 750px;
+    margin: 0 auto 1.5rem;
+    color: var(--gray);
+    font-size: 0.95rem;
+  }
+
+  .series-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .series-card {
+    padding: 1.2rem 1.4rem;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    position: relative;
+  }
+
+  .series-card.compulsory {
+    background: #f0fff4;
+    border-color: #c6f6d5;
+  }
+
+  .series-card.optional {
+    background: #fffaf0;
+    border-color: #feebc8;
+  }
+
+  .series-card.active {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(43,108,176,0.15);
+  }
+
+  .series-card .series-tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 0.15rem 0.6rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+  }
+
+  .series-card.compulsory .series-tag {
+    background: #c6f6d5;
+    color: var(--green);
+  }
+
+  .series-card.optional .series-tag {
+    background: #feebc8;
+    color: var(--orange);
+  }
+
+  .series-card .series-title {
+    color: var(--navy);
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .series-card .series-desc {
+    color: var(--gray);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .series-card .series-hours {
+    color: var(--gray);
+    font-size: 0.8rem;
+    margin-top: 0.4rem;
+    font-style: italic;
+  }
+
+  .series-card .you-are-here {
+    position: absolute;
+    top: -0.6rem;
+    right: 1rem;
+    background: var(--blue);
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 0.2rem 0.7rem;
+    border-radius: 10px;
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    body { padding: 1rem; }
+    .course-header h1 { font-size: 1.5rem; }
+    .course-meta { gap: 1rem; }
+    .step-grid { grid-template-columns: 1fr; }
+    .series-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="course-header">
+  <div class="badge">Compulsory 2 &bull; CAD &amp; CQM</div>
+  <h1>ODL Programme Development</h1>
+  <p class="subtitle">A practical guide to planning, designing, and documenting quality Open and Distance Learning programmes and courses aligned with MQA COPPA requirements.</p>
+  <div class="course-meta">
+    <span class="meta-item">&#9201; 8 hours, self-paced</span>
+    <span class="meta-item">&#128214; 20 pages</span>
+    <span class="meta-item">&#127891; For academic staff</span>
+  </div>
+</div>
+
+<!-- WELCOME -->
+<div class="intro-box">
+  <h3>Welcome</h3>
+  <p>Developing an ODL programme goes well beyond converting face-to-face materials into digital formats. It requires a systematic approach to planning learning outcomes, designing delivery methods, allocating Student Learning Time, developing Self-Instructional Materials, and ensuring quality assurance throughout the programme lifecycle.</p>
+  <p>This course walks you through each stage of ODL programme development &mdash; from understanding the regulatory framework to completing Table 4 and preparing your programme for accreditation. By the end, you will have developed a complete ODL programme plan for your own course.</p>
+</div>
+
+<!-- WHO IS THIS FOR -->
+<div class="audience-box">
+  <h3>Who Is This Course For?</h3>
+  <p>This course is designed for academic staff, programme leaders, and course coordinators who are involved in planning, developing, or converting programmes for ODL delivery. Whether you are designing a new ODL programme from scratch or adapting an existing face-to-face programme for online and distance delivery, this course will guide you through every step.</p>
+  <p>No prior experience with ODL programme development is required. However, it is recommended that you complete <strong>Compulsory 1: Introduction to ODL</strong> first, as it establishes the foundational concepts that this course builds upon.</p>
+</div>
+
+<!-- SCOPE NOTE -->
+<div class="scope-note">
+  <h3>What This Course Does Not Cover</h3>
+  <p>This course focuses specifically on <strong>planning and developing</strong> ODL programmes and courses. Two important areas are intentionally outside its scope because they are addressed by other courses in the series:</p>
+  <p><strong>Introduction to ODL and its underlying pedagogy</strong> &mdash; including the theoretical foundations, history, and educational philosophy of open and distance learning &mdash; is covered in <strong>Compulsory 1: Introduction to ODL</strong>. If you are new to ODL, it is recommended that you complete that course first.</p>
+  <p><strong>Self-Instructional Material (SIM) writing</strong> &mdash; the detailed craft of developing self-contained, self-directed learning materials for your course &mdash; is covered in <strong>Compulsory 3: Effective SIM Writing</strong>. This course references SIMs in the context of programme planning, but the practical skills of writing and structuring SIMs are developed there.</p>
+</div>
+
+<!-- WHERE THIS COURSE SITS -->
+<div class="series-section">
+  <h2>Where This Course Sits in the ODL Series</h2>
+  <p class="series-intro">This course is <strong>Component 2</strong> of the ODL Professional Development Series &mdash; a collaboration between CAD and CQM that supports the full ODL lifecycle: planning, curriculum development, teaching, delivery, quality assurance, and continuous improvement. The series comprises four compulsory and two optional components.</p>
+
+  <div class="series-grid">
+
+    <div class="series-card compulsory">
+      <span class="series-tag">Compulsory 1 &mdash; CAD &amp; CQM</span>
+      <div class="series-title">Introduction to ODL</div>
+      <p class="series-desc">A common understanding of ODL from institutional, regulatory and pedagogical perspectives.</p>
+      <p class="series-hours">6 hours</p>
+    </div>
+
+    <div class="series-card compulsory active">
+      <span class="you-are-here">You are here</span>
+      <span class="series-tag">Compulsory 2 &mdash; CQM</span>
+      <div class="series-title">ODL Programme Development</div>
+      <p class="series-desc">Planning and developing quality ODL programmes and courses, including Table 4 preparation.</p>
+      <p class="series-hours">8 hours</p>
+    </div>
+
+    <div class="series-card compulsory">
+      <span class="series-tag">Compulsory 3 &mdash; CAD &amp; CQM</span>
+      <div class="series-title">Effective SIM Writing</div>
+      <p class="series-desc">How to write and structure SIMs using the Sunway SIM template.</p>
+      <p class="series-hours">8 hours</p>
+    </div>
+
+    <div class="series-card compulsory">
+      <span class="series-tag">Compulsory 4 &mdash; CQM</span>
+      <div class="series-title">ODL Quality Assurance and Continuous Improvement</div>
+      <p class="series-desc">Programme quality throughout the ODL lifecycle: accreditation, compliance, monitoring and CQI.</p>
+    </div>
+
+    <div class="series-card optional">
+      <span class="series-tag">Optional 5 &mdash; CAD</span>
+      <div class="series-title">Supporting Learners in ODL and Blended Contexts</div>
+      <p class="series-desc">Practical skills for facilitating and supporting learners in online, blended and ODL environments.</p>
+      <p class="series-hours">6 hours</p>
+    </div>
+
+    <div class="series-card optional">
+      <span class="series-tag">Optional 6 &mdash; CAD</span>
+      <div class="series-title">Recording Educational Videos</div>
+      <p class="series-desc">Planning, recording and producing short educational videos for ODL and blended learning.</p>
+      <p class="series-hours">6 hours</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- LEARNING OUTCOMES -->
+<div class="outcomes-box">
+  <h3>What You Will Learn</h3>
+  <p>After completing this course, you will be able to:</p>
+  <ol>
+    <li>Explain the regulatory and institutional framework governing ODL programme development, including MQA COPPA requirements for programme and course classification.</li>
+    <li>Distinguish between ODL delivery methods and determine how each contributes to Student Learning Time and the 80% ODL delivery threshold.</li>
+    <li>Design and document an ODL course using Table 4, including the alignment of learning outcomes, delivery methods, assessment strategies, and SLT allocation.</li>
+    <li>Describe the principles of effective Self-Instructional Material (SIM) development and LMS implementation for ODL courses.</li>
+    <li>Outline the quality assurance, monitoring, and continuous improvement processes that sustain ODL programme quality.</li>
+  </ol>
+</div>
+
+<!-- HOW TO USE -->
+<div class="how-box">
+  <h3>How to Use This Course</h3>
+  <p>This course is self-paced. Work through the pages in order, as each builds on the concepts introduced in the previous ones. Along the way, you will encounter interactive quizzes, case scenarios, and application activities that reinforce your understanding.</p>
+  <div class="step-grid">
+    <div class="step-item">
+      <div class="step-icon">&#128218;</div>
+      <h4>Read &amp; Explore</h4>
+      <p>Work through each page at your own pace</p>
+    </div>
+    <div class="step-item">
+      <div class="step-icon">&#9997;&#65039;</div>
+      <h4>Check Understanding</h4>
+      <p>Complete quizzes and case scenarios on each page</p>
+    </div>
+    <div class="step-item">
+      <div class="step-icon">&#128736;&#65039;</div>
+      <h4>Apply &amp; Build</h4>
+      <p>Use the template to develop your ODL programme</p>
+    </div>
+    <div class="step-item">
+      <div class="step-icon">&#127919;</div>
+      <h4>Reflect &amp; Submit</h4>
+      <p>Complete the reflection and final submission</p>
+    </div>
+  </div>
+</div>
+
+<!-- TEMPLATE DOWNLOAD -->
+<div class="template-box">
+  <div class="template-icon">&#128196;</div>
+  <div>
+    <h3>Your Table 4: ODL Course Planning Document</h3>
+    <p>Download Table 4 before you begin. As you work through each module, you will progressively fill in the sections that correspond to your own course. By the final test, your Table 4 will be a complete blueprint ready for SIM development and LMS implementation.</p>
+    <p style="margin-top: 0.5rem;"><a href="table-4.docx" style="color: var(--orange); font-weight: 600;">Download Table 4 (.docx)</a></p>
+  </div>
+</div>
+
+<!-- PAGE MAP -->
+<h2>Course Pages</h2>
+<p>The course is organised into five thematic modules, followed by a final test and reflection. Click any page title to navigate directly to that topic.</p>
+
+<div class="module-grid">
+
+  <!-- Module 1: Foundations -->
+  <div class="module-card mod-foundations">
+    <div class="module-header">
+      <div class="module-num">1</div>
+      <h3>Foundations of ODL Programme Development</h3>
+    </div>
+    <div class="module-body">
+      <p>Establish a common understanding of ODL, its key terminology, and the classification rules that determine whether a programme or course qualifies as ODL.</p>
+      <ul class="page-list">
+        <li><span class="page-num">01</span> Welcome to ODL Programme Development</li>
+        <li><span class="page-num">02</span> Key Definitions in ODL</li>
+        <li><span class="page-num">03</span> Classifying ODL Programmes &mdash; The 60% Rule</li>
+        <li><span class="page-num">04</span> Classifying ODL Courses &mdash; The 80% Rule</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Module 2: Delivery Methods -->
+  <div class="module-card mod-delivery">
+    <div class="module-header">
+      <div class="module-num">2</div>
+      <h3>ODL Delivery Methods</h3>
+    </div>
+    <div class="module-body">
+      <p>Understand the four delivery methods available in ODL and how each contributes (or does not contribute) to the ODL delivery requirement.</p>
+      <ul class="page-list">
+        <li><span class="page-num">05</span> Synchronous Online Learning</li>
+        <li><span class="page-num">06</span> Asynchronous Online Learning</li>
+        <li><span class="page-num">07</span> Independent Learning in ODL</li>
+        <li><span class="page-num">08</span> Physical Face-to-Face Sessions</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Module 3: Planning Your Course -->
+  <div class="module-card mod-planning">
+    <div class="module-header">
+      <div class="module-num">3</div>
+      <h3>Planning and Designing Your ODL Course</h3>
+    </div>
+    <div class="module-body">
+      <p>Learn to calculate Student Learning Time, complete Table 4, and implement your course on the LMS.</p>
+      <ul class="page-list">
+        <li><span class="page-num">09</span> Student Learning Time (SLT) Framework</li>
+        <li><span class="page-num">10</span> SLT Calculations &amp; Worked Examples</li>
+        <li><span class="page-num">11</span> Table 4 &mdash; Your Course Blueprint</li>
+        <li><span class="page-num">12</span> LMS Implementation &amp; Accreditation Readiness</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Module 4: Assessment & Support -->
+  <div class="module-card mod-assessment">
+    <div class="module-header">
+      <div class="module-num">4</div>
+      <h3>Assessment, Support and Staff Readiness</h3>
+    </div>
+    <div class="module-body">
+      <p>Design assessments for ODL environments, ensure academic integrity, provide effective student support, and prepare staff for ODL delivery.</p>
+      <ul class="page-list">
+        <li><span class="page-num">13</span> Assessment Design in ODL</li>
+        <li><span class="page-num">14</span> Academic Integrity &amp; Alternative Assessment</li>
+        <li><span class="page-num">15</span> Student Support &amp; Regular Substantive Interaction</li>
+        <li><span class="page-num">16</span> Staff Readiness &amp; Competencies</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Module 5: Quality & Compliance -->
+  <div class="module-card mod-quality">
+    <div class="module-header">
+      <div class="module-num">5</div>
+      <h3>Quality Assurance and Continuous Improvement</h3>
+    </div>
+    <div class="module-body">
+      <p>Understand the monitoring, review, and quality assurance processes that sustain ODL programme quality over time.</p>
+      <ul class="page-list">
+        <li><span class="page-num">17</span> Monitoring, Review &amp; Quality Assurance</li>
+        <li><span class="page-num">18</span> Common Risks &amp; Good Practices</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Module 6: Capstone -->
+  <div class="module-card mod-capstone">
+    <div class="module-header">
+      <div class="module-num">&#10003;</div>
+      <h3>Final Test &amp; Reflection</h3>
+    </div>
+    <div class="module-body">
+      <p>Test your understanding of the full course with a 20-question MCQ assessment, then reflect on your learning journey and plan your next steps.</p>
+      <ul class="page-list">
+        <li><span class="page-num">19</span> Final Test: Comprehensive Review</li>
+        <li><span class="page-num">20</span> Reflection</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<!-- KEY POINT -->
+<div class="key-point">
+  <strong>How the modules connect:</strong> Module 1 gives you the regulatory foundation. Module 2 explains the delivery methods you will choose from. Module 3 is where you plan and document your course design. Module 4 ensures your course supports learners and staff effectively. Module 5 keeps quality at the centre. The final test brings it all together.
+</div>
+
+<!-- PREREQUISITE -->
+<h3>Before You Begin</h3>
+<p>This course assumes that you have a working understanding of ODL concepts. If you have not yet completed <strong>Compulsory 1: Introduction to ODL</strong>, we recommend doing so first. That course covers the broader ODL landscape, theoretical foundations, and the institutional context that this course builds upon.</p>
+
+<p>You will also find it helpful to have the following ready before you start:</p>
+<ul style="padding-left: 1.5rem; margin-bottom: 1.5rem;">
+  <li>A specific course in mind that you plan to develop or convert for ODL delivery</li>
+  <li>Access to your course's current curriculum documents, learning outcomes, and assessment plan</li>
+  <li>The ODL Programme Development Template (download above)</li>
+</ul>
+
+<!-- FOOTER -->
+<div class="course-footer">
+  <p>ODL Programme Development &bull; Compulsory 2 &bull; CAD &amp; CQM<br>
+  Part of the ODL Professional Development Series</p>
+</div>
+
+</body>
+</html>

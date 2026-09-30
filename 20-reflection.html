@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reflection Activity — ODL Programme Development</title>
+<style>
+  :root {
+    --navy: #1a365d;
+    --blue: #2b6cb0;
+    --light-blue: #ebf4ff;
+    --green: #276749;
+    --light-green: #f0fff4;
+    --orange: #c05621;
+    --light-orange: #fffaf0;
+    --purple: #553c9a;
+    --light-purple: #faf5ff;
+    --teal: #285e61;
+    --light-teal: #e6fffa;
+    --red: #c53030;
+    --light-red: #fff5f5;
+    --gray: #4a5568;
+    --light-gray: #f7fafc;
+    --border: #e2e8f0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #2d3748;
+    line-height: 1.7;
+    background: #fff;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .page-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page-nav a {
+    color: var(--blue);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--blue);
+    border-radius: 6px;
+    transition: background 0.2s;
+  }
+
+  .page-nav a:hover { background: var(--light-blue); }
+  .page-nav .page-label { font-size: 0.85rem; color: var(--gray); }
+
+  .page-header {
+    background: linear-gradient(135deg, var(--red) 0%, var(--orange) 100%);
+    color: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+  }
+
+  .page-header .module-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    padding: 0.2rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .page-header h1 { font-size: 1.6rem; margin-bottom: 0.4rem; }
+  .page-header .page-subtitle { font-size: 0.95rem; opacity: 0.85; }
+
+  h2 {
+    color: var(--navy);
+    font-size: 1.3rem;
+    margin: 2rem 0 1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid var(--blue);
+    display: inline-block;
+  }
+
+  h3 { color: var(--navy); font-size: 1.05rem; margin: 1.5rem 0 0.5rem; }
+  p { margin-bottom: 1rem; }
+
+  .key-point {
+    background: var(--light-blue);
+    border-left: 5px solid var(--blue);
+    padding: 1rem 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 1.5rem 0;
+    font-size: 0.95rem;
+  }
+
+  .key-point strong { color: var(--navy); }
+
+  .principle-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .principle-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem;
+    background: var(--light-gray);
+  }
+
+  .principle-card h4 {
+    color: var(--navy);
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .principle-card p {
+    font-size: 0.87rem;
+    color: var(--gray);
+    margin: 0;
+  }
+
+  /* Reflection cards */
+  .reflection-card {
+    background: var(--light-gray);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: box-shadow 0.2s;
+  }
+
+  .reflection-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+
+  .reflection-card .prompt-number {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--red) 0%, var(--orange) 100%);
+    color: #fff;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 32px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .reflection-card .prompt-question {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--navy);
+    margin-bottom: 1rem;
+    line-height: 1.6;
+  }
+
+  .reflection-card textarea {
+    width: 100%;
+    min-height: 120px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #2d3748;
+    resize: vertical;
+    transition: border-color 0.2s;
+    background: #fff;
+  }
+
+  .reflection-card textarea:focus {
+    outline: none;
+    border-color: var(--blue);
+  }
+
+  .reflection-card textarea::placeholder {
+    color: #a0aec0;
+    font-style: italic;
+  }
+
+  .reflection-card .char-count {
+    text-align: right;
+    font-size: 0.78rem;
+    color: #a0aec0;
+    margin-top: 0.4rem;
+  }
+
+  /* Save button */
+  .save-reflection-btn {
+    display: block;
+    background: linear-gradient(135deg, var(--blue) 0%, var(--navy) 100%);
+    color: #fff;
+    border: none;
+    padding: 0.65rem 2rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin: 1.5rem auto;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+
+  .save-reflection-btn:hover { opacity: 0.9; }
+  .save-reflection-btn:active { transform: scale(0.98); }
+
+  .save-confirmation {
+    text-align: center;
+    color: var(--green);
+    font-weight: 600;
+    font-size: 0.92rem;
+    margin-top: 0.75rem;
+    display: none;
+    padding: 0.75rem;
+    background: var(--light-green);
+    border-radius: 8px;
+    border: 1px solid var(--green);
+  }
+
+  .save-confirmation.show { display: block; }
+
+  /* Congratulations box */
+  .congrats-box {
+    background: linear-gradient(135deg, #fffaf0 0%, #fefcbf 50%, #f0fff4 100%);
+    border: 2px solid var(--orange);
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 2rem 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .congrats-box::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--red), var(--orange), #d69e2e, var(--green), var(--blue), var(--purple));
+  }
+
+  .congrats-box .congrats-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.75rem;
+    display: block;
+  }
+
+  .congrats-box h3 {
+    color: var(--navy);
+    font-size: 1.25rem;
+    margin: 0 0 1rem;
+  }
+
+  .congrats-box p {
+    font-size: 0.95rem;
+    color: var(--gray);
+    max-width: 680px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  /* What's next cards */
+  .next-cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .next-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    border-left: 5px solid var(--purple);
+    background: var(--light-purple);
+  }
+
+  .next-card h4 {
+    color: var(--purple);
+    font-size: 0.95rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .next-card .card-meta {
+    font-size: 0.8rem;
+    color: var(--gray);
+    margin-bottom: 0.5rem;
+    font-style: italic;
+  }
+
+  .next-card p {
+    font-size: 0.88rem;
+    color: var(--gray);
+    margin: 0;
+  }
+
+  .next-card.optional {
+    border-left-color: var(--teal);
+    background: var(--light-teal);
+  }
+
+  .next-card.optional h4 { color: var(--teal); }
+
+  /* Course journey visual */
+  .journey-strip {
+    display: flex;
+    gap: 0;
+    margin: 1.5rem 0;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .journey-segment {
+    flex: 1;
+    padding: 0.6rem 0.35rem;
+    text-align: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.3;
+  }
+
+  .journey-segment:nth-child(1) { background: var(--blue); }
+  .journey-segment:nth-child(2) { background: var(--teal); }
+  .journey-segment:nth-child(3) { background: var(--green); }
+  .journey-segment:nth-child(4) { background: var(--orange); }
+  .journey-segment:nth-child(5) { background: var(--purple); }
+  .journey-segment:nth-child(6) { background: var(--red); }
+
+  .page-footer {
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--gray);
+    font-size: 0.85rem;
+  }
+
+  .page-footer a {
+    color: var(--blue);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .page-footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 600px) {
+    body { padding: 1rem; }
+    .principle-grid { grid-template-columns: 1fr; }
+    .page-header h1 { font-size: 1.3rem; }
+    .journey-segment { font-size: 0.6rem; padding: 0.5rem 0.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<div class="page-nav">
+  <a href="19-final-test.html">&larr; Previous</a>
+  <span class="page-label">Page 20 of 20</span>
+  <a href="00-homepage.html">Next &rarr;</a>
+</div>
+
+<!-- HEADER -->
+<div class="page-header">
+  <div class="module-tag">Module 6 &bull; Capstone and Reflection</div>
+  <h1>Reflection Activity</h1>
+  <p class="page-subtitle">Consolidate your learning, reflect on your journey, and plan your next steps in ODL course development</p>
+</div>
+
+<!-- INTRODUCTION -->
+<p>You have journeyed through 20 pages covering the full ODL Programme Development process &mdash; from foundational definitions and regulatory requirements to SLT calculations, Table 4 design, LMS implementation, assessment strategies, academic integrity, student support, staff readiness, monitoring, risk management, and finally the capstone project where you applied everything to a real course.</p>
+
+<p>This reflection activity invites you to pause and consolidate what you have learned. Reflection is not a luxury &mdash; it is an essential part of professional development. Research on adult learning consistently shows that structured reflection deepens understanding, reveals connections between concepts, and strengthens the transfer of learning from training contexts to real practice.</p>
+
+<p>The five prompts below are not quizzes. There are no right or wrong answers. They are designed to help you process your learning experience, identify areas where you have grown, and plan concrete next steps. Take your time with each one. The more thoughtfully you engage with these prompts, the more value you will extract from them.</p>
+
+<div class="journey-strip">
+  <div class="journey-segment">Pages 1&ndash;3<br>ODL Foundations</div>
+  <div class="journey-segment">Pages 4&ndash;6<br>MQF &amp; Credits</div>
+  <div class="journey-segment">Pages 7&ndash;11<br>SLT &amp; Table 4</div>
+  <div class="journey-segment">Pages 12&ndash;13<br>LMS &amp; Assessment</div>
+  <div class="journey-segment">Pages 14&ndash;17<br>Integrity &amp; Support</div>
+  <div class="journey-segment">Pages 18&ndash;20<br>Risks &amp; Capstone</div>
+</div>
+
+<!-- REFLECTION PROMPTS -->
+<h2>Reflection Prompts</h2>
+
+<p>Respond to each prompt below. Your reflections are private &mdash; they are displayed only in your browser and are not transmitted anywhere. Use the text areas to capture your thoughts in as much detail as you wish.</p>
+
+<div class="reflection-card">
+  <div class="prompt-number">1</div>
+  <div class="prompt-question">What was the most important concept you learned in this course, and how will it change the way you design or deliver your courses?</div>
+  <textarea id="ref1" placeholder="Consider the concepts that shifted your understanding &mdash; perhaps the ODL definition, the SLT multiplier, constructive alignment, or the distinction between file-sharing and learning design. How will this concept change what you do in practice?" oninput="updateCount('ref1','count1')"></textarea>
+  <div class="char-count" id="count1">0 characters</div>
+</div>
+
+<div class="reflection-card">
+  <div class="prompt-number">2</div>
+  <div class="prompt-question">Think about the SLT calculation process. What was the most surprising or challenging aspect of calculating ODL/total SLT? How confident are you in applying this to your own courses?</div>
+  <textarea id="ref2" placeholder="Many lecturers find the 2-3x multiplier counterintuitive at first. The distinction between scheduled duration and actual student learning time can be revealing. What stood out for you? Rate your confidence on a scale of 1-10." oninput="updateCount('ref2','count2')"></textarea>
+  <div class="char-count" id="count2">0 characters</div>
+</div>
+
+<div class="reflection-card">
+  <div class="prompt-number">3</div>
+  <div class="prompt-question">Review your capstone project. Which component (Table 4, assessments, LMS plan, RSI plan) was most challenging to develop, and why?</div>
+  <textarea id="ref3" placeholder="Each component of the capstone tests different skills. Table 4 requires systematic documentation, assessments demand alignment thinking, LMS planning requires instructional design, and RSI scheduling requires student-centred thinking. Which one stretched you the most?" oninput="updateCount('ref3','count3')"></textarea>
+  <div class="char-count" id="count3">0 characters</div>
+</div>
+
+<div class="reflection-card">
+  <div class="prompt-number">4</div>
+  <div class="prompt-question">What is one common risk from Page 18 that you recognise in your current teaching practice? What specific action will you take to address it?</div>
+  <textarea id="ref4" placeholder="The common risks checklist covers a wide range of issues &mdash; from SLT miscalculation and weak alignment to LMS misuse and absent RSI. Which risk resonates most with your current practice? What concrete step can you take this semester to mitigate it?" oninput="updateCount('ref4','count4')"></textarea>
+  <div class="char-count" id="count4">0 characters</div>
+</div>
+
+<div class="reflection-card">
+  <div class="prompt-number">5</div>
+  <div class="prompt-question">What are your next steps? List three actions you will take in the next 30 days to advance your ODL course development.</div>
+  <textarea id="ref5" placeholder="Be specific and actionable. Instead of 'improve my LMS,' try 'restructure Week 3 module to include a discussion forum and self-check quiz.' Instead of 'work on assessments,' try 'redesign the mid-semester assignment to align with CLO 3 using a rubric.' Writing specific commitments increases the likelihood of follow-through." oninput="updateCount('ref5','count5')"></textarea>
+  <div class="char-count" id="count5">0 characters</div>
+</div>
+
+<button class="save-reflection-btn" onclick="saveReflection()">Save My Reflections</button>
+<div class="save-confirmation" id="saveConfirm">Your reflections have been noted. Thank you for taking the time to reflect on your learning journey. You can revisit and update these responses at any time.</div>
+
+<!-- KEY TAKEAWAYS -->
+<h2>Key Takeaways</h2>
+
+<p>As you complete this course, here are the core principles that should guide your ODL practice. These eight messages have been reinforced throughout all 20 pages. Keep them in mind as you develop, deliver, and refine your ODL courses.</p>
+
+<div class="principle-grid">
+  <div class="principle-card">
+    <h4>ODL Means &ge;80% Online SLT</h4>
+    <p>A course qualifies as ODL only when at least 80% of total Student Learning Time is delivered through online approaches (synchronous online, asynchronous, and LMS-independent learning). This is the regulatory threshold, not a suggestion.</p>
+  </div>
+  <div class="principle-card">
+    <h4>SLT Is Not Duration</h4>
+    <p>Student Learning Time measures the actual time students spend learning, not the scheduled duration of an activity. For asynchronous and independent learning, always multiply estimated engagement time by 2&ndash;3&times; to account for pausing, re-reading, and reflection.</p>
+  </div>
+  <div class="principle-card">
+    <h4>Table 4 Is Your Blueprint</h4>
+    <p>Table 4 is the central document of your ODL course design. Everything flows from it &mdash; your CLOs, activities, assessments, and SLT distribution must all be documented and aligned within this single template. A strong Table 4 makes everything else easier.</p>
+  </div>
+  <div class="principle-card">
+    <h4>LMS Is a Learning Environment</h4>
+    <p>The Learning Management System is not a file repository. It is a structured learning environment where students engage with content, interact with peers and instructors, complete activities, and receive feedback. Design it as a learning experience, not a document library.</p>
+  </div>
+  <div class="principle-card">
+    <h4>Constructive Alignment</h4>
+    <p>Every element of your course must connect: CLO &rarr; Learning Activity &rarr; Assessment &rarr; SLT. The verb in each CLO tells you the cognitive level required. Activities prepare students for that level. Assessments measure achievement at that level. SLT allocates time for that level.</p>
+  </div>
+  <div class="principle-card">
+    <h4>RSI Must Be Regular AND Substantive</h4>
+    <p>Regular and Substantive Interaction is a requirement, not a recommendation. &ldquo;Regular&rdquo; means scheduled and consistent. &ldquo;Substantive&rdquo; means focused on course content and learning &mdash; not just administrative announcements. Plan RSI before the semester starts.</p>
+  </div>
+  <div class="principle-card">
+    <h4>Monitor Continuously</h4>
+    <p>Do not wait until the semester ends to check whether students are engaging. Use LMS analytics to monitor login frequency, content access, assessment submission, and participation on a weekly basis. Define intervention triggers and act on them early.</p>
+  </div>
+  <div class="principle-card">
+    <h4>Risk Checklist as Quality Gate</h4>
+    <p>The common risks checklist from Page 18 is your final quality gate. Run through it before submitting your course for approval and again before each semester begins. A plan that passes every item on that list has a strong foundation for quality ODL delivery.</p>
+  </div>
+</div>
+
+<div class="key-point">
+  <strong>These principles are interconnected.</strong> You cannot separate SLT calculation from Table 4 design, or constructive alignment from assessment planning, or RSI from student support. ODL Programme Development is a system &mdash; each component reinforces the others. When one element is weak, it weakens the entire course. When every element is strong, the result is a coherent, quality learning experience that meets regulatory requirements and serves students well.
+</div>
+
+<!-- WHAT'S NEXT -->
+<h2>What&rsquo;s Next?</h2>
+
+<p>This course &mdash; ODL Programme Development &mdash; is one component of the broader ODL Professional Development Series. The knowledge you have gained here provides the foundation for course planning and design. The next courses in the series build on this foundation, moving from planning to implementation and delivery.</p>
+
+<div class="next-cards">
+  <div class="next-card">
+    <h4>Compulsory 2: CQM &mdash; Effective SIM Writing</h4>
+    <p class="card-meta">8 hours &bull; Self-paced &bull; Online</p>
+    <p>Self-Instructional Materials (SIMs) are the detailed, learner-centred content that students engage with inside each LMS module. This course teaches you how to develop effective SIMs &mdash; the narratives, activities, self-checks, and learning pathways that make ODL content work. You will learn the six attributes of effective SIMs, practice writing for self-directed learners, and develop actual SIM content for your course. If ODL Programme Development taught you to plan the blueprint, Effective SIM Writing teaches you to build the house.</p>
+  </div>
+
+  <div class="next-card">
+    <h4>Compulsory 3: CETL &mdash; ODL Training Programme</h4>
+    <p class="card-meta">16 hours &bull; Face-to-face &bull; On campus</p>
+    <p>This hands-on training programme focuses on ODL delivery &mdash; the practical skills you need to facilitate learning, manage online interactions, provide effective feedback, and adapt your teaching in real time based on student engagement data. The face-to-face format allows for practice teaching sessions, peer observation, and immediate feedback from experienced ODL practitioners. This is where theory meets practice.</p>
+  </div>
+
+  <div class="next-card optional">
+    <h4>Optional Modules</h4>
+    <p class="card-meta">Varied duration &bull; Mixed delivery</p>
+    <p>Additional optional modules are available for lecturers who wish to deepen their expertise in specialised topics such as advanced assessment design, accessibility and inclusive design, learning analytics, micro-credential development, and quality assurance frameworks. Check with your institution&rsquo;s staff development office for the current catalogue of optional modules and enrolment schedules.</p>
+  </div>
+</div>
+
+<!-- CONGRATULATIONS BOX -->
+<div class="congrats-box">
+  <span class="congrats-icon">&#127891;</span>
+  <h3>Congratulations on Completing the ODL Programme Development Course!</h3>
+  <p>You now have the knowledge and tools to design, plan, and implement quality ODL courses that meet MQA requirements and provide meaningful learning experiences for your students. Your capstone project is your blueprint &mdash; now it is time to bring it to life on the LMS. Every concept you have encountered in these 20 pages, from ODL definitions to risk management, has prepared you for this moment. The courses you develop from here will shape the learning experiences of your students for semesters to come.</p>
+</div>
+
+<!-- SUMMARY / FOOTER MESSAGE -->
+<h2>Thank You</h2>
+
+<p>Thank you for completing this course. Your engagement with these 20 pages &mdash; reading, calculating, designing, reflecting &mdash; demonstrates a genuine commitment to quality ODL education. The principles you have learned here are not just regulatory requirements; they are the foundations of effective teaching in any mode of delivery.</p>
+
+<p>You can revisit any page using the navigation links at the top of this page, or return to the homepage to explore the broader ODL Professional Development Series. Each page is designed to stand alone as a reference, so you can return to specific topics as questions arise during your course development work.</p>
+
+<p>Your ODL journey does not end here &mdash; it begins. The capstone project you developed on Page 19 is your starting point. Refine it, implement it, gather feedback from your students, and iterate. Quality ODL is not achieved in a single pass; it is built through continuous improvement, informed by evidence and guided by the principles you have mastered in this course.</p>
+
+<p style="text-align: center; margin-top: 2rem;">
+  <a href="00-homepage.html" style="display: inline-block; background: linear-gradient(135deg, var(--red) 0%, var(--orange) 100%); color: #fff; text-decoration: none; padding: 0.7rem 2rem; border-radius: 8px; font-weight: 600; font-size: 0.95rem;">Return to Homepage &rarr;</a>
+</p>
+
+<script>
+  function updateCount(textareaId, countId) {
+    var textarea = document.getElementById(textareaId);
+    var counter = document.getElementById(countId);
+    var len = textarea.value.length;
+    counter.textContent = len + ' character' + (len !== 1 ? 's' : '');
+  }
+
+  function saveReflection() {
+    var btn = document.querySelector('.save-reflection-btn');
+    var msg = document.getElementById('saveConfirm');
+    btn.textContent = 'Saved!';
+    btn.style.opacity = '0.7';
+    btn.style.cursor = 'default';
+    msg.classList.add('show');
+
+    setTimeout(function() {
+      btn.textContent = 'Save My Reflections';
+      btn.style.opacity = '1';
+      btn.style.cursor = 'pointer';
+    }, 3000);
+  }
+</script>
+
+<!-- FOOTER -->
+<div class="page-footer">
+  <p>ODL Programme Development &bull; Page 20 of 20<br>
+  Part of the ODL Professional Development Series<br><br>
+  <a href="00-homepage.html">Return to Homepage</a></p>
+</div>
+
+</body>
+</html>

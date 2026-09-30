@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physical Face-to-Face Sessions — ODL Programme Development</title>
+<style>
+  :root {
+    --navy: #1a365d;
+    --blue: #2b6cb0;
+    --light-blue: #ebf4ff;
+    --green: #276749;
+    --light-green: #f0fff4;
+    --orange: #c05621;
+    --light-orange: #fffaf0;
+    --purple: #553c9a;
+    --light-purple: #faf5ff;
+    --teal: #285e61;
+    --light-teal: #e6fffa;
+    --red: #c53030;
+    --light-red: #fff5f5;
+    --gray: #4a5568;
+    --light-gray: #f7fafc;
+    --border: #e2e8f0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #2d3748;
+    line-height: 1.7;
+    background: #fff;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .page-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page-nav a {
+    color: var(--blue);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--blue);
+    border-radius: 6px;
+    transition: background 0.2s;
+  }
+
+  .page-nav a:hover { background: var(--light-blue); }
+  .page-nav .page-label { font-size: 0.85rem; color: var(--gray); }
+
+  .page-header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--teal) 100%);
+    color: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+  }
+
+  .page-header .module-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    padding: 0.2rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .page-header h1 { font-size: 1.6rem; margin-bottom: 0.4rem; }
+  .page-header .page-subtitle { font-size: 0.95rem; opacity: 0.85; }
+
+  h2 {
+    color: var(--navy);
+    font-size: 1.3rem;
+    margin: 2rem 0 1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid var(--blue);
+    display: inline-block;
+  }
+
+  h3 { color: var(--navy); font-size: 1.05rem; margin: 1.5rem 0 0.5rem; }
+  p { margin-bottom: 1rem; }
+
+  .key-point {
+    background: var(--light-blue);
+    border-left: 5px solid var(--blue);
+    padding: 1rem 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 1.5rem 0;
+    font-size: 0.95rem;
+  }
+
+  .key-point strong { color: var(--navy); }
+
+  .case-box {
+    background: var(--light-orange);
+    border-left: 5px solid var(--orange);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .case-box h3 { color: var(--orange); margin-top: 0; margin-bottom: 0.75rem; }
+  .case-box .scenario { font-style: italic; margin-bottom: 1rem; }
+
+  /* Never-counts card */
+  .never-card {
+    background: var(--light-red);
+    border: 2px solid #feb2b2;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    text-align: center;
+  }
+
+  .never-card h3 { color: var(--red); margin-top: 0; margin-bottom: 0.75rem; }
+
+  .never-tags {
+    display: flex;
+    justify-content: center;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+  }
+
+  .never-tag {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+
+  .never-tag.yes { background: var(--green); color: #fff; }
+  .never-tag.no { background: var(--red); color: #fff; }
+
+  /* 20% cap visual */
+  .cap-visual {
+    margin: 1.5rem 0;
+  }
+
+  .cap-bar-wrapper {
+    position: relative;
+    height: 40px;
+    background: var(--light-green);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+  }
+
+  .cap-bar-fill {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .cap-bar-fill.safe { background: var(--green); }
+  .cap-bar-fill.over { background: var(--red); }
+
+  .cap-marker {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 3px;
+    background: var(--navy);
+  }
+
+  .cap-marker-label {
+    position: absolute;
+    top: -22px;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--navy);
+    white-space: nowrap;
+  }
+
+  .cap-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--gray);
+  }
+
+  /* Justification box */
+  .just-box {
+    background: var(--light-purple);
+    border: 1px solid #e9d8fd;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .just-box h3 { color: var(--purple); margin-top: 0; }
+
+  .just-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .just-item {
+    background: #fff;
+    border: 1px solid #e9d8fd;
+    border-radius: 6px;
+    padding: 0.8rem 1rem;
+  }
+
+  .just-item h4 {
+    color: var(--purple);
+    font-size: 0.85rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .just-item p {
+    font-size: 0.82rem;
+    color: var(--gray);
+    margin: 0;
+  }
+
+  /* Examples */
+  .examples-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.8rem;
+    margin: 1.5rem 0;
+  }
+
+  .example-chip {
+    background: var(--light-gray);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    font-size: 0.88rem;
+    color: var(--navy);
+    font-weight: 600;
+    text-align: center;
+  }
+
+  /* Master comparison table */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.86rem;
+  }
+
+  .compare-table th {
+    background: var(--navy);
+    color: #fff;
+    padding: 0.65rem 0.6rem;
+    text-align: center;
+    font-size: 0.8rem;
+  }
+
+  .compare-table th:first-child { text-align: left; }
+
+  .compare-table td {
+    padding: 0.5rem 0.6rem;
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+    font-size: 0.85rem;
+  }
+
+  .compare-table td:first-child {
+    text-align: left;
+    font-weight: 600;
+    color: var(--navy);
+  }
+
+  .compare-table tr:last-child td { border-bottom: none; }
+  .compare-table .highlight-col { background: #fff5f5; }
+
+  .tick { color: var(--green); font-weight: 700; }
+  .cross { color: var(--red); font-weight: 700; }
+  .maybe-tick { color: #975a16; font-weight: 700; }
+
+  /* MCQ quiz */
+  .mcq-box {
+    background: var(--light-green);
+    border-left: 5px solid var(--green);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .mcq-box h3 { color: var(--green); margin-top: 0; margin-bottom: 0.75rem; }
+  .mcq-box .question { font-weight: 600; margin-bottom: 1rem; }
+
+  .mcq-box .options {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem;
+  }
+
+  .mcq-box .options li {
+    padding: 0.6rem 1rem;
+    margin-bottom: 0.4rem;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.93rem;
+  }
+
+  .mcq-box .options li:hover { border-color: var(--green); background: #f0fff4; }
+  .mcq-box .options li.correct { background: #c6f6d5; border-color: var(--green); font-weight: 600; }
+  .mcq-box .options li.incorrect { background: #fed7d7; border-color: var(--red); }
+
+  .mcq-box .feedback {
+    display: none;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-top: 0.5rem;
+    font-size: 0.92rem;
+  }
+
+  .mcq-box .feedback.show { display: block; }
+  .mcq-box .feedback.correct-fb { background: #c6f6d5; color: #22543d; }
+  .mcq-box .feedback.incorrect-fb { background: #fed7d7; color: #742a2a; }
+
+  .mcq-box .check-btn {
+    background: var(--green);
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+
+  .mcq-box .check-btn:hover { background: #22543d; }
+
+  .page-footer {
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--gray);
+    font-size: 0.85rem;
+  }
+
+  /* Table 4 action prompt */
+  .table4-action {
+    background: #FFFBEB;
+    border-left: 5px solid #D97706;
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+
+  .table4-action h3 {
+    color: #B45309;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .table4-action .table4-icon { font-size: 1.3rem; }
+
+  .table4-action p {
+    font-size: 0.93rem;
+    margin-bottom: 0;
+  }
+
+  .table4-action .table4-intro {
+    font-size: 0.9rem;
+    color: #92400E;
+    font-style: italic;
+    margin-bottom: 0.5rem;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 1rem; }
+    .page-header h1 { font-size: 1.3rem; }
+    .just-grid { grid-template-columns: 1fr; }
+    .examples-grid { grid-template-columns: 1fr; }
+    .compare-table { font-size: 0.78rem; }
+    .compare-table th, .compare-table td { padding: 0.35rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<div class="page-nav">
+  <a href="07-independent.html">&larr; Previous</a>
+  <span class="page-label">Page 8 of 20</span>
+  <a href="09-slt-framework.html">Next &rarr;</a>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="module-tag">Module 2 &bull; Delivery Methods</div>
+  <h1>Physical Face-to-Face Sessions</h1>
+  <p class="page-subtitle">The only delivery method that does not count as ODL &mdash; and why it is still sometimes necessary</p>
+</div>
+
+<!-- BRIDGE FROM PREVIOUS PAGES -->
+<p>You have now covered all three online delivery methods: synchronous, asynchronous, and independent learning. Each contributes to ODL delivery in a different way. This page covers the fourth and final method: physical face-to-face sessions. Unlike the online methods, physical F2F does <em>not</em> count as ODL delivery. Yet it remains an important &mdash; and sometimes essential &mdash; component of many ODL courses. Understanding when and how to include it, and where the limits are, is critical for your course design.</p>
+
+<!-- DEFINITION -->
+<h2>What Are Physical Face-to-Face Sessions?</h2>
+
+<p>Physical face-to-face learning refers to teaching and learning activities where academic staff and students are <strong>physically present at the same location</strong> and interact directly in person. These activities are conducted in traditional learning environments such as classrooms, laboratories, studios, workshops, clinical facilities, simulation centres, or field sites.</p>
+
+<p>While ODL programmes primarily rely on online and distance learning approaches, limited physical face-to-face activities may be included to support the achievement of learning outcomes that cannot be effectively delivered through online methods alone.</p>
+
+<div class="key-point">
+  <strong>The fundamental distinction:</strong> Online methods deliver learning through digital technologies &mdash; that is what makes them ODL. Physical F2F delivers learning through physical co-location &mdash; that is what makes it <em>not</em> ODL. The question is not whether physical sessions are valuable (they often are), but whether they should count towards your ODL delivery percentage (they should not).
+</div>
+
+<!-- WHEN TO USE -->
+<h2>When Are Physical F2F Sessions Appropriate?</h2>
+
+<p>Physical face-to-face sessions should only be included in an ODL course where there is a clear justification. The guideline recognises four types of justification:</p>
+
+<div class="just-box">
+  <h3>Acceptable Justifications</h3>
+  <div class="just-grid">
+    <div class="just-item">
+      <h4>Pedagogical</h4>
+      <p>The learning outcome requires hands-on experience, physical manipulation, or in-person demonstration that cannot be replicated online.</p>
+    </div>
+    <div class="just-item">
+      <h4>Practical</h4>
+      <p>Specialised equipment, facilities, or environments are required (labs, studios, clinical settings).</p>
+    </div>
+    <div class="just-item">
+      <h4>Professional</h4>
+      <p>Professional accreditation or competency standards require in-person assessment or demonstration.</p>
+    </div>
+    <div class="just-item">
+      <h4>Regulatory</h4>
+      <p>Government, accreditation, or licensing bodies mandate physical attendance for specific components.</p>
+    </div>
+  </div>
+</div>
+
+<p>If your reason for including physical sessions does not fall into one of these categories, reconsider whether the activity could be redesigned for online delivery.</p>
+
+<!-- EXAMPLES -->
+<h2>Examples of Physical F2F Activities</h2>
+
+<div class="examples-grid">
+  <div class="example-chip">Laboratory Practicals</div>
+  <div class="example-chip">Clinical Training</div>
+  <div class="example-chip">Studio Sessions</div>
+  <div class="example-chip">Fieldwork</div>
+  <div class="example-chip">Simulation Labs</div>
+  <div class="example-chip">Competency Assessments</div>
+</div>
+
+<!-- WHAT IT COUNTS AS -->
+<h2>What Physical F2F Counts As</h2>
+
+<div class="never-card">
+  <h3>Physical Face-to-Face Sessions Count As:</h3>
+  <div class="never-tags">
+    <span class="never-tag yes">Contact Hours</span>
+    <span class="never-tag yes">Student Learning Time</span>
+    <span class="never-tag no">ODL Delivery</span>
+  </div>
+</div>
+
+<p>Physical F2F sessions are recognised as traditional contact hours because academic staff and students engage directly in the same physical environment. They also form part of the total SLT of the course. However, they are <strong>not considered ODL delivery</strong> because the learning takes place through physical attendance rather than online or distance learning approaches.</p>
+
+<div class="key-point">
+  <strong>The consequence:</strong> Every hour of physical F2F reduces the proportion of ODL delivery in your course. If your physical F2F exceeds 20% of total SLT, your course may fail the 80% ODL threshold and lose its ODL classification.
+</div>
+
+<!-- THE 20% CAP -->
+<h2>The 20% Cap</h2>
+
+<p>For an ODL course, physical face-to-face activities should generally not exceed <strong>20% of the total Student Learning Time</strong>. The majority of learning activities should be delivered through online and distance learning approaches.</p>
+
+<div class="cap-visual">
+  <p style="font-size: 0.85rem; font-weight: 600; color: var(--navy); margin-bottom: 1.5rem;">Example: 3-credit course = 120 hours SLT. Maximum F2F = 24 hours.</p>
+
+  <div style="position: relative; padding-top: 1.5rem;">
+    <div class="cap-marker" style="left: 80%;">
+      <span class="cap-marker-label">20% limit (24 hrs)</span>
+    </div>
+    <div class="cap-bar-wrapper">
+      <div class="cap-bar-fill safe" style="width: 15%;">18 hrs (15%) &check;</div>
+    </div>
+    <div class="cap-labels">
+      <span>0 hrs</span>
+      <span>120 hrs total SLT</span>
+    </div>
+  </div>
+
+  <div style="position: relative; padding-top: 2rem; margin-top: 1rem;">
+    <div class="cap-marker" style="left: 80%;">
+      <span class="cap-marker-label">20% limit (24 hrs)</span>
+    </div>
+    <div class="cap-bar-wrapper">
+      <div class="cap-bar-fill over" style="width: 30%;">36 hrs (30%) &times;</div>
+    </div>
+    <div class="cap-labels">
+      <span>0 hrs</span>
+      <span>120 hrs total SLT</span>
+    </div>
+  </div>
+</div>
+
+<p>The first bar shows a course with 18 hours of physical F2F (15%) &mdash; safely within the 20% cap. The second bar shows a course with 36 hours (30%) &mdash; exceeding the cap, which puts the course's ODL classification at risk.</p>
+
+<!-- MASTER COMPARISON -->
+<h2>All Four Delivery Methods: The Complete Picture</h2>
+
+<p>You now have the full picture. Here is how all four delivery methods compare:</p>
+
+<table class="compare-table">
+  <tr>
+    <th>Category</th>
+    <th>Synchronous</th>
+    <th>Asynchronous</th>
+    <th>Independent</th>
+    <th class="highlight-col">Physical F2F</th>
+  </tr>
+  <tr>
+    <td>Staff involvement</td>
+    <td>Facilitates live</td>
+    <td>Designs &amp; guides</td>
+    <td>Sets framework</td>
+    <td class="highlight-col">Facilitates in person</td>
+  </tr>
+  <tr>
+    <td>Real-time interaction</td>
+    <td><span class="tick">Yes</span></td>
+    <td><span class="cross">No</span></td>
+    <td><span class="cross">No</span></td>
+    <td class="highlight-col"><span class="tick">Yes</span></td>
+  </tr>
+  <tr>
+    <td>Counts as ODL delivery</td>
+    <td><span class="tick">Yes</span></td>
+    <td><span class="tick">Yes</span></td>
+    <td><span class="maybe-tick">Conditional</span></td>
+    <td class="highlight-col"><span class="cross">No</span></td>
+  </tr>
+  <tr>
+    <td>Counts as SLT</td>
+    <td><span class="tick">Yes</span></td>
+    <td><span class="tick">Yes</span></td>
+    <td><span class="tick">Yes</span></td>
+    <td class="highlight-col"><span class="tick">Yes</span></td>
+  </tr>
+  <tr>
+    <td>Counts as contact hours</td>
+    <td><span class="tick">Yes</span></td>
+    <td><span class="cross">No</span></td>
+    <td><span class="cross">No</span></td>
+    <td class="highlight-col"><span class="tick">Yes</span></td>
+  </tr>
+  <tr>
+    <td>Maximum proportion</td>
+    <td>No limit</td>
+    <td>No limit</td>
+    <td>No limit</td>
+    <td class="highlight-col"><strong>&le; 20% of SLT</strong></td>
+  </tr>
+</table>
+
+<!-- TRANSITION TO APPLICATION -->
+<h2>Designing with Physical F2F in Mind</h2>
+
+<p>You now understand all four delivery methods and how they interact with the ODL classification rules. The practical challenge is balancing them in your course design. Physical F2F is not forbidden &mdash; it is simply capped and must be justified. The case below tests whether you can identify when physical F2F is appropriate and when it jeopardises a course's ODL status.</p>
+
+<!-- TABLE 4 ACTION -->
+<p>Before you move on, take a moment to apply what you have learned.</p>
+
+<div class="table4-action">
+  <h3><span class="table4-icon">&#128221;</span> Update Your Table 4</h3>
+  <p class="table4-intro">You now understand all four delivery modes.</p>
+  <p>In your Table 4, identify which activities in your course fall into each category: synchronous online, asynchronous online, structured independent learning, and physical face-to-face. Make sure your planned F2F component does not exceed 20% of total SLT.</p>
+</div>
+
+<!-- CASE SCENARIO -->
+<div class="case-box">
+  <h3>Case: The 25% Problem</h3>
+  <p class="scenario">Dr. Lim designs a 4-credit ODL course (160 hours SLT) for a nursing programme. She includes 20 hours of synchronous online case discussions, 30 hours of asynchronous learning modules, 30 hours of guided independent study, 40 hours of on-campus clinical simulation labs, and 40 hours of hospital-based practicum. Her total physical F2F is 80 hours out of 160 &mdash; that is 50% of the SLT. She argues that nursing requires hands-on clinical practice, so the high F2F component is justified.</p>
+  <p><strong>What's the issue?</strong> Dr. Lim's pedagogical justification is valid &mdash; nursing does require hands-on clinical practice. However, at 50% physical F2F, her ODL delivery is only 80 hours out of 160 (50%), which falls far below the 80% threshold. This course cannot be classified as an ODL course. Dr. Lim has two options: (1) accept that this is a conventional course with an ODL component rather than an ODL course, or (2) restructure the programme so that this high-F2F course is balanced by other courses with very high ODL delivery, allowing the programme overall to still meet the 60% threshold.</p>
+  <p>This case illustrates an important principle: not every course in an ODL programme needs to be an ODL course. The programme-level classification depends on graduating credits, and some courses may legitimately remain conventional if their subject matter requires extensive physical presence.</p>
+</div>
+
+<!-- TRANSITION TO QUIZ -->
+<p>Let's check your understanding of the physical F2F rules and the 20% cap.</p>
+
+<!-- MCQ QUIZ -->
+<div class="mcq-box" id="quiz1">
+  <h3>Check Your Understanding</h3>
+  <p class="question">Dr. Aminah is designing a 3-credit ODL course (120 hours SLT). She plans 28 hours of live online seminars, 22 hours of recorded modules, 30 hours of guided independent reading, 20 hours of online discussion forums, and 20 hours of on-campus lab sessions. Which statement is correct?</p>
+  <ul class="options" id="options1">
+    <li onclick="selectOption('options1', this, 'A')">A. The course qualifies as ODL because 100 hours (83.3%) are delivered through ODL mode and the 20 hours of lab work (16.7%) are within the 20% cap</li>
+    <li onclick="selectOption('options1', this, 'B')">B. The course does not qualify because the lab sessions should not be included in an ODL course at all</li>
+    <li onclick="selectOption('options1', this, 'C')">C. The course qualifies as ODL, but the lab sessions count towards the ODL delivery percentage because they are contact hours</li>
+    <li onclick="selectOption('options1', this, 'D')">D. The course does not qualify because the independent reading hours cannot count towards ODL delivery</li>
+  </ul>
+  <button class="check-btn" onclick="checkAnswer('quiz1', 'options1', 'A')">Check Answer</button>
+  <div class="feedback" id="feedback-quiz1"></div>
+</div>
+
+<script>
+  let selectedOptions = {};
+
+  const feedbackData = {
+    quiz1: {
+      correct: '<strong>Correct.</strong> Let\'s calculate: synchronous (28) + asynchronous (22 + 20 = 42) + independent learning (30, guided) = 100 hours of ODL delivery out of 120 = 83.3%. This exceeds the 80% threshold. The 20 hours of lab work (16.7%) are within the 20% cap, so the course qualifies. The lab sessions are legitimate physical F2F with a pedagogical justification, but they do not count as ODL delivery.',
+      incorrect: '<strong>Not quite.</strong> The correct answer is <strong>A</strong>. Calculate the ODL hours: 28 (synchronous) + 22 (asynchronous) + 30 (independent) + 20 (asynchronous forums) = 100 out of 120 = 83.3%. The 20 lab hours are 16.7%, within the 20% cap. Option B is wrong because physical F2F <em>can</em> be included in ODL courses (up to 20%) when pedagogically justified. Option C is wrong because lab sessions (physical F2F) never count towards ODL delivery. Option D is wrong because guided independent learning does count towards ODL delivery when intentionally integrated.'
+    }
+  };
+
+  function selectOption(qId, el, letter) {
+    const container = document.getElementById(qId);
+    container.querySelectorAll('.options li').forEach(li => li.style.border = '1px solid #e2e8f0');
+    el.style.border = '2px solid #2b6cb0';
+    selectedOptions[qId] = letter;
+  }
+
+  function checkAnswer(quizId, optId, correct) {
+    const container = document.getElementById(optId);
+    const feedback = document.getElementById('feedback-' + quizId);
+    const selected = selectedOptions[quizId];
+
+    if (!selected) {
+      feedback.textContent = 'Please select an answer before checking.';
+      feedback.className = 'feedback show incorrect-fb';
+      return;
+    }
+
+    const options = container.querySelectorAll('.options li');
+    options.forEach((li, idx) => {
+      const letter = String.fromCharCode(65 + idx);
+      li.classList.remove('correct', 'incorrect');
+      if (letter === correct) li.classList.add('correct');
+      else if (letter === selected && selected !== correct) li.classList.add('incorrect');
+    });
+
+    const data = feedbackData[quizId];
+    if (selected === correct) {
+      feedback.innerHTML = data.correct;
+      feedback.className = 'feedback show correct-fb';
+    } else {
+      feedback.innerHTML = data.incorrect;
+      feedback.className = 'feedback show incorrect-fb';
+    }
+  }
+</script>
+
+<!-- SUMMARY / BRIDGE -->
+<h2>Summary</h2>
+
+<p>Physical face-to-face sessions count as contact hours and SLT but <strong>never</strong> as ODL delivery. They should be limited to a maximum of 20% of total SLT and must have a clear pedagogical, practical, professional, or regulatory justification. Not every course in an ODL programme needs to be an ODL course &mdash; courses with high physical F2F requirements may remain conventional while other courses carry the programme above the 60% threshold.</p>
+
+<p>You have now completed Module 2. You understand all four delivery methods, what each counts as, and how they interact with the ODL classification rules. In Module 3, you will begin putting these methods into practice &mdash; starting with the Student Learning Time framework that underpins every course design decision.</p>
+
+<!-- FOOTER -->
+<div class="page-footer">
+  <p>ODL Programme Development &bull; Page 8 of 20<br>
+  Part of the ODL Professional Development Series</p>
+</div>
+
+</body>
+</html>

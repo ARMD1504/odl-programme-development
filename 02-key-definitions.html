@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Key Definitions in ODL — ODL Programme Development</title>
+<style>
+  :root {
+    --navy: #1a365d;
+    --blue: #2b6cb0;
+    --light-blue: #ebf4ff;
+    --green: #276749;
+    --light-green: #f0fff4;
+    --orange: #c05621;
+    --light-orange: #fffaf0;
+    --purple: #553c9a;
+    --light-purple: #faf5ff;
+    --teal: #285e61;
+    --light-teal: #e6fffa;
+    --red: #c53030;
+    --light-red: #fff5f5;
+    --gray: #4a5568;
+    --light-gray: #f7fafc;
+    --border: #e2e8f0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #2d3748;
+    line-height: 1.7;
+    background: #fff;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .page-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page-nav a {
+    color: var(--blue);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--blue);
+    border-radius: 6px;
+    transition: background 0.2s;
+  }
+
+  .page-nav a:hover { background: var(--light-blue); }
+
+  .page-nav .page-label {
+    font-size: 0.85rem;
+    color: var(--gray);
+  }
+
+  .page-header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+    color: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+  }
+
+  .page-header .module-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    padding: 0.2rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .page-header h1 { font-size: 1.6rem; margin-bottom: 0.4rem; }
+  .page-header .page-subtitle { font-size: 0.95rem; opacity: 0.85; }
+
+  h2 {
+    color: var(--navy);
+    font-size: 1.3rem;
+    margin: 2rem 0 1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid var(--blue);
+    display: inline-block;
+  }
+
+  h3 { color: var(--navy); font-size: 1.05rem; margin: 1.5rem 0 0.5rem; }
+  p { margin-bottom: 1rem; }
+
+  .key-point {
+    background: var(--light-blue);
+    border-left: 5px solid var(--blue);
+    padding: 1rem 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 1.5rem 0;
+    font-size: 0.95rem;
+  }
+
+  .key-point strong { color: var(--navy); }
+
+  .case-box {
+    background: var(--light-orange);
+    border-left: 5px solid var(--orange);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .case-box h3 { color: var(--orange); margin-top: 0; margin-bottom: 0.75rem; }
+  .case-box .scenario { font-style: italic; margin-bottom: 1rem; }
+
+  /* Definition cards */
+  .def-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .def-card {
+    background: var(--light-gray);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.2rem;
+    transition: box-shadow 0.2s;
+  }
+
+  .def-card:hover { box-shadow: 0 3px 10px rgba(0,0,0,0.06); }
+
+  .def-card .def-term {
+    font-weight: 700;
+    color: var(--navy);
+    font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .def-card .def-body {
+    font-size: 0.88rem;
+    color: var(--gray);
+    margin: 0;
+  }
+
+  .def-card.highlight {
+    background: var(--light-blue);
+    border-color: #bee3f8;
+  }
+
+  .def-card .def-tag {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 0.1rem 0.5rem;
+    border-radius: 3px;
+    margin-bottom: 0.3rem;
+  }
+
+  .def-card .def-tag.tag-threshold { background: #c6f6d5; color: var(--green); }
+  .def-card .def-tag.tag-delivery { background: #bee3f8; color: var(--navy); }
+  .def-card .def-tag.tag-time { background: #feebc8; color: var(--orange); }
+  .def-card .def-tag.tag-quality { background: #e9d8fd; color: var(--purple); }
+
+  /* Matching quiz */
+  .match-box {
+    background: var(--light-teal);
+    border-left: 5px solid var(--teal);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .match-box h3 { color: var(--teal); margin-top: 0; margin-bottom: 0.5rem; }
+
+  .match-instructions {
+    font-size: 0.9rem;
+    color: var(--gray);
+    margin-bottom: 1rem;
+  }
+
+  .match-container {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 0.5rem;
+    align-items: start;
+  }
+
+  .match-terms {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .match-term {
+    background: #fff;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--navy);
+    text-align: center;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .match-arrows {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .match-arrows span {
+    font-size: 1.1rem;
+    color: var(--teal);
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+
+  .match-defs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .match-def {
+    background: #fff;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.82rem;
+    color: var(--gray);
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .match-def:hover { border-color: var(--teal); }
+  .match-def.selected { border-color: var(--teal); background: #e6fffa; }
+  .match-def.correct-match { border-color: var(--green); background: #c6f6d5; }
+  .match-def.wrong-match { border-color: var(--red); background: #fed7d7; }
+
+  .match-dropdown {
+    width: 100%;
+    padding: 0.6rem;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    background: #fff;
+    cursor: pointer;
+    min-height: 44px;
+    color: var(--gray);
+  }
+
+  .match-dropdown:focus { border-color: var(--teal); outline: none; }
+
+  .match-btn {
+    background: var(--teal);
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-top: 1rem;
+    transition: background 0.2s;
+  }
+
+  .match-btn:hover { background: #234e52; }
+
+  .match-feedback {
+    display: none;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-top: 1rem;
+    font-size: 0.92rem;
+  }
+
+  .match-feedback.show { display: block; }
+  .match-feedback.perfect { background: #c6f6d5; color: #22543d; }
+  .match-feedback.partial { background: #feebc8; color: #744210; }
+
+  /* Score display */
+  .match-score {
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Threshold visual */
+  .threshold-visual {
+    display: flex;
+    gap: 2rem;
+    margin: 1.5rem 0;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .threshold-card {
+    text-align: center;
+    padding: 1.5rem 2rem;
+    border-radius: 10px;
+    border: 2px solid;
+    min-width: 200px;
+  }
+
+  .threshold-card.prog-threshold {
+    background: var(--light-green);
+    border-color: #c6f6d5;
+  }
+
+  .threshold-card.course-threshold {
+    background: var(--light-blue);
+    border-color: #bee3f8;
+  }
+
+  .threshold-card .threshold-num {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .threshold-card.prog-threshold .threshold-num { color: var(--green); }
+  .threshold-card.course-threshold .threshold-num { color: var(--blue); }
+
+  .threshold-card .threshold-label {
+    font-size: 0.85rem;
+    color: var(--gray);
+    margin-top: 0.3rem;
+  }
+
+  .threshold-card .threshold-desc {
+    font-size: 0.82rem;
+    color: var(--gray);
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+  }
+
+  .page-footer {
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--gray);
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 1rem; }
+    .page-header h1 { font-size: 1.3rem; }
+    .def-grid { grid-template-columns: 1fr; }
+    .match-container { grid-template-columns: 1fr; }
+    .match-arrows { flex-direction: row; }
+    .threshold-visual { flex-direction: column; align-items: stretch; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<div class="page-nav">
+  <a href="01-why-odl-matters.html">&larr; Previous</a>
+  <span class="page-label">Page 2 of 20</span>
+  <a href="03-classifying-programmes.html">Next &rarr;</a>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="module-tag">Module 1 &bull; Foundations</div>
+  <h1>Key Definitions in ODL</h1>
+  <p class="page-subtitle">The shared vocabulary you need before classifying, planning, or designing any ODL course</p>
+</div>
+
+<!-- INTRODUCTION -->
+<h2>A Shared Vocabulary</h2>
+
+<p>Before you can classify a programme, calculate Student Learning Time, or design a course, you need to be fluent in the terminology that governs ODL delivery. These definitions are drawn from the University's guideline and aligned with MQA COPPA requirements. They are not optional &mdash; they are the basis for every planning and compliance decision you will make.</p>
+
+<p>Let's start with the two most important thresholds in ODL.</p>
+
+<!-- THRESHOLDS -->
+<div class="threshold-visual">
+  <div class="threshold-card prog-threshold">
+    <div class="threshold-num">&gt; 60%</div>
+    <div class="threshold-label">ODL Programme Threshold</div>
+    <p class="threshold-desc">More than 60% of graduating credits must come from ODL courses</p>
+  </div>
+  <div class="threshold-card course-threshold">
+    <div class="threshold-num">&ge; 80%</div>
+    <div class="threshold-label">ODL Course Threshold</div>
+    <p class="threshold-desc">At least 80% of Student Learning Time must be delivered via ODL mode</p>
+  </div>
+</div>
+
+<p>These two thresholds work together. A programme is classified as ODL based on the proportion of graduating credits contributed by ODL courses, and a course is classified as ODL based on the proportion of its SLT delivered through online and distance learning approaches.</p>
+
+<div class="key-point">
+  <strong>Remember:</strong> The programme calculation is based on <em>graduating credits</em>, not the number of courses. This distinction matters when programmes combine ODL and conventional courses.
+</div>
+
+<!-- DELIVERY METHOD DEFINITIONS -->
+<h2>Delivery Methods</h2>
+
+<p>ODL courses use a combination of four delivery approaches. Each has distinct characteristics and plays a different role in your course design.</p>
+
+<div class="def-grid">
+  <div class="def-card">
+    <span class="def-tag tag-delivery">Delivery Method</span>
+    <div class="def-term">Synchronous Online Learning</div>
+    <p class="def-body">Learning activities conducted in <strong>real time</strong> through digital platforms, where students and academic staff interact simultaneously. Examples include live online lectures, webinars, virtual tutorials, and real-time consultations. Counts as contact hours and ODL delivery.</p>
+  </div>
+  <div class="def-card">
+    <span class="def-tag tag-delivery">Delivery Method</span>
+    <div class="def-term">Asynchronous Online Learning</div>
+    <p class="def-body">Structured learning activities completed at the student's <strong>own pace and time</strong>, without requiring simultaneous participation. Examples include recorded lectures, discussion forums, digital modules, and guided exercises. Counts as ODL delivery but <em>not</em> contact hours.</p>
+  </div>
+  <div class="def-card">
+    <span class="def-tag tag-delivery">Delivery Method</span>
+    <div class="def-term">Independent Learning</div>
+    <p class="def-body">Self-directed learning activities undertaken by students <strong>outside scheduled sessions</strong>. Examples include reading, assignment preparation, research, and portfolio development. Counts as SLT. May count towards ODL delivery when integrated into the learning design.</p>
+  </div>
+  <div class="def-card">
+    <span class="def-tag tag-delivery">Delivery Method</span>
+    <div class="def-term">Physical Face-to-Face Learning</div>
+    <p class="def-body">Activities requiring <strong>physical attendance</strong> at a designated location. Examples include labs, clinical training, studio sessions, and fieldwork. Counts as contact hours and SLT but does <em>not</em> contribute to the 80% ODL requirement. Generally limited to a maximum of 20% of total SLT.</p>
+  </div>
+</div>
+
+<div class="key-point">
+  <strong>Critical distinction:</strong> Synchronous and asynchronous online learning both count as ODL delivery. Independent learning may count when integrated into the ODL design. Physical face-to-face learning counts as SLT but <em>never</em> counts towards the 80% ODL threshold.
+</div>
+
+<!-- SUPPORTING DEFINITIONS -->
+<h2>Supporting Definitions</h2>
+
+<p>Beyond the delivery methods, these terms appear repeatedly throughout the guideline and in every planning document you will prepare.</p>
+
+<div class="def-grid">
+  <div class="def-card highlight">
+    <span class="def-tag tag-time">Time &amp; Credit</span>
+    <div class="def-term">Student Learning Time (SLT)</div>
+    <p class="def-body">The total number of hours required for a student to achieve the learning outcomes of a course. Includes synchronous learning, asynchronous learning, independent learning, assessments, and any face-to-face sessions. <strong>1 credit = 40 SLT hours</strong> (per MQF).</p>
+  </div>
+  <div class="def-card">
+    <span class="def-tag tag-quality">Learning Design</span>
+    <div class="def-term">Self-Instructional Material (SIM)</div>
+    <p class="def-body">Structured learning materials specifically designed to support independent learning in ODL. Includes learning outcomes, content, activities, self-assessment, and references. Not the same as lecture notes or slides.</p>
+  </div>
+  <div class="def-card">
+    <span class="def-tag tag-quality">Interaction</span>
+    <div class="def-term">Regular and Substantive Interaction (RSI)</div>
+    <p class="def-body">Meaningful and ongoing engagement between academic staff and students. "Regular" means consistent and systematic. "Substantive" means it contributes directly to learning &mdash; not just administrative announcements.</p>
+  </div>
+  <div class="def-card">
+    <span class="def-tag tag-quality">Documentation</span>
+    <div class="def-term">Course Information (Table 4)</div>
+    <p class="def-body">The official MQA-prescribed document that specifies CLOs, learning activities, assessment methods, SLT distribution, and alignment with programme outcomes. For ODL courses, it must show the ODL delivery breakdown.</p>
+  </div>
+  <div class="def-card">
+    <span class="def-tag tag-quality">Infrastructure</span>
+    <div class="def-term">Learning Management System (LMS)</div>
+    <p class="def-body">The University's approved digital platform for delivering content, administering assessments, facilitating communication, tracking engagement, and managing grades for ODL courses.</p>
+  </div>
+  <div class="def-card">
+    <span class="def-tag tag-quality">Quality</span>
+    <div class="def-term">Continuous Quality Improvement (CQI)</div>
+    <p class="def-body">A systematic and ongoing process of monitoring, evaluating, reviewing, and improving ODL programmes based on evidence, feedback, performance indicators, and learning outcomes achievement.</p>
+  </div>
+</div>
+
+<!-- TRANSITION TO APPLICATION -->
+<h2>Putting Definitions into Practice</h2>
+
+<p>So far, you have seen each definition in isolation &mdash; the thresholds, the four delivery methods, and the supporting terms that appear across every ODL planning document. But in practice, these terms do not sit in neat categories. They interact with one another inside real course designs, and that is where mistakes tend to happen. Misclassifying a single delivery method can distort your SLT calculation, which in turn affects whether your course meets the 80% threshold, which then affects whether your programme meets the 60% requirement.</p>
+
+<p>The case below shows how easily this can go wrong. As you read it, try to spot the classification errors before reading the explanation.</p>
+
+<!-- CASE SCENARIO -->
+<div class="case-box">
+  <h3>Case: The Terminology Trap</h3>
+  <p class="scenario">Assoc. Prof. Lim is preparing Table 4 for his ODL course. He allocates 10 hours of recorded video lectures and labels them as "synchronous online learning" because the videos were recorded by the lecturer. He also allocates 5 hours of "independent learning" for students to browse YouTube for relevant content, without providing any guidance or structure. The total SLT for his 3-credit course is 120 hours, of which he claims 96 hours (80%) as ODL delivery.</p>
+  <p><strong>What's wrong here?</strong> Assoc. Prof. Lim has made two classification errors. First, recorded video lectures are <em>asynchronous</em> online learning (not synchronous), because students access them at their own time without real-time interaction. Second, unstructured YouTube browsing does not qualify as independent learning for ODL purposes &mdash; independent learning must be guided, structured, and aligned with Course Learning Outcomes. These misclassifications mean his ODL delivery percentage is incorrectly calculated, and the course may not actually meet the 80% threshold.</p>
+</div>
+
+<p>Now let's check how well you have absorbed all the definitions from this page. Match each term to its correct definition below.</p>
+
+<!-- MATCHING QUIZ -->
+<div class="match-box" id="matchQuiz">
+  <h3>Check Your Understanding: Match the Terms</h3>
+  <p class="match-instructions">For each term on the left, select the correct definition from the dropdown on the right. Then click "Check All" to see your score.</p>
+
+  <div class="match-container">
+    <div class="match-terms">
+      <div class="match-term">Synchronous Online Learning</div>
+      <div class="match-term">Asynchronous Online Learning</div>
+      <div class="match-term">Independent Learning</div>
+      <div class="match-term">Student Learning Time (SLT)</div>
+      <div class="match-term">Self-Instructional Material (SIM)</div>
+      <div class="match-term">Regular and Substantive Interaction</div>
+      <div class="match-term">ODL Course</div>
+      <div class="match-term">Physical Face-to-Face Learning</div>
+    </div>
+
+    <div class="match-arrows">
+      <span>&harr;</span><span>&harr;</span><span>&harr;</span><span>&harr;</span>
+      <span>&harr;</span><span>&harr;</span><span>&harr;</span><span>&harr;</span>
+    </div>
+
+    <div class="match-defs">
+      <select class="match-dropdown" id="sel0">
+        <option value="">-- Select definition --</option>
+        <option value="A">A course where at least 80% of SLT is delivered through ODL mode</option>
+        <option value="B">Structured activities completed at the student's own pace without simultaneous participation</option>
+        <option value="C">Total hours needed to achieve learning outcomes; 1 credit = 40 hours</option>
+        <option value="D">Real-time teaching and learning where staff and students interact simultaneously via digital platforms</option>
+        <option value="E">Meaningful, instructor-initiated engagement that occurs consistently and contributes directly to learning</option>
+        <option value="F">Structured materials designed to guide independent learning with outcomes, activities, and self-assessment</option>
+        <option value="G">Activities requiring physical attendance at a designated location such as labs or studios</option>
+        <option value="H">Self-directed activities outside scheduled sessions, supported by guidance and aligned with outcomes</option>
+      </select>
+
+      <select class="match-dropdown" id="sel1">
+        <option value="">-- Select definition --</option>
+        <option value="A">A course where at least 80% of SLT is delivered through ODL mode</option>
+        <option value="B">Structured activities completed at the student's own pace without simultaneous participation</option>
+        <option value="C">Total hours needed to achieve learning outcomes; 1 credit = 40 hours</option>
+        <option value="D">Real-time teaching and learning where staff and students interact simultaneously via digital platforms</option>
+        <option value="E">Meaningful, instructor-initiated engagement that occurs consistently and contributes directly to learning</option>
+        <option value="F">Structured materials designed to guide independent learning with outcomes, activities, and self-assessment</option>
+        <option value="G">Activities requiring physical attendance at a designated location such as labs or studios</option>
+        <option value="H">Self-directed activities outside scheduled sessions, supported by guidance and aligned with outcomes</option>
+      </select>
+
+      <select class="match-dropdown" id="sel2">
+        <option value="">-- Select definition --</option>
+        <option value="A">A course where at least 80% of SLT is delivered through ODL mode</option>
+        <option value="B">Structured activities completed at the student's own pace without simultaneous participation</option>
+        <option value="C">Total hours needed to achieve learning outcomes; 1 credit = 40 hours</option>
+        <option value="D">Real-time teaching and learning where staff and students interact simultaneously via digital platforms</option>
+        <option value="E">Meaningful, instructor-initiated engagement that occurs consistently and contributes directly to learning</option>
+        <option value="F">Structured materials designed to guide independent learning with outcomes, activities, and self-assessment</option>
+        <option value="G">Activities requiring physical attendance at a designated location such as labs or studios</option>
+        <option value="H">Self-directed activities outside scheduled sessions, supported by guidance and aligned with outcomes</option>
+      </select>
+
+      <select class="match-dropdown" id="sel3">
+        <option value="">-- Select definition --</option>
+        <option value="A">A course where at least 80% of SLT is delivered through ODL mode</option>
+        <option value="B">Structured activities completed at the student's own pace without simultaneous participation</option>
+        <option value="C">Total hours needed to achieve learning outcomes; 1 credit = 40 hours</option>
+        <option value="D">Real-time teaching and learning where staff and students interact simultaneously via digital platforms</option>
+        <option value="E">Meaningful, instructor-initiated engagement that occurs consistently and contributes directly to learning</option>
+        <option value="F">Structured materials designed to guide independent learning with outcomes, activities, and self-assessment</option>
+        <option value="G">Activities requiring physical attendance at a designated location such as labs or studios</option>
+        <option value="H">Self-directed activities outside scheduled sessions, supported by guidance and aligned with outcomes</option>
+      </select>
+
+      <select class="match-dropdown" id="sel4">
+        <option value="">-- Select definition --</option>
+        <option value="A">A course where at least 80% of SLT is delivered through ODL mode</option>
+        <option value="B">Structured activities completed at the student's own pace without simultaneous participation</option>
+        <option value="C">Total hours needed to achieve learning outcomes; 1 credit = 40 hours</option>
+        <option value="D">Real-time teaching and learning where staff and students interact simultaneously via digital platforms</option>
+        <option value="E">Meaningful, instructor-initiated engagement that occurs consistently and contributes directly to learning</option>
+        <option value="F">Structured materials designed to guide independent learning with outcomes, activities, and self-assessment</option>
+        <option value="G">Activities requiring physical attendance at a designated location such as labs or studios</option>
+        <option value="H">Self-directed activities outside scheduled sessions, supported by guidance and aligned with outcomes</option>
+      </select>
+
+      <select class="match-dropdown" id="sel5">
+        <option value="">-- Select definition --</option>
+        <option value="A">A course where at least 80% of SLT is delivered through ODL mode</option>
+        <option value="B">Structured activities completed at the student's own pace without simultaneous participation</option>
+        <option value="C">Total hours needed to achieve learning outcomes; 1 credit = 40 hours</option>
+        <option value="D">Real-time teaching and learning where staff and students interact simultaneously via digital platforms</option>
+        <option value="E">Meaningful, instructor-initiated engagement that occurs consistently and contributes directly to learning</option>
+        <option value="F">Structured materials designed to guide independent learning with outcomes, activities, and self-assessment</option>
+        <option value="G">Activities requiring physical attendance at a designated location such as labs or studios</option>
+        <option value="H">Self-directed activities outside scheduled sessions, supported by guidance and aligned with outcomes</option>
+      </select>
+
+      <select class="match-dropdown" id="sel6">
+        <option value="">-- Select definition --</option>
+        <option value="A">A course where at least 80% of SLT is delivered through ODL mode</option>
+        <option value="B">Structured activities completed at the student's own pace without simultaneous participation</option>
+        <option value="C">Total hours needed to achieve learning outcomes; 1 credit = 40 hours</option>
+        <option value="D">Real-time teaching and learning where staff and students interact simultaneously via digital platforms</option>
+        <option value="E">Meaningful, instructor-initiated engagement that occurs consistently and contributes directly to learning</option>
+        <option value="F">Structured materials designed to guide independent learning with outcomes, activities, and self-assessment</option>
+        <option value="G">Activities requiring physical attendance at a designated location such as labs or studios</option>
+        <option value="H">Self-directed activities outside scheduled sessions, supported by guidance and aligned with outcomes</option>
+      </select>
+
+      <select class="match-dropdown" id="sel7">
+        <option value="">-- Select definition --</option>
+        <option value="A">A course where at least 80% of SLT is delivered through ODL mode</option>
+        <option value="B">Structured activities completed at the student's own pace without simultaneous participation</option>
+        <option value="C">Total hours needed to achieve learning outcomes; 1 credit = 40 hours</option>
+        <option value="D">Real-time teaching and learning where staff and students interact simultaneously via digital platforms</option>
+        <option value="E">Meaningful, instructor-initiated engagement that occurs consistently and contributes directly to learning</option>
+        <option value="F">Structured materials designed to guide independent learning with outcomes, activities, and self-assessment</option>
+        <option value="G">Activities requiring physical attendance at a designated location such as labs or studios</option>
+        <option value="H">Self-directed activities outside scheduled sessions, supported by guidance and aligned with outcomes</option>
+      </select>
+    </div>
+  </div>
+
+  <button class="match-btn" onclick="checkMatching()">Check All</button>
+  <div class="match-feedback" id="matchFeedback"></div>
+</div>
+
+<script>
+  // Correct answers: term index -> correct letter
+  // 0: Synchronous = D, 1: Asynchronous = B, 2: Independent = H,
+  // 3: SLT = C, 4: SIM = F, 5: RSI = E, 6: ODL Course = A, 7: Physical F2F = G
+  const correctAnswers = ['D','B','H','C','F','E','A','G'];
+  const termNames = [
+    'Synchronous Online Learning', 'Asynchronous Online Learning',
+    'Independent Learning', 'Student Learning Time (SLT)',
+    'Self-Instructional Material (SIM)', 'Regular and Substantive Interaction',
+    'ODL Course', 'Physical Face-to-Face Learning'
+  ];
+
+  function checkMatching() {
+    let score = 0;
+    const results = [];
+
+    for (let i = 0; i < 8; i++) {
+      const sel = document.getElementById('sel' + i);
+      const selected = sel.value;
+      const isCorrect = selected === correctAnswers[i];
+
+      if (isCorrect) {
+        score++;
+        sel.style.borderColor = '#276749';
+        sel.style.background = '#c6f6d5';
+      } else if (selected) {
+        sel.style.borderColor = '#c53030';
+        sel.style.background = '#fed7d7';
+        results.push(termNames[i] + ' → correct: ' + correctAnswers[i]);
+      } else {
+        sel.style.borderColor = '#c53030';
+        sel.style.background = '#fed7d7';
+        results.push(termNames[i] + ' → correct: ' + correctAnswers[i]);
+      }
+    }
+
+    const fb = document.getElementById('matchFeedback');
+    if (score === 8) {
+      fb.innerHTML = '<div class="match-score">Perfect score: 8 / 8</div>All terms matched correctly. You now have a solid grasp of the key ODL vocabulary.';
+      fb.className = 'match-feedback show perfect';
+    } else {
+      fb.innerHTML = '<div class="match-score">Score: ' + score + ' / 8</div>You got ' + score + ' correct. Review the mismatched terms above and try again. The green dropdowns are correct; the red ones need attention.';
+      fb.className = 'match-feedback show partial';
+    }
+  }
+</script>
+
+<!-- SUMMARY / BRIDGE -->
+<h2>Summary</h2>
+
+<p>You now have the shared vocabulary needed for every subsequent page. The two thresholds (&gt;60% for programmes, &ge;80% for courses) and the four delivery methods (synchronous, asynchronous, independent, physical face-to-face) will recur throughout this course. In the next two pages, you will apply these definitions to classify your own programme and courses.</p>
+
+<!-- FOOTER -->
+<div class="page-footer">
+  <p>ODL Programme Development &bull; Page 2 of 20<br>
+  Part of the ODL Professional Development Series</p>
+</div>
+
+</body>
+</html>

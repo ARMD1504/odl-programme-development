@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why ODL Programme Development Matters — ODL Programme Development</title>
+<style>
+  :root {
+    --navy: #1a365d;
+    --blue: #2b6cb0;
+    --light-blue: #ebf4ff;
+    --green: #276749;
+    --light-green: #f0fff4;
+    --orange: #c05621;
+    --light-orange: #fffaf0;
+    --purple: #553c9a;
+    --light-purple: #faf5ff;
+    --teal: #285e61;
+    --light-teal: #e6fffa;
+    --red: #c53030;
+    --light-red: #fff5f5;
+    --gray: #4a5568;
+    --light-gray: #f7fafc;
+    --border: #e2e8f0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #2d3748;
+    line-height: 1.7;
+    background: #fff;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  /* Navigation bar */
+  .page-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page-nav a {
+    color: var(--blue);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--blue);
+    border-radius: 6px;
+    transition: background 0.2s;
+  }
+
+  .page-nav a:hover {
+    background: var(--light-blue);
+  }
+
+  .page-nav .page-label {
+    font-size: 0.85rem;
+    color: var(--gray);
+  }
+
+  /* Page header */
+  .page-header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+    color: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+  }
+
+  .page-header .module-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    padding: 0.2rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .page-header h1 {
+    font-size: 1.6rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .page-header .page-subtitle {
+    font-size: 0.95rem;
+    opacity: 0.85;
+  }
+
+  /* Section headings */
+  h2 {
+    color: var(--navy);
+    font-size: 1.3rem;
+    margin: 2rem 0 1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid var(--blue);
+    display: inline-block;
+  }
+
+  h3 {
+    color: var(--navy);
+    font-size: 1.05rem;
+    margin: 1.5rem 0 0.5rem;
+  }
+
+  p { margin-bottom: 1rem; }
+
+  /* Key point */
+  .key-point {
+    background: var(--light-blue);
+    border-left: 5px solid var(--blue);
+    padding: 1rem 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 1.5rem 0;
+    font-size: 0.95rem;
+  }
+
+  .key-point strong { color: var(--navy); }
+
+  /* Case box */
+  .case-box {
+    background: var(--light-orange);
+    border-left: 5px solid var(--orange);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .case-box h3 {
+    color: var(--orange);
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+  }
+
+  .case-box .scenario {
+    font-style: italic;
+    margin-bottom: 1rem;
+  }
+
+  /* MCQ box */
+  .mcq-box {
+    background: var(--light-green);
+    border-left: 5px solid var(--green);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .mcq-box h3 {
+    color: var(--green);
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+  }
+
+  .mcq-box .question {
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  .mcq-box .options {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem;
+  }
+
+  .mcq-box .options li {
+    padding: 0.6rem 1rem;
+    margin-bottom: 0.4rem;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.93rem;
+  }
+
+  .mcq-box .options li:hover {
+    border-color: var(--green);
+    background: #f0fff4;
+  }
+
+  .mcq-box .options li.correct {
+    background: #c6f6d5;
+    border-color: var(--green);
+    font-weight: 600;
+  }
+
+  .mcq-box .options li.incorrect {
+    background: #fed7d7;
+    border-color: var(--red);
+  }
+
+  .mcq-box .feedback {
+    display: none;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-top: 0.5rem;
+    font-size: 0.92rem;
+  }
+
+  .mcq-box .feedback.show { display: block; }
+  .mcq-box .feedback.correct-fb { background: #c6f6d5; color: #22543d; }
+  .mcq-box .feedback.incorrect-fb { background: #fed7d7; color: #742a2a; }
+
+  .mcq-box .check-btn {
+    background: var(--green);
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+
+  .mcq-box .check-btn:hover { background: #22543d; }
+
+  /* Pillar cards */
+  .pillar-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .pillar-card {
+    background: var(--light-gray);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.2rem;
+    text-align: center;
+  }
+
+  .pillar-card .pillar-icon {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .pillar-card h4 {
+    color: var(--navy);
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .pillar-card p {
+    font-size: 0.82rem;
+    color: var(--gray);
+    margin: 0;
+  }
+
+  /* Reference framework */
+  .ref-framework {
+    background: var(--light-purple);
+    border: 1px solid #e9d8fd;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .ref-framework h3 {
+    color: var(--purple);
+    margin-top: 0;
+  }
+
+  .ref-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .ref-list li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e9d8fd;
+    font-size: 0.92rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .ref-list li:last-child { border-bottom: none; }
+
+  .ref-list .ref-tag {
+    background: var(--purple);
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  /* Lifecycle diagram */
+  .lifecycle {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    margin: 1.5rem 0;
+    justify-content: center;
+  }
+
+  .lifecycle-step {
+    background: var(--light-blue);
+    border: 1px solid #bee3f8;
+    padding: 0.8rem 1rem;
+    text-align: center;
+    min-width: 120px;
+    position: relative;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--navy);
+  }
+
+  .lifecycle-step:first-child {
+    border-radius: 8px 0 0 8px;
+  }
+
+  .lifecycle-step:last-child {
+    border-radius: 0 8px 8px 0;
+  }
+
+  .lifecycle-step .step-num {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--blue);
+    font-weight: 400;
+    margin-bottom: 0.2rem;
+  }
+
+  .lifecycle-arrow {
+    display: flex;
+    align-items: center;
+    color: var(--blue);
+    font-size: 1.2rem;
+    padding: 0 0.2rem;
+  }
+
+  /* Footer */
+  .page-footer {
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--gray);
+    font-size: 0.85rem;
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    body { padding: 1rem; }
+    .page-header h1 { font-size: 1.3rem; }
+    .pillar-grid { grid-template-columns: 1fr; }
+    .lifecycle { flex-direction: column; align-items: stretch; }
+    .lifecycle-step { border-radius: 0 !important; }
+    .lifecycle-step:first-child { border-radius: 8px 8px 0 0 !important; }
+    .lifecycle-step:last-child { border-radius: 0 0 8px 8px !important; }
+    .lifecycle-arrow { justify-content: center; transform: rotate(90deg); padding: 0.3rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<div class="page-nav">
+  <a href="00-homepage.html">&larr; Home</a>
+  <span class="page-label">Page 1 of 20</span>
+  <a href="02-key-definitions.html">Next &rarr;</a>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="module-tag">Module 1 &bull; Foundations</div>
+  <h1>Why ODL Programme Development Matters</h1>
+  <p class="page-subtitle">Understanding the purpose, scope, and regulatory context before you begin designing</p>
+</div>
+
+<!-- INTRODUCTION -->
+<h2>More Than Converting Content</h2>
+
+<p>A common misconception is that developing an ODL programme simply means uploading lecture slides, recording video lectures, and posting them online. In reality, ODL programme development is a systematic process that requires rethinking how students learn, how teaching is delivered, and how quality is maintained &mdash; all within a digital and distance environment.</p>
+
+<p>Open and Distance Learning provides students with flexible access to learning opportunities through digital technologies, self-directed learning resources, and structured academic support. It enables learners to engage regardless of geographical location and time constraints, while maintaining academic standards equivalent to conventional programme delivery.</p>
+
+<div class="key-point">
+  <strong>Key principle:</strong> ODL is not a lesser version of face-to-face teaching. It is a distinct educational approach that requires its own design principles, delivery strategies, and quality assurance mechanisms.
+</div>
+
+<!-- THE REGULATORY FRAMEWORK -->
+<h2>The Regulatory Framework</h2>
+
+<p>ODL programmes in Malaysia operate within a well-defined regulatory environment. Before you begin designing your programme, it is important to understand the frameworks that govern ODL delivery. These frameworks ensure that ODL programmes meet national quality standards and provide students with a credible, recognised learning experience.</p>
+
+<div class="ref-framework">
+  <h3>Key References for ODL Programme Development</h3>
+  <ul class="ref-list">
+    <li><span class="ref-tag">MQA COPPA:ODL</span> Code of Practice for Programme Accreditation: Open and Distance Learning &mdash; the primary regulatory standard for ODL programmes</li>
+    <li><span class="ref-tag">MQF</span> Malaysian Qualifications Framework &mdash; defines credit values, learning outcomes, and qualification levels</li>
+    <li><span class="ref-tag">MOHE</span> Ministry of Higher Education policies and guidelines on ODL and flexible learning</li>
+    <li><span class="ref-tag">Institutional</span> Sunway University's internal academic policies and quality assurance requirements</li>
+  </ul>
+</div>
+
+<p>The University's <em>ODL Programme Development and Delivery Guideline</em> draws on all four of these sources to create a single, unified institutional reference. This guideline is the document you will work from throughout this course.</p>
+
+<!-- PURPOSE OF THE GUIDELINE -->
+<h2>Purpose of the Guideline</h2>
+
+<p>The ODL Programme Development and Delivery Guideline serves as the University's primary reference for every stage of the ODL programme lifecycle. It establishes a comprehensive institutional framework that covers:</p>
+
+<div class="pillar-grid">
+  <div class="pillar-card">
+    <div class="pillar-icon">&#128203;</div>
+    <h4>Design &amp; Planning</h4>
+    <p>How to plan programmes and courses that meet ODL requirements from the outset</p>
+  </div>
+  <div class="pillar-card">
+    <div class="pillar-icon">&#9989;</div>
+    <h4>Approval</h4>
+    <p>The criteria and processes for gaining institutional and regulatory approval</p>
+  </div>
+  <div class="pillar-card">
+    <div class="pillar-icon">&#128187;</div>
+    <h4>Delivery</h4>
+    <p>How ODL courses are actually taught, facilitated, and supported in practice</p>
+  </div>
+  <div class="pillar-card">
+    <div class="pillar-icon">&#128269;</div>
+    <h4>Monitoring</h4>
+    <p>Tracking student engagement, performance, and programme health</p>
+  </div>
+  <div class="pillar-card">
+    <div class="pillar-icon">&#128260;</div>
+    <h4>Review &amp; CQI</h4>
+    <p>Evaluating effectiveness and implementing continuous improvement</p>
+  </div>
+</div>
+
+<!-- LIFECYCLE -->
+<h2>The ODL Programme Lifecycle</h2>
+
+<p>Think of ODL programme development not as a one-time event, but as an ongoing cycle. Each stage feeds into the next, and the quality of your planning directly affects every stage that follows.</p>
+
+<div class="lifecycle">
+  <div class="lifecycle-step"><span class="step-num">Stage 1</span>Plan &amp; Design</div>
+  <div class="lifecycle-arrow">&rarr;</div>
+  <div class="lifecycle-step"><span class="step-num">Stage 2</span>Approve</div>
+  <div class="lifecycle-arrow">&rarr;</div>
+  <div class="lifecycle-step"><span class="step-num">Stage 3</span>Deliver</div>
+  <div class="lifecycle-arrow">&rarr;</div>
+  <div class="lifecycle-step"><span class="step-num">Stage 4</span>Monitor</div>
+  <div class="lifecycle-arrow">&rarr;</div>
+  <div class="lifecycle-step"><span class="step-num">Stage 5</span>Review &amp; Improve</div>
+</div>
+
+<p>This course focuses primarily on <strong>Stage 1: Plan &amp; Design</strong>, but you will encounter all five stages because effective planning requires understanding what happens downstream &mdash; how your design decisions affect delivery, monitoring, and review.</p>
+
+<div class="key-point">
+  <strong>Looking ahead:</strong> Compulsory 4 (ODL Quality Assurance and Continuous Improvement) covers Stages 2, 4, and 5 in depth. This course gives you the design foundation that those quality processes build upon.
+</div>
+
+<!-- WHAT THIS COURSE WILL HELP YOU DO -->
+<h2>What You Will Be Able to Do</h2>
+
+<p>By the end of this course, you will not just <em>understand</em> ODL programme development &mdash; you will have <em>done</em> it. Specifically, you will have:</p>
+
+<ul style="padding-left: 1.5rem; margin-bottom: 1.5rem;">
+  <li>Classified your programme and courses according to ODL requirements (the 60% and 80% rules)</li>
+  <li>Selected and justified your delivery methods for each course</li>
+  <li>Calculated and documented Student Learning Time across all learning activities</li>
+  <li>Completed Table 4 for your ODL course</li>
+  <li>Planned your Self-Instructional Materials and LMS implementation</li>
+  <li>Designed assessment strategies aligned with learning outcomes</li>
+  <li>Considered student support, staff readiness, and quality assurance</li>
+</ul>
+
+<p>All of these come together in the capstone activity, where you will produce a complete ODL programme plan for your own course.</p>
+
+<!-- TRANSITION TO CASE -->
+<h2>What Happens When Planning Is Skipped?</h2>
+
+<p>You have now seen the regulatory landscape, the purpose of the guideline, and the lifecycle stages that every ODL programme passes through. But understanding these concepts in theory is one thing &mdash; seeing what happens when they are ignored is another. The case below illustrates a real-world scenario where a programme leader treated ODL development as a simple content migration rather than a systematic design process.</p>
+
+<!-- CASE SCENARIO -->
+<div class="case-box">
+  <h3>Case: Dr. Farah's New ODL Programme</h3>
+  <p class="scenario">Dr. Farah is a programme leader who has been asked to convert her existing face-to-face Master's programme into an ODL programme. She begins by uploading her current lecture slides and recorded lectures to the LMS, believing this is sufficient for ODL delivery. When she submits her programme for review, the quality assurance team flags several issues &mdash; the programme does not meet the ODL classification requirements, Student Learning Time has not been calculated, and there is no evidence of structured learner interaction.</p>
+  <p><strong>What went wrong?</strong> Dr. Farah treated ODL development as a content migration exercise rather than a systematic design process. She skipped the planning stage entirely &mdash; she did not classify her courses, calculate SLT, or align her delivery methods with MQA COPPA requirements. The result was a programme that looked like ODL on the surface but did not meet any of the regulatory or quality standards.</p>
+  <p>This is exactly the situation this course is designed to prevent. The pages that follow will walk you through each step that Dr. Farah missed.</p>
+</div>
+
+<p>Let's check how well the concepts from this page have landed. Answer the question below.</p>
+
+<!-- MCQ QUIZ -->
+<div class="mcq-box" id="quiz1">
+  <h3>Check Your Understanding</h3>
+  <p class="question">A programme leader wants to develop a new ODL programme. According to the University's framework, which statement best describes the purpose of the ODL Programme Development and Delivery Guideline?</p>
+  <ul class="options" id="options1">
+    <li onclick="selectOption('options1', this, 'A')">A. It replaces face-to-face teaching with recorded lectures and online quizzes</li>
+    <li onclick="selectOption('options1', this, 'B')">B. It provides a comprehensive institutional framework for designing, delivering, monitoring, and continuously improving ODL programmes</li>
+    <li onclick="selectOption('options1', this, 'C')">C. It focuses primarily on the technical setup of the Learning Management System</li>
+    <li onclick="selectOption('options1', this, 'D')">D. It is a checklist used only during accreditation exercises</li>
+  </ul>
+  <button class="check-btn" onclick="checkAnswer('quiz1', 'options1', 'B')">Check Answer</button>
+  <div class="feedback" id="feedback-quiz1"></div>
+</div>
+
+<!-- SCRIPT -->
+<script>
+  let selectedOptions = {};
+
+  function selectOption(qId, el, letter) {
+    const container = document.getElementById(qId);
+    container.querySelectorAll('.options li').forEach(li => li.style.border = '1px solid #e2e8f0');
+    el.style.border = '2px solid #2b6cb0';
+    selectedOptions[qId] = letter;
+  }
+
+  function checkAnswer(quizId, optId, correct) {
+    const container = document.getElementById(optId);
+    const feedback = document.getElementById('feedback-' + quizId);
+    const selected = selectedOptions[quizId];
+
+    if (!selected) {
+      feedback.textContent = 'Please select an answer before checking.';
+      feedback.className = 'feedback show incorrect-fb';
+      return;
+    }
+
+    const options = container.querySelectorAll('.options li');
+    options.forEach((li, idx) => {
+      const letter = String.fromCharCode(65 + idx);
+      li.classList.remove('correct', 'incorrect');
+      if (letter === correct) {
+        li.classList.add('correct');
+      } else if (letter === selected && selected !== correct) {
+        li.classList.add('incorrect');
+      }
+    });
+
+    if (selected === correct) {
+      feedback.innerHTML = '<strong>Correct.</strong> The guideline establishes a comprehensive institutional framework covering the entire ODL programme lifecycle &mdash; from design and planning through delivery, monitoring, review, and continuous improvement. It is not limited to technology, accreditation alone, or content replacement.';
+      feedback.className = 'feedback show correct-fb';
+    } else {
+      feedback.innerHTML = '<strong>Not quite.</strong> The correct answer is <strong>B</strong>. The guideline is not just about technology (C), accreditation checklists (D), or replacing lectures (A). It establishes a comprehensive institutional framework that covers the entire ODL programme lifecycle &mdash; design, approval, delivery, monitoring, review, and continuous quality improvement.';
+      feedback.className = 'feedback show incorrect-fb';
+    }
+  }
+</script>
+
+<!-- SUMMARY / BRIDGE -->
+<h2>Summary</h2>
+
+<p>ODL programme development is a systematic process grounded in regulatory requirements and quality assurance principles. The University's guideline provides the institutional framework that guides every stage &mdash; from initial planning through to continuous improvement. Understanding this framework is your starting point. In the next page, you will learn the key definitions that underpin ODL classification.</p>
+
+<!-- FOOTER -->
+<div class="page-footer">
+  <p>ODL Programme Development &bull; Page 1 of 20<br>
+  Part of the ODL Professional Development Series</p>
+</div>
+
+</body>
+</html>

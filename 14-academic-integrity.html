@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Academic Integrity &amp; Alternative Assessment — ODL Programme Development</title>
+<style>
+  :root {
+    --navy: #1a365d;
+    --blue: #2b6cb0;
+    --light-blue: #ebf4ff;
+    --green: #276749;
+    --light-green: #f0fff4;
+    --orange: #c05621;
+    --light-orange: #fffaf0;
+    --purple: #553c9a;
+    --light-purple: #faf5ff;
+    --teal: #285e61;
+    --light-teal: #e6fffa;
+    --red: #c53030;
+    --light-red: #fff5f5;
+    --gray: #4a5568;
+    --light-gray: #f7fafc;
+    --border: #e2e8f0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #2d3748;
+    line-height: 1.7;
+    background: #fff;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .page-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page-nav a {
+    color: var(--blue);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--blue);
+    border-radius: 6px;
+    transition: background 0.2s;
+  }
+
+  .page-nav a:hover { background: var(--light-blue); }
+  .page-nav .page-label { font-size: 0.85rem; color: var(--gray); }
+
+  .page-header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--orange) 100%);
+    color: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+  }
+
+  .page-header .module-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    padding: 0.2rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .page-header h1 { font-size: 1.6rem; margin-bottom: 0.4rem; }
+  .page-header .page-subtitle { font-size: 0.95rem; opacity: 0.85; }
+
+  h2 {
+    color: var(--navy);
+    font-size: 1.3rem;
+    margin: 2rem 0 1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid var(--blue);
+    display: inline-block;
+  }
+
+  h3 { color: var(--navy); font-size: 1.05rem; margin: 1.5rem 0 0.5rem; }
+  p { margin-bottom: 1rem; }
+
+  .key-point {
+    background: var(--light-blue);
+    border-left: 5px solid var(--blue);
+    padding: 1rem 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 1.5rem 0;
+    font-size: 0.95rem;
+  }
+
+  .key-point strong { color: var(--navy); }
+
+  .case-box {
+    background: var(--light-orange);
+    border-left: 5px solid var(--orange);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .case-box h3 { color: var(--orange); margin-top: 0; margin-bottom: 0.75rem; }
+  .case-box .scenario { font-style: italic; margin-bottom: 1rem; }
+
+  .good-practice {
+    background: var(--light-green);
+    border-left: 5px solid var(--green);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .good-practice h3 { color: var(--green); margin-top: 0; margin-bottom: 0.75rem; }
+
+  .principle-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .principle-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem;
+    background: var(--light-gray);
+  }
+
+  .principle-card h4 {
+    color: var(--navy);
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .principle-card p {
+    font-size: 0.87rem;
+    color: var(--gray);
+    margin: 0;
+  }
+
+  .sim-note {
+    background: var(--light-purple);
+    border-left: 5px solid var(--purple);
+    padding: 1rem 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 1.5rem 0;
+    font-size: 0.93rem;
+  }
+
+  .sim-note strong { color: var(--purple); }
+
+  /* Matching quiz */
+  .match-box {
+    background: var(--light-blue);
+    border-left: 5px solid var(--blue);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .match-box h3 { color: var(--blue); margin-top: 0; margin-bottom: 0.5rem; }
+
+  .match-item {
+    margin-bottom: 1.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .match-item .match-label {
+    flex: 1 1 280px;
+    font-size: 0.9rem;
+    color: var(--navy);
+    font-weight: 500;
+    padding-top: 0.35rem;
+  }
+
+  .match-item select {
+    flex: 1 1 300px;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.88rem;
+    background: #fff;
+    color: #2d3748;
+    transition: border-color 0.2s;
+    cursor: pointer;
+  }
+
+  .match-item select:focus {
+    outline: none;
+    border-color: var(--blue);
+  }
+
+  .match-item select.correct {
+    border-color: var(--green);
+    background: var(--light-green);
+  }
+
+  .match-item select.incorrect {
+    border-color: var(--red);
+    background: var(--light-red);
+  }
+
+  .match-feedback {
+    width: 100%;
+    font-size: 0.83rem;
+    margin-top: 0.15rem;
+    min-height: 1.2rem;
+  }
+
+  .match-feedback.correct-fb { color: var(--green); }
+  .match-feedback.incorrect-fb { color: var(--red); }
+
+  .match-btn {
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    padding: 0.45rem 1.25rem;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 0.5rem;
+  }
+
+  .match-btn:hover { background: var(--navy); }
+
+  .match-score {
+    margin-top: 1rem;
+    font-weight: 600;
+    font-size: 0.92rem;
+  }
+
+  .page-footer {
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--gray);
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 1rem; }
+    .principle-grid { grid-template-columns: 1fr; }
+    .page-header h1 { font-size: 1.3rem; }
+    .match-item { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<div class="page-nav">
+  <a href="13-assessment-design.html">&larr; Previous</a>
+  <span class="page-label">Page 14 of 20</span>
+  <a href="15-student-support.html">Next &rarr;</a>
+</div>
+
+<!-- HEADER -->
+<div class="page-header">
+  <div class="module-tag">Module 4 &bull; Delivery, Assessment, and Support</div>
+  <h1>Academic Integrity &amp; Alternative Assessment</h1>
+  <p class="page-subtitle">Designing assessments that uphold academic integrity while encouraging authentic demonstration of learning in online environments</p>
+</div>
+
+<!-- BRIDGE FROM PAGE 13 -->
+<p>On the previous page, you learned the foundations of assessment design in ODL &mdash; constructive alignment, variety of methods, formative and summative balance, and individual and group assessment. Those principles tell you <em>how</em> to design assessments that measure learning effectively. But there is another dimension that must be woven into every assessment decision: academic integrity. If assessments are not designed with integrity in mind, even well-aligned tasks can become vulnerable to misconduct, undermining the credibility of the qualification and the learning experience itself. This page addresses how to protect academic integrity in ODL &mdash; not by policing students harder, but by designing assessments that naturally reduce the temptation and opportunity for misconduct.</p>
+
+<!-- SECTION 1: ACADEMIC INTEGRITY IN ODL -->
+<h2>Academic Integrity in ODL</h2>
+
+<p>Academic integrity is fundamental to maintaining the quality, credibility, and integrity of any educational programme. In ODL environments, where students and lecturers are separated by time, space, or both, integrity takes on additional dimensions that require deliberate attention during course design and delivery.</p>
+
+<p>Staff should implement measures ensuring that submissions represent students&rsquo; own work and that assessment processes are secure, fair, and reliable. This is not about creating an atmosphere of suspicion &mdash; it is about building systems and practices that support honest academic behaviour and produce trustworthy evidence of learning.</p>
+
+<div class="key-point">
+  <strong>Integrity is not just about catching cheaters &mdash; it is about designing assessments that naturally reduce temptation.</strong> When assessments require personalised, higher-order responses connected to students&rsquo; own experiences and contexts, the opportunity and motivation for misconduct decrease significantly. The best integrity measure is not a proctoring tool; it is a well-designed assessment task that cannot be answered by copying someone else&rsquo;s work.
+</div>
+
+<p>Academic integrity in ODL encompasses several interconnected areas: clear policies and expectations, identity verification, assessment design that discourages misconduct, appropriate use of technology for monitoring and detection, and alternative assessment approaches that prioritise authentic demonstration of learning. Each of these areas is addressed below.</p>
+
+<!-- SECTION 2: ACADEMIC INTEGRITY CONTROLS -->
+<h2>Academic Integrity Controls</h2>
+
+<p>The guideline identifies a range of measures that institutions and course designers should implement to maintain academic integrity in ODL assessments. These controls work together as a layered defence &mdash; no single measure is sufficient on its own, but a thoughtful combination significantly reduces the risk of misconduct.</p>
+
+<div class="principle-grid">
+  <div class="principle-card">
+    <h4>Clear Policies</h4>
+    <p>Academic integrity policies must be clearly communicated to students &mdash; not buried in a handbook, but embedded in the course orientation, repeated at key assessment points, and reinforced through examples of what constitutes acceptable and unacceptable behaviour.</p>
+  </div>
+  <div class="principle-card">
+    <h4>Identity Authentication</h4>
+    <p>Processes to verify that the person completing the assessment is the enrolled student. This ranges from login credentials and photo ID verification to more sophisticated biometric approaches, depending on the stakes of the assessment.</p>
+  </div>
+  <div class="principle-card">
+    <h4>Plagiarism Detection</h4>
+    <p>Tools that compare student submissions against databases of published work, internet sources, and other student submissions to identify unoriginal content. These tools serve as both a deterrent and a detection mechanism.</p>
+  </div>
+  <div class="principle-card">
+    <h4>Assessment Design</h4>
+    <p>Designing tasks that reduce opportunities for misconduct &mdash; such as personalised topics, scaffolded submissions, application-based questions, and tasks requiring reflection on specific experiences that cannot be easily replicated.</p>
+  </div>
+  <div class="principle-card">
+    <h4>Randomisation</h4>
+    <p>Randomising questions and answer options so that each student receives a unique version of the assessment. This reduces the benefit of sharing answers during or after the assessment.</p>
+  </div>
+  <div class="principle-card">
+    <h4>Time Limits</h4>
+    <p>Setting time limits appropriate to task complexity. Well-calibrated time limits reduce the opportunity for students to search for answers or consult unauthorised resources, while still allowing legitimate completion.</p>
+  </div>
+  <div class="principle-card">
+    <h4>Pattern Monitoring</h4>
+    <p>Monitoring unusual patterns in submissions &mdash; such as sudden changes in writing style, identical errors across multiple submissions, or submission timestamps that suggest collusion or contract cheating.</p>
+  </div>
+  <div class="principle-card">
+    <h4>Consistent Enforcement</h4>
+    <p>Ensuring that integrity violations are handled consistently and fairly across courses and programmes, with clear consequences that are applied equally to all students.</p>
+  </div>
+</div>
+
+<div class="key-point">
+  <strong>Controls are most effective when they are layered.</strong> A plagiarism detection tool alone is not sufficient. But when combined with clear policies, well-designed assessments, randomisation, and monitoring, the overall system creates an environment where integrity is the norm and misconduct is both difficult and unrewarding.
+</div>
+
+<!-- SECTION 3: ONLINE PROCTORING -->
+<h2>Online Proctoring</h2>
+
+<p>For assessments requiring additional verification &mdash; typically high-stakes summative examinations &mdash; online proctoring provides an extra layer of integrity assurance. Proctoring involves monitoring students during an assessment to deter and detect academic misconduct.</p>
+
+<h3>Types of Online Proctoring</h3>
+
+<div class="principle-grid">
+  <div class="principle-card">
+    <h4>Live Proctoring</h4>
+    <p>A real-time human invigilator monitors students via webcam during the assessment. The proctor can intervene if suspicious behaviour is observed. This approach is resource-intensive but provides the highest level of human oversight.</p>
+  </div>
+  <div class="principle-card">
+    <h4>Automated / AI Proctoring</h4>
+    <p>Software uses artificial intelligence to flag suspicious behaviour such as looking away from the screen frequently, the presence of additional persons, unusual sounds, or attempts to access other applications. Flags are reviewed by staff after the assessment.</p>
+  </div>
+  <div class="principle-card">
+    <h4>Lockdown Browsers</h4>
+    <p>Specialised software that restricts access to other applications, websites, and system functions during an online examination. Students cannot copy, paste, print, open new tabs, or switch to other programs while the lockdown browser is active.</p>
+  </div>
+  <div class="principle-card">
+    <h4>Record-and-Review</h4>
+    <p>The assessment session is recorded (video and audio) and reviewed by staff after completion. This approach is less intrusive than live proctoring but still provides a deterrent effect and enables post-hoc investigation of concerns.</p>
+  </div>
+</div>
+
+<div class="key-point">
+  <strong>Proctoring should be proportionate to assessment risk, respectful of student privacy, and consistent with institutional policies.</strong> Not every assessment needs proctoring. Applying proctoring indiscriminately &mdash; for example, to every weekly quiz &mdash; creates unnecessary stress, privacy concerns, technical barriers, and support overhead without a commensurate improvement in integrity. Reserve proctoring for assessments where the stakes genuinely warrant the additional security.
+</div>
+
+<p>Before implementing proctoring, consider whether the assessment could be redesigned to reduce the need for surveillance. In many cases, alternative assessment approaches provide a more effective and less intrusive solution.</p>
+
+<div class="sim-note">
+  <strong>Consider the equity implications of proctoring.</strong> Students in ODL programmes may have varying levels of internet connectivity, access to appropriate devices, and suitable physical environments for webcam-monitored assessments. Proctoring requirements can disadvantage students with poor connectivity, shared living spaces, or disabilities that trigger false positives in AI-based flagging systems. Always provide alternative arrangements for students who cannot meet proctoring requirements.
+</div>
+
+<!-- SECTION 4: ALTERNATIVE ASSESSMENT APPROACHES -->
+<h2>Alternative Assessment Approaches</h2>
+
+<p>Alternative assessment approaches are encouraged over proctoring wherever possible. Rather than trying to prevent misconduct through surveillance, these approaches design it out of the equation by requiring higher-order thinking that cannot be easily replicated through copying or collusion.</p>
+
+<p>Alternative assessments naturally reduce misconduct opportunities by requiring students to engage in:</p>
+
+<div class="principle-grid">
+  <div class="principle-card">
+    <h4>Application</h4>
+    <p>Applying knowledge to novel scenarios, real-world data, or unique case studies that change each semester. Students cannot use past papers or generic answers because each task is contextualised.</p>
+  </div>
+  <div class="principle-card">
+    <h4>Analysis</h4>
+    <p>Analysing complex situations, datasets, or arguments that require critical thinking. Analysis tasks demand engagement with specific content that cannot be outsourced easily.</p>
+  </div>
+  <div class="principle-card">
+    <h4>Evaluation</h4>
+    <p>Making judgements based on criteria and evidence. Evaluation tasks require students to develop and defend positions, making copied responses immediately apparent.</p>
+  </div>
+  <div class="principle-card">
+    <h4>Creation</h4>
+    <p>Producing original artefacts, plans, designs, or compositions. Creation tasks are inherently personalised &mdash; no two students will produce the same output.</p>
+  </div>
+  <div class="principle-card">
+    <h4>Reflection</h4>
+    <p>Reflecting on personal learning experiences, professional practice, or specific events. Reflective tasks are tied to individual experience and cannot be authentically replicated by another person.</p>
+  </div>
+  <div class="principle-card">
+    <h4>Authentic Tasks</h4>
+    <p>Tasks that mirror real professional practice &mdash; using real-world data, addressing current events, or solving problems from the student&rsquo;s own workplace or community.</p>
+  </div>
+</div>
+
+<h3>Examples of Alternative Assessments</h3>
+
+<p>The following assessment types naturally promote academic integrity while measuring higher-order learning outcomes:</p>
+
+<p style="margin-left: 1rem;">&bull; <strong>Project-based assessments</strong> &mdash; students complete an extended project over several weeks, producing original work that demonstrates cumulative learning</p>
+<p style="margin-left: 1rem;">&bull; <strong>E-portfolios</strong> &mdash; students collect and curate evidence of learning over time, with reflective commentary connecting artefacts to CLOs</p>
+<p style="margin-left: 1rem;">&bull; <strong>Reflective journals</strong> &mdash; students document their learning journey, connecting course concepts to personal or professional experiences</p>
+<p style="margin-left: 1rem;">&bull; <strong>Case study analyses</strong> &mdash; students apply course concepts to unique scenarios that change each semester, making past papers irrelevant</p>
+<p style="margin-left: 1rem;">&bull; <strong>Oral presentations and vivas</strong> &mdash; students present and defend their work in real time, verifying both identity and understanding</p>
+<p style="margin-left: 1rem;">&bull; <strong>Authentic tasks using real-world data</strong> &mdash; students work with current datasets, live case scenarios, or community-based problems</p>
+<p style="margin-left: 1rem;">&bull; <strong>Open-book assessments with application-focused questions</strong> &mdash; students can access resources but must apply knowledge to solve novel problems that cannot be answered through simple lookup</p>
+
+<div class="key-point">
+  <strong>Good practice: use a variety of alternative assessment approaches throughout the course.</strong> This gives students multiple opportunities to demonstrate CLOs in different ways, reduces the weight placed on any single assessment, and makes it progressively more difficult for misconduct to succeed across the range of task types. A course that uses only one assessment type &mdash; even a well-designed one &mdash; creates a single point of vulnerability.
+</div>
+
+<!-- GOOD PRACTICE EXAMPLE -->
+<p>Let&rsquo;s see what effective alternative assessment design looks like in practice.</p>
+
+<div class="good-practice">
+  <h3>Good Practice: Dr. Sarah&rsquo;s Alternative Assessments</h3>
+  <p>Dr. Sarah is designing her ODL assessments using alternative approaches. Instead of a traditional final exam, she uses:</p>
+  <p style="margin-left: 1rem;">&bull; <strong>A semester-long e-portfolio</strong> where students collect evidence of learning each week, adding reflective commentary that connects each artefact to specific CLOs</p>
+  <p style="margin-left: 1rem;">&bull; <strong>A live oral presentation via video conference</strong> where students defend their analysis of a complex scenario, answering questions from the lecturer and peers in real time</p>
+  <p style="margin-left: 1rem;">&bull; <strong>A case study requiring students to apply concepts to a unique scenario</strong> each semester &mdash; the scenario is drawn from current events and changes every offering, so past papers are useless</p>
+  <p><strong>Why this works:</strong> Each assessment requires original, personalised work that cannot be easily copied. The e-portfolio builds incrementally over the semester, making it impossible to produce at the last minute or purchase from a contract cheating service. The oral presentation verifies identity and understanding in real time &mdash; a student who did not do the work cannot convincingly defend it. The case study changes each semester, so answers from previous offerings provide no advantage. Together, these three assessments address multiple CLOs at different cognitive levels while making misconduct both difficult and unrewarding.</p>
+</div>
+
+<!-- CASE SCENARIO -->
+<p>Now let&rsquo;s examine what happens when proctoring is applied without considering proportionality.</p>
+
+<div class="case-box">
+  <h3>Case: Prof. Lim&rsquo;s Proctoring Problem</h3>
+  <p class="scenario">Prof. Lim requires all students to use webcam proctoring for every weekly quiz in his ODL course. Students complain about privacy concerns, technical issues with the proctoring software, and the stress of being watched during every assessment. Some students with poor internet connections cannot complete proctored quizzes. The university&rsquo;s IT department reports a high volume of support tickets related to proctoring software.</p>
+  <p><strong>What went wrong?</strong> Prof. Lim applied a blanket proctoring approach without considering proportionality. Weekly low-stakes quizzes do not justify the overhead, stress, and privacy concerns of webcam proctoring. The cost &mdash; in terms of student wellbeing, equity, technical burden, and support resources &mdash; far outweighs the integrity benefit for formative assessments that carry minimal weight in the final grade. He should use alternative assessment designs for weekly formative quizzes (for example, open-book questions requiring application to novel scenarios, randomised question pools, and time-limited tasks) and reserve proctoring only for the high-stakes summative assessments where additional security is genuinely warranted. This proportionate approach maintains integrity where it matters most while reducing unnecessary burden on students and support systems.</p>
+</div>
+
+<!-- TRANSITION TO QUIZ -->
+<p>Now let&rsquo;s test your understanding of how academic integrity measures connect to assessment design.</p>
+
+<!-- MATCHING QUIZ -->
+<div class="match-box">
+  <h3>Check Your Understanding: Matching Exercise</h3>
+  <p style="margin-bottom: 1rem; font-size: 0.9rem;">Match each integrity measure on the left to its correct purpose on the right. Use the dropdown menus to select the best match for each item, then click &ldquo;Check All&rdquo; to see your score.</p>
+
+  <div class="match-item">
+    <div class="match-label">1. Plagiarism detection software</div>
+    <select id="match1">
+      <option value="">-- Select purpose --</option>
+      <option value="A">Compares student submissions against databases and other submissions to identify unoriginal content</option>
+      <option value="B">Ensures each student receives a unique assessment, reducing the benefit of sharing answers</option>
+      <option value="C">Restricts access to other applications and websites during an online examination</option>
+      <option value="D">Verifies student identity and understanding through real-time conversation about submitted work</option>
+      <option value="E">Requires students to apply knowledge to novel scenarios rather than recall memorised answers</option>
+    </select>
+    <div class="match-feedback" id="mfb1"></div>
+  </div>
+
+  <div class="match-item">
+    <div class="match-label">2. Randomisation of questions</div>
+    <select id="match2">
+      <option value="">-- Select purpose --</option>
+      <option value="A">Compares student submissions against databases and other submissions to identify unoriginal content</option>
+      <option value="B">Ensures each student receives a unique assessment, reducing the benefit of sharing answers</option>
+      <option value="C">Restricts access to other applications and websites during an online examination</option>
+      <option value="D">Verifies student identity and understanding through real-time conversation about submitted work</option>
+      <option value="E">Requires students to apply knowledge to novel scenarios rather than recall memorised answers</option>
+    </select>
+    <div class="match-feedback" id="mfb2"></div>
+  </div>
+
+  <div class="match-item">
+    <div class="match-label">3. Lockdown browser</div>
+    <select id="match3">
+      <option value="">-- Select purpose --</option>
+      <option value="A">Compares student submissions against databases and other submissions to identify unoriginal content</option>
+      <option value="B">Ensures each student receives a unique assessment, reducing the benefit of sharing answers</option>
+      <option value="C">Restricts access to other applications and websites during an online examination</option>
+      <option value="D">Verifies student identity and understanding through real-time conversation about submitted work</option>
+      <option value="E">Requires students to apply knowledge to novel scenarios rather than recall memorised answers</option>
+    </select>
+    <div class="match-feedback" id="mfb3"></div>
+  </div>
+
+  <div class="match-item">
+    <div class="match-label">4. Oral viva / defence</div>
+    <select id="match4">
+      <option value="">-- Select purpose --</option>
+      <option value="A">Compares student submissions against databases and other submissions to identify unoriginal content</option>
+      <option value="B">Ensures each student receives a unique assessment, reducing the benefit of sharing answers</option>
+      <option value="C">Restricts access to other applications and websites during an online examination</option>
+      <option value="D">Verifies student identity and understanding through real-time conversation about submitted work</option>
+      <option value="E">Requires students to apply knowledge to novel scenarios rather than recall memorised answers</option>
+    </select>
+    <div class="match-feedback" id="mfb4"></div>
+  </div>
+
+  <div class="match-item">
+    <div class="match-label">5. Open-book application questions</div>
+    <select id="match5">
+      <option value="">-- Select purpose --</option>
+      <option value="A">Compares student submissions against databases and other submissions to identify unoriginal content</option>
+      <option value="B">Ensures each student receives a unique assessment, reducing the benefit of sharing answers</option>
+      <option value="C">Restricts access to other applications and websites during an online examination</option>
+      <option value="D">Verifies student identity and understanding through real-time conversation about submitted work</option>
+      <option value="E">Requires students to apply knowledge to novel scenarios rather than recall memorised answers</option>
+    </select>
+    <div class="match-feedback" id="mfb5"></div>
+  </div>
+
+  <button class="match-btn" onclick="checkMatching()">Check All</button>
+  <div class="match-score" id="matchScore"></div>
+</div>
+
+<script>
+  var matchAnswers = {
+    match1: 'A',
+    match2: 'B',
+    match3: 'C',
+    match4: 'D',
+    match5: 'E'
+  };
+
+  var matchExplanations = {
+    match1: 'Plagiarism detection software compares student submissions against databases of published work, internet sources, and other student submissions to identify unoriginal content.',
+    match2: 'Randomisation ensures each student receives a unique set or order of questions, reducing the benefit of sharing answers during or after the assessment.',
+    match3: 'A lockdown browser restricts access to other applications, websites, and system functions during an online examination, preventing students from accessing unauthorised resources.',
+    match4: 'An oral viva or defence verifies student identity and understanding through real-time conversation about submitted work, making it difficult for someone other than the student to have produced the work.',
+    match5: 'Open-book application questions require students to apply knowledge to novel scenarios rather than recall memorised answers, so having access to resources does not eliminate the need for genuine understanding.'
+  };
+
+  function checkMatching() {
+    var score = 0;
+    var total = Object.keys(matchAnswers).length;
+
+    for (var i = 1; i <= total; i++) {
+      var id = 'match' + i;
+      var select = document.getElementById(id);
+      var fb = document.getElementById('mfb' + i);
+      var userAnswer = select.value;
+      var correct = matchAnswers[id];
+
+      if (userAnswer === correct) {
+        select.classList.remove('incorrect');
+        select.classList.add('correct');
+        fb.textContent = 'Correct! ' + matchExplanations[id];
+        fb.className = 'match-feedback correct-fb';
+        score++;
+      } else {
+        select.classList.remove('correct');
+        select.classList.add('incorrect');
+        var correctLetter = correct;
+        var correctText = select.querySelector('option[value="' + correct + '"]').textContent;
+        if (userAnswer === '') {
+          fb.textContent = 'No selection made. ' + matchExplanations[id];
+        } else {
+          fb.textContent = 'Not quite. ' + matchExplanations[id];
+        }
+        fb.className = 'match-feedback incorrect-fb';
+      }
+    }
+
+    var scoreEl = document.getElementById('matchScore');
+    if (score === total) {
+      scoreEl.textContent = score + '/' + total + ' \u2014 Perfect! You understand how integrity measures connect to their purposes.';
+      scoreEl.style.color = 'var(--green)';
+    } else if (score >= 3) {
+      scoreEl.textContent = score + '/' + total + ' \u2014 Good effort. Review the explanations for the ones you missed.';
+      scoreEl.style.color = 'var(--orange)';
+    } else {
+      scoreEl.textContent = score + '/' + total + ' \u2014 Revisit the integrity controls and alternative assessment sections above. Understanding the purpose of each measure is essential for making proportionate design decisions.';
+      scoreEl.style.color = 'var(--red)';
+    }
+  }
+</script>
+
+<!-- SUMMARY / BRIDGE -->
+<h2>Summary</h2>
+
+<p>Academic integrity in ODL is maintained through a combination of clear policies, identity verification, assessment design that discourages misconduct, technology-assisted monitoring, and alternative assessment approaches that require higher-order thinking. The most effective integrity strategy is not surveillance &mdash; it is designing assessments that naturally reduce the temptation and opportunity for misconduct by requiring personalised, application-based, and reflective responses.</p>
+
+<p>Proctoring has a role to play for high-stakes assessments, but it should be applied proportionately and with consideration for equity, privacy, and student wellbeing. Alternative assessments &mdash; e-portfolios, oral defences, case studies, reflective journals, and authentic tasks &mdash; often provide a more effective and less intrusive way to ensure integrity while simultaneously measuring higher-order learning outcomes.</p>
+
+<p>On the next page, you will learn about student support in ODL and the critical principle of Regular and Substantive Interaction (RSI) &mdash; because even the most carefully designed assessments cannot succeed if students feel isolated, unsupported, and disconnected from their learning community.</p>
+
+<!-- FOOTER -->
+<div class="page-footer">
+  <p>ODL Programme Development &bull; Page 14 of 20<br>
+  Part of the ODL Professional Development Series</p>
+</div>
+
+</body>
+</html>

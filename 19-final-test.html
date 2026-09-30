@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Final Test — ODL Programme Development</title>
+<style>
+  :root {
+    --navy: #1a365d;
+    --blue: #2b6cb0;
+    --light-blue: #ebf4ff;
+    --green: #276749;
+    --light-green: #f0fff4;
+    --orange: #c05621;
+    --light-orange: #fffaf0;
+    --purple: #553c9a;
+    --light-purple: #faf5ff;
+    --teal: #285e61;
+    --light-teal: #e6fffa;
+    --red: #c53030;
+    --light-red: #fff5f5;
+    --gray: #4a5568;
+    --light-gray: #f7fafc;
+    --border: #e2e8f0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #2d3748;
+    line-height: 1.7;
+    background: #fff;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .page-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page-nav a {
+    color: var(--blue);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--blue);
+    border-radius: 6px;
+    transition: background 0.2s;
+  }
+
+  .page-nav a:hover { background: var(--light-blue); }
+  .page-nav .page-label { font-size: 0.85rem; color: var(--gray); }
+
+  .page-header {
+    background: linear-gradient(135deg, var(--red) 0%, var(--orange) 100%);
+    color: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+  }
+
+  .page-header .module-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    padding: 0.2rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .page-header h1 { font-size: 1.6rem; margin-bottom: 0.4rem; }
+  .page-header .page-subtitle { font-size: 0.95rem; opacity: 0.85; }
+
+  h2 {
+    color: var(--navy);
+    font-size: 1.3rem;
+    margin: 2rem 0 1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid var(--blue);
+    display: inline-block;
+  }
+
+  h2.module-header {
+    display: block;
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    border-bottom: none;
+    font-size: 1.15rem;
+    margin-top: 2.5rem;
+  }
+
+  h2.module-header.mod1 { background: var(--light-blue); color: var(--blue); border-left: 5px solid var(--blue); }
+  h2.module-header.mod2 { background: var(--light-green); color: var(--green); border-left: 5px solid var(--green); }
+  h2.module-header.mod3 { background: var(--light-orange); color: var(--orange); border-left: 5px solid var(--orange); }
+  h2.module-header.mod4 { background: var(--light-purple); color: var(--purple); border-left: 5px solid var(--purple); }
+  h2.module-header.mod5 { background: var(--light-teal); color: var(--teal); border-left: 5px solid var(--teal); }
+
+  h3 { color: var(--navy); font-size: 1.05rem; margin: 1.5rem 0 0.5rem; }
+  p { margin-bottom: 1rem; }
+
+  .key-point {
+    background: var(--light-blue);
+    border-left: 5px solid var(--blue);
+    padding: 1rem 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 1.5rem 0;
+    font-size: 0.95rem;
+  }
+
+  .key-point strong { color: var(--navy); }
+
+  .sim-note {
+    background: var(--light-purple);
+    border-left: 5px solid var(--purple);
+    padding: 1rem 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 1.5rem 0;
+    font-size: 0.93rem;
+  }
+
+  .sim-note strong { color: var(--purple); }
+
+  /* MCQ quiz */
+  .mcq-box {
+    background: var(--light-gray);
+    border-left: 5px solid var(--navy);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .mcq-box h3 { color: var(--navy); margin-top: 0; margin-bottom: 0.75rem; }
+  .mcq-box .question { font-weight: 600; margin-bottom: 1rem; }
+
+  .mcq-box .q-counter {
+    display: inline-block;
+    background: var(--navy);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.2rem 0.65rem;
+    border-radius: 12px;
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.5px;
+  }
+
+  .mcq-box .options {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem;
+  }
+
+  .mcq-box .options li {
+    padding: 0.6rem 1rem;
+    margin-bottom: 0.4rem;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    font-size: 0.93rem;
+  }
+
+  .mcq-box .options li:hover { border-color: var(--blue); background: var(--light-blue); }
+  .mcq-box .options li.correct { background: #c6f6d5; border-color: var(--green); font-weight: 600; }
+  .mcq-box .options li.incorrect { background: #fed7d7; border-color: var(--red); }
+
+  .mcq-box .feedback {
+    display: none;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-top: 0.75rem;
+    font-size: 0.92rem;
+  }
+
+  .mcq-box .feedback.show { display: block; }
+  .mcq-box .feedback.correct-fb { background: #c6f6d5; color: #22543d; }
+  .mcq-box .feedback.incorrect-fb { background: #fed7d7; color: #742a2a; }
+
+  .mcq-box .check-btn {
+    background: var(--navy);
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .mcq-box .check-btn:hover { background: #2a4a7f; }
+
+  /* Score summary */
+  .score-box {
+    background: var(--light-blue);
+    border: 2px solid var(--blue);
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 2.5rem 0;
+    text-align: center;
+  }
+
+  .score-box h2 {
+    color: var(--navy);
+    border-bottom: none;
+    display: block;
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+
+  .score-display {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 0.5rem;
+  }
+
+  .score-message {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--gray);
+    margin-bottom: 0;
+  }
+
+  .check-all-btn {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--red) 0%, var(--orange) 100%);
+    color: #fff;
+    border: none;
+    padding: 0.85rem 2.5rem;
+    border-radius: 8px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    margin: 2rem auto;
+  }
+
+  .check-all-btn:hover { opacity: 0.9; }
+
+  .page-footer {
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--gray);
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 1rem; }
+    .page-header h1 { font-size: 1.3rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<div class="page-nav">
+  <a href="18-common-risks.html">&larr; Previous</a>
+  <span class="page-label">Page 19 of 20</span>
+  <a href="20-reflection.html">Next &rarr;</a>
+</div>
+
+<!-- HEADER -->
+<div class="page-header">
+  <div class="module-tag">Module 6 &bull; Final Test and Reflection</div>
+  <h1>Final Test</h1>
+  <p class="page-subtitle">20 multiple-choice questions covering the full ODL Programme Development course</p>
+</div>
+
+<!-- INTRODUCTION -->
+<p>You have completed all 18 content pages across five modules. This final assessment tests your understanding of the key concepts, principles, and requirements covered throughout the course. The 20 questions below span ODL definitions, SLT calculations, Table 4 design, LMS implementation, assessment design, academic integrity, student support, RSI, staff readiness, monitoring, and common risks.</p>
+
+<!-- INSTRUCTIONS -->
+<div class="key-point">
+  <strong>Instructions:</strong> Select the best answer for each question. Click &ldquo;Check Answer&rdquo; after selecting your choice. Each question provides detailed feedback explaining why the correct answer is right and why each wrong option is incorrect. There is no time limit &mdash; work through all 20 questions at your own pace.
+</div>
+
+<!-- ============================================================ -->
+<!-- MODULE 1: FOUNDATIONS (Q1-Q4) -->
+<!-- ============================================================ -->
+<h2 class="module-header mod1">Module 1: Foundations (Questions 1&ndash;4)</h2>
+
+<!-- Q1 -->
+<div class="mcq-box" id="quiz1">
+  <span class="q-counter">Question 1 of 20</span>
+  <p class="question">What does ODL stand for in the context of Malaysian higher education?</p>
+  <ul class="options" id="opts1">
+    <li onclick="selectOpt('opts1', this, 'A')">A. Online Digital Learning</li>
+    <li onclick="selectOpt('opts1', this, 'B')">B. Open and Distance Learning</li>
+    <li onclick="selectOpt('opts1', this, 'C')">C. Officially Directed Learning</li>
+    <li onclick="selectOpt('opts1', this, 'D')">D. Organised Distance Lectures</li>
+  </ul>
+  <button class="check-btn" onclick="checkMCQ('quiz1', 'opts1', 'B')">Check Answer</button>
+  <div class="feedback" id="fb-quiz1"></div>
+</div>
+
+<!-- Q2 -->
+<div class="mcq-box" id="quiz2">
+  <span class="q-counter">Question 2 of 20</span>
+  <p class="question">Under the MQF, how many SLT hours does a 3-credit course require?</p>
+  <ul class="options" id="opts2">
+    <li onclick="selectOpt('opts2', this, 'A')">A. 80 hours</li>
+    <li onclick="selectOpt('opts2', this, 'B')">B. 100 hours</li>
+    <li onclick="selectOpt('opts2', this, 'C')">C. 120 hours</li>
+    <li onclick="selectOpt('opts2', this, 'D')">D. 160 hours</li>
+  </ul>
+  <button class="check-btn" onclick="checkMCQ('quiz2', 'opts2', 'C')">Check Answer</button>
+  <div class="feedback" id="fb-quiz2"></div>
+</div>
+
+<!-- Q3 -->
+<div class="mcq-box" id="quiz3">
+  <span class="q-counter">Question 3 of 20</span>
+  <p class="question">Which body of water metaphor best describes the relationship between Programme ODL status and Course ODL status?</p>
+  <ul class="options" id="opts3">
+    <li onclick="selectOpt('opts3', this, 'A')">A. They are independent &mdash; a programme can be ODL even if none of its courses are</li>
+    <li onclick="selectOpt('opts3', this, 'B')">B. A programme is classified as ODL only when the majority of its courses meet the ODL threshold</li>
+    <li onclick="selectOpt('opts3', this, 'C')">C. Every course in a programme must be ODL for the programme to be classified as ODL</li>
+    <li onclick="selectOpt('opts3', this, 'D')">D. Programme ODL status is determined solely by the capstone course</li>
+  </ul>
+  <button class="check-btn" onclick="checkMCQ('quiz3', 'opts3', 'B')">Check Answer</button>
+  <div class="feedback" id="fb-quiz3"></div>
+</div>
+
+<!-- Q4 -->
+<div class="mcq-box" id="quiz4">
+  <span class="q-counter">Question 4 of 20</span>
+  <p class="question">For a course to be classified as ODL, what percentage of total SLT must be delivered via ODL approaches?</p>
+  <ul class="options" id="opts4">
+    <li onclick="selectOpt('opts4', this, 'A')">A. At least 50%</li>
+    <li onclick="selectOpt('opts4', this, 'B')">B. At least 60%</li>
+    <li onclick="selectOpt('opts4', this, 'C')">C. At least 80%</li>
+    <li onclick="selectOpt('opts4', this, 'D')">D. 100%</li>
+  </ul>
+  <button class="check-btn" onclick="checkMCQ('quiz4', 'opts4', 'C')">Check Answer</button>
+  <div class="feedback" id="fb-quiz4"></div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODULE 2: DELIVERY MODES (Q5-Q8) -->
+<!-- ============================================================ -->
+<h2 class="module-header mod2">Module 2: Delivery Modes (Questions 5&ndash;8)</h2>
+
+<!-- Q5 -->
+<div class="mcq-box" id="quiz5">
+  <span class="q-counter">Question 5 of 20</span>
+  <p class="question">Which of the following counts as synchronous online learning?</p>
+  <ul class="options" id="opts5">
+    <li onclick="selectOpt('opts5', this, 'A')">A. Watching a pre-recorded video lecture at your own pace</li>
+    <li onclick="selectOpt('opts5', this, 'B')">B. Reading a textbook chapter independently</li>
+    <li onclick="selectOpt('opts5', this, 'C')">C. Participating in a live webinar with real-time interaction</li>
+    <li onclick="selectOpt('opts5', this, 'D')">D. Completing an offline assignment and uploading it later</li>
+  </ul>
+  <button class="check-btn" onclick="checkMCQ('quiz5', 'opts5', 'C')">Check Answer</button>
+  <div class="feedback" id="fb-quiz5"></div>
+</div>
+
+<!-- Q6 -->
+<div class="mcq-box" id="quiz6">
+  <span class="q-counter">Question 6 of 20</span>
+  <p class="question">Under what condition does independent (self-directed) learning count towards ODL delivery?</p>
+  <ul class="options" id="opts6">
+    <li onclick="selectOpt('opts6', this, 'A')">A. Always &mdash; all independent study is automatically classified as ODL</li>
+    <li onclick="selectOpt('opts6', this, 'B')">B. Only when it is structured and integrated within the LMS with guided activities and tracking</li>
+    <li onclick="selectOpt('opts6', this, 'C')">C. Only when it involves face-to-face library study</li>
+    <li onclick="selectOpt('opts6', this, 'D')">D. Only when it exceeds 50% of the total SLT allocation</li>
+  </ul>
+  <button class="check-btn" onclick="checkMCQ('quiz6', 'opts6', 'B')">Check Answer</button>
+  <div class="feedback" id="fb-quiz6"></div>
+</div>
+
+<!-- Q7 -->
+<div class="mcq-box" id="quiz7">
+  <span class="q-counter">Question 7 of 20</span>
+  <p class="question">A recorded video lecture has a duration of 1 hour. How should its SLT be calculated?</p>
+  <ul class="options" id="opts7">
+    <li onclick="selectOpt('opts7', this, 'A')">A. Exactly 1 hour &mdash; duration equals SLT</li>
+    <li onclick="selectOpt('opts7', this, 'B')">B. 2&ndash;3 hours &mdash; duration must be multiplied to account for pausing, note-taking, and re-watching</li>
+    <li onclick="selectOpt('opts7', this, 'C')">C. 30 minutes &mdash; students watch videos faster than live lectures</li>
+    <li onclick="selectOpt('opts7', this, 'D')">D. 1 hour plus 30 minutes for every assessment in the course</li>
+  </ul>
+  <button class="check-btn" onclick="checkMCQ('quiz7', 'opts7', 'B')">Check Answer</button>
+  <div class="feedback" id="fb-quiz7"></div>
+</div>
+
+<!-- Q8 -->
+<div class="mcq-box" id="quiz8">
+  <span class="q-counter">Question 8 of 20</span>
+  <p class="question">What is the maximum percentage of total SLT that physical face-to-face activities may constitute in an ODL course?</p>
+  <ul class="options" id="opts8">
+    <li onclick="selectOpt('opts8', this, 'A')">A. 10%</li>
+    <li onclick="selectOpt('opts8', this, 'B')">B. 20%</li>
+    <li onclick="selectOpt('opts8', this, 'C')">C. 30%</li>
+    <li onclick="selectOpt('opts8', this, 'D')">D. There is no cap on physical face-to-face activities</li>
+  </ul>
+  <button class="check-btn" onclick="checkMCQ('quiz8', 'opts8', 'B')">Check Answer</button>
+  <div class="feedback" id="fb-quiz8"></div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODULE 3: PLANNING AND DESIGN (Q9-Q12) -->
+<!-- ============================================================ -->
+<h2 class="module-header mod3">Module 3: Planning and Design (Questions 9&ndash;12)</h2>
+
+<!-- Q9 -->
+<div class="mcq-box" id="quiz9">
+  <span class="q-counter">Question 9 of 20</span>
+  <p class="question">What is the primary purpose of Table 4 in ODL course development?</p>
+  <ul class="options" id="opts9">
+    <li onclick="selectOpt('opts9', this, 'A')">A. It is a timetable for scheduling synchronous sessions across the semester</li>
+    <li onclick="selectOpt('opts9', this, 'B')">B. It serves as the comprehensive course blueprint documenting learning outcomes, activities, assessments, and SLT allocation</li>
+    <li onclick="selectOpt('opts9', this, 'C')">C. It is a student attendance register used for quality assurance</li>
+    <li onclick="selectOpt('opts9', this, 'D')">D. It is a financial planning document for estimating course development costs</li>
+  </ul>
+  <button class="check-btn" onclick="checkMCQ('quiz9', 'opts9', 'B')">Check Answer</button>
+  <div class="feedback" id="fb-quiz9"></div>
+</div>
+
+<!-- Q10 -->
+<div class="mcq-box" id="quiz10">
+  <span class="q-counter">Question 10 of 20</span>
+  <p class="question">In the alignment chain for ODL course design, what is the correct sequence?</p>
+  <ul class="options" id="opts10">
+    <li onclick="selectOpt('opts10', this, 'A')">A. Activities &rarr; CLOs &rarr; Assessments &rarr; SLT</li>
+    <li onclick="selectOpt('opts10', this, 'B')">B. Assessments &rarr; Activities &rarr; SLT &rarr; CLOs</li>
+    <li onclick="selectOpt('opts10', this, 'C')">C. CLOs &rarr; Activities &rarr; Assessments &rarr; SLT</li>
+    <li onclick="selectOpt('opts10', this, 'D')">D. SLT &rarr; Assessments &rarr; CLOs &rarr; Activities</li>
+  </ul>
+  <button class="check-btn" onclick="checkMCQ('quiz10', 'opts10', 'C')">Check Answer</button>
+  <div class="feedback" id="fb-quiz10"></div>
+</div>
+
+<!-- Q11 -->
+<div class="mcq-box" id="quiz11">
+  <span class="q-counter">Question 11 of 20</span>
+  <p class="question">For Provisional Accreditation (PA) of a new ODL programme, what must be in place at the point of application?</p>
+  <ul class="options" id="opts11">
+    <li onclick="selectOpt('opts11', this, 'A')">A. A detailed business plan showing projected student enrolment numbers</li>
+    <li onclick="selectOpt('opts11', this, 'B')">B. At least one semester of completed SIMs fully implemented on the LMS</li>
+    <li onclick="selectOpt('opts11', this, 'C')">C. A signed partnership agreement with an external LMS vendor</li>
+    <li onclick="selectOpt('opts11', this, 'D')">D. Three years of student satisfaction survey data from the face-to-face version</li>
+  </ul>
+  <button class="check-btn" onclick="checkMCQ('quiz11', 'opts11', 'B')">Check Answer</button>
+  <div class="feedback" id="fb-quiz11"></div>
+</div>
+
+<!-- Q12 -->
+<div class="mcq-box" id="quiz12">
+  <span class="q-counter">Question 12 of 20</span>
+  <p class="question">The pipeline from course planning to delivery follows which sequence?</p>
+  <ul class="options" id="opts12">
+    <li onclick="selectOpt('opts12', this, 'A')">A. LMS &rarr; SIM &rarr; Table 4</li>
+    <li onclick="selectOpt('opts12', this, 'B')">B. SIM &rarr; LMS &rarr; Table 4</li>
+    <li onclick="selectOpt('opts12', this, 'C')">C. Table 4 &rarr; LMS &rarr; SIM</li>
+    <li onclick="selectOpt('opts12', this, 'D')">D. Table 4 &rarr; SIM &rarr; LMS</li>
+  </ul>
+  <button class="check-btn" onclick="checkMCQ('quiz12', 'opts12', 'D')">Check Answer</button>
+  <div class="feedback" id="fb-quiz12"></div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODULE 4: ASSESSMENT, INTEGRITY, AND SUPPORT (Q13-Q16) -->
+<!-- ============================================================ -->
+<h2 class="module-header mod4">Module 4: Assessment, Integrity, and Support (Questions 13&ndash;16)</h2>
+
+<!-- Q13 -->
+<div class="mcq-box" id="quiz13">
+  <span class="q-counter">Question 13 of 20</span>
+  <p class="question">A CLO states: &ldquo;Evaluate the effectiveness of marketing strategies in different market contexts.&rdquo; Which assessment best demonstrates constructive alignment?</p>
+  <ul class="options" id="opts13">
+    <li onclick="selectOpt('opts13', this, 'A')">A. A multiple-choice test on marketing terminology and definitions</li>
+    <li onclick="selectOpt('opts13', this, 'B')">B. A structured critique comparing two real marketing strategies with justified judgments</li>
+    <li onclick="selectOpt('opts13', this, 'C')">C. A group presentation summarising textbook chapters on marketing theory</li>
+    <li onclick="selectOpt('opts13', this, 'D')">D. A list of 10 marketing strategies copied from the course readings</li>
+  </ul>
+  <button class="check-btn" onclick="checkMCQ('quiz13', 'opts13', 'B')">Check Answer</button>
+  <div class="feedback" id="fb-quiz13"></div>
+</div>
+
+<!-- Q14 -->
+<div class="mcq-box" id="quiz14">
+  <span class="q-counter">Question 14 of 20</span>
+  <p class="question">What does RSI (Regular and Substantive Interaction) require in an ODL course?</p>
+  <ul class="options" id="opts14">
+    <li onclick="selectOpt('opts14', this, 'A')">A. Making all course materials available on the LMS from the first day of the semester</li>
+    <li onclick="selectOpt('opts14', this, 'B')">B. Regular instructor-initiated, meaningful engagement throughout the semester &mdash; not only when students seek help</li>
+    <li onclick="selectOpt('opts14', this, 'C')">C. Providing students with the lecturer&rsquo;s email and responding to queries within one week</li>
+    <li onclick="selectOpt('opts14', this, 'D')">D. Requiring students to attend at least one synchronous session per semester</li>
+  </ul>
+  <button class="check-btn" onclick="checkMCQ('quiz14', 'opts14', 'B')">Check Answer</button>
+  <div class="feedback" id="fb-quiz14"></div>
+</div>
+
+<!-- Q15 -->
+<div class="mcq-box" id="quiz15">
+  <span class="q-counter">Question 15 of 20</span>
+  <p class="question">Which approach does the guideline recommend as the preferred alternative to online proctoring for maintaining academic integrity?</p>
+  <ul class="options" id="opts15">
+    <li onclick="selectOpt('opts15', this, 'A')">A. Using stricter proctoring software with more aggressive AI flagging</li>
+    <li onclick="selectOpt('opts15', this, 'B')">B. Reducing the number of assessments to minimise opportunities for misconduct</li>
+    <li onclick="selectOpt('opts15', this, 'C')">C. Designing authentic assessments that require application, analysis, and creation &mdash; making misconduct naturally difficult</li>
+    <li onclick="selectOpt('opts15', this, 'D')">D. Converting all individual assessments to group-based tasks</li>
+  </ul>
+  <button class="check-btn" onclick="checkMCQ('quiz15', 'opts15', 'C')">Check Answer</button>
+  <div class="feedback" id="fb-quiz15"></div>
+</div>
+
+<!-- Q16 -->
+<div class="mcq-box" id="quiz16">
+  <span class="q-counter">Question 16 of 20</span>
+  <p class="question">Student support in ODL extends beyond learning materials. Which of the following is NOT one of the six support types described in the guideline?</p>
+  <ul class="options" id="opts16">
+    <li onclick="selectOpt('opts16', this, 'A')">A. Academic support (clarification, feedback, guidance)</li>
+    <li onclick="selectOpt('opts16', this, 'B')">B. Financial support (tuition fee waivers and scholarship applications)</li>
+    <li onclick="selectOpt('opts16', this, 'C')">C. Technical support (LMS help, troubleshooting)</li>
+    <li onclick="selectOpt('opts16', this, 'D')">D. Student wellbeing support (counselling, welfare services)</li>
+  </ul>
+  <button class="check-btn" onclick="checkMCQ('quiz16', 'opts16', 'B')">Check Answer</button>
+  <div class="feedback" id="fb-quiz16"></div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODULE 5: QUALITY ASSURANCE (Q17-Q20) -->
+<!-- ============================================================ -->
+<h2 class="module-header mod5">Module 5: Quality Assurance (Questions 17&ndash;20)</h2>
+
+<!-- Q17 -->
+<div class="mcq-box" id="quiz17">
+  <span class="q-counter">Question 17 of 20</span>
+  <p class="question">When should academic staff receive ODL training relative to programme commencement?</p>
+  <ul class="options" id="opts17">
+    <li onclick="selectOpt('opts17', this, 'A')">A. After the first semester, based on student feedback and course review findings</li>
+    <li onclick="selectOpt('opts17', this, 'B')">B. Prior to the commencement of the ODL programme</li>
+    <li onclick="selectOpt('opts17', this, 'C')">C. During the mid-semester break of the first semester</li>
+    <li onclick="selectOpt('opts17', this, 'D')">D. Only if the lecturer encounters technical difficulties during delivery</li>
+  </ul>
+  <button class="check-btn" onclick="checkMCQ('quiz17', 'opts17', 'B')">Check Answer</button>
+  <div class="feedback" id="fb-quiz17"></div>
+</div>
+
+<!-- Q18 -->
+<div class="mcq-box" id="quiz18">
+  <span class="q-counter">Question 18 of 20</span>
+  <p class="question">What does CQI (Continuous Quality Improvement) refer to?</p>
+  <ul class="options" id="opts18">
+    <li onclick="selectOpt('opts18', this, 'A')">A. A one-time accreditation exercise conducted every five years</li>
+    <li onclick="selectOpt('opts18', this, 'B')">B. A systematic process of identifying improvements, implementing actions, evaluating effectiveness, and enhancing quality</li>
+    <li onclick="selectOpt('opts18', this, 'C')">C. The process of replacing underperforming academic staff at the end of each academic year</li>
+    <li onclick="selectOpt('opts18', this, 'D')">D. A financial audit of programme expenditure conducted by the university&rsquo;s accounts department</li>
+  </ul>
+  <button class="check-btn" onclick="checkMCQ('quiz18', 'opts18', 'B')">Check Answer</button>
+  <div class="feedback" id="fb-quiz18"></div>
+</div>
+
+<!-- Q19 -->
+<div class="mcq-box" id="quiz19">
+  <span class="q-counter">Question 19 of 20</span>
+  <p class="question">Which level of quality review provides the most comprehensive evaluation of an ODL programme&rsquo;s continuing relevance, quality, and effectiveness?</p>
+  <ul class="options" id="opts19">
+    <li onclick="selectOpt('opts19', this, 'A')">A. Course Review (conducted after each semester)</li>
+    <li onclick="selectOpt('opts19', this, 'B')">B. Annual Programme Review (APR)</li>
+    <li onclick="selectOpt('opts19', this, 'C')">C. Periodic Quality Review (PQR)</li>
+    <li onclick="selectOpt('opts19', this, 'D')">D. Student satisfaction survey</li>
+  </ul>
+  <button class="check-btn" onclick="checkMCQ('quiz19', 'opts19', 'C')">Check Answer</button>
+  <div class="feedback" id="fb-quiz19"></div>
+</div>
+
+<!-- Q20 -->
+<div class="mcq-box" id="quiz20">
+  <span class="q-counter">Question 20 of 20</span>
+  <p class="question">Which of the following is the most common risk identified during ODL accreditation exercises?</p>
+  <ul class="options" id="opts20">
+    <li onclick="selectOpt('opts20', this, 'A')">A. Students achieving higher grades in ODL courses compared to face-to-face courses</li>
+    <li onclick="selectOpt('opts20', this, 'B')">B. Table 4 not accurately reflecting the actual course delivery &mdash; SLT hours on paper not matching what students experience on the LMS</li>
+    <li onclick="selectOpt('opts20', this, 'C')">C. Too many synchronous online sessions overwhelming students with scheduling conflicts</li>
+    <li onclick="selectOpt('opts20', this, 'D')">D. External vendors over-implementing the course beyond what Table 4 specifies</li>
+  </ul>
+  <button class="check-btn" onclick="checkMCQ('quiz20', 'opts20', 'B')">Check Answer</button>
+  <div class="feedback" id="fb-quiz20"></div>
+</div>
+
+<!-- ============================================================ -->
+<!-- CHECK ALL ANSWERS / SCORE SUMMARY -->
+<!-- ============================================================ -->
+<div style="text-align: center;">
+  <button class="check-all-btn" onclick="checkAllAnswers()">Check All Answers</button>
+</div>
+
+<div class="score-box" id="score-box" style="display: none;">
+  <h2>Your Score</h2>
+  <div class="score-display" id="score-display"></div>
+  <p class="score-message" id="score-message"></p>
+</div>
+
+<!-- BRIDGE TO PAGE 20 -->
+<p>After completing this assessment, proceed to the final reflection page where you can consolidate your learning and plan your next steps.</p>
+
+<!-- FOOTER -->
+<div class="page-footer">
+  <p>ODL Programme Development &bull; Page 19 of 20<br>
+  Part of the ODL Professional Development Series</p>
+</div>
+
+<script>
+  var selected = {};
+
+  var answers = {
+    quiz1: 'B', quiz2: 'C', quiz3: 'B', quiz4: 'C',
+    quiz5: 'C', quiz6: 'B', quiz7: 'B', quiz8: 'B',
+    quiz9: 'B', quiz10: 'C', quiz11: 'B', quiz12: 'D',
+    quiz13: 'B', quiz14: 'B', quiz15: 'C', quiz16: 'B',
+    quiz17: 'B', quiz18: 'B', quiz19: 'C', quiz20: 'B'
+  };
+
+  var fb = {
+    quiz1: {
+      correct: '<strong>Correct.</strong> ODL stands for Open and Distance Learning &mdash; a mode of delivery where students and lecturers are separated by time, space, or both, and learning is facilitated through online and distance approaches.',
+      incorrect: '<strong>Not quite.</strong> The correct answer is <strong>B</strong>. ODL stands for Open and Distance Learning. The other options are fabricated terms.'
+    },
+    quiz2: {
+      correct: '<strong>Correct.</strong> Under the MQF, 1 credit = 40 SLT hours. Therefore, a 3-credit course requires 3 &times; 40 = 120 SLT hours.',
+      incorrect: '<strong>Not quite.</strong> The correct answer is <strong>C</strong>. The MQF formula is 1 credit = 40 SLT hours. For a 3-credit course: 3 &times; 40 = 120 hours. Option A would be 2 credits, Option B is 2.5 credits, and Option D would be 4 credits.'
+    },
+    quiz3: {
+      correct: '<strong>Correct.</strong> Programme classification depends on the proportion of courses that meet the ODL delivery threshold. If most courses in a programme are delivered via ODL, the programme is classified as ODL.',
+      incorrect: '<strong>Not quite.</strong> The correct answer is <strong>B</strong>. Programme ODL classification depends on the proportion of courses meeting the ODL threshold &mdash; not all courses need to be ODL, but the majority should be. Option A is wrong because programme status depends on course status. Option C is too strict. Option D has no basis in the guideline.'
+    },
+    quiz4: {
+      correct: '<strong>Correct.</strong> The ODL delivery threshold is at least 80% of total SLT delivered via ODL approaches (synchronous online + asynchronous online + structured independent learning that is LMS-integrated + online assessment).',
+      incorrect: '<strong>Not quite.</strong> The correct answer is <strong>C</strong>. The threshold is 80%, not 50%, 60%, or 100%. The remaining 20% may be physical face-to-face, which never counts as ODL delivery.'
+    },
+    quiz5: {
+      correct: '<strong>Correct.</strong> Synchronous online learning requires participants to be online at the same time, enabling real-time interaction. Live webinars, virtual classrooms, and live Q&amp;A sessions are all synchronous.',
+      incorrect: '<strong>Not quite.</strong> The correct answer is <strong>C</strong>. Synchronous means &ldquo;at the same time&rdquo; &mdash; participants must be online simultaneously. Option A is asynchronous (self-paced video). Option B is independent learning. Option D involves offline work with a later upload, which is not real-time interaction.'
+    },
+    quiz6: {
+      correct: '<strong>Correct.</strong> Independent learning counts as ODL only when it is structured and LMS-integrated &mdash; meaning the LMS provides guided activities, tracks engagement, and supports self-directed learning. Unstructured independent study does not count.',
+      incorrect: '<strong>Not quite.</strong> The correct answer is <strong>B</strong>. Independent learning is conditional &mdash; it counts as ODL only when it is structured and integrated within the LMS. Option A is wrong because unstructured study never counts. Option C describes physical activity, which is not ODL. Option D has no basis in the guideline.'
+    },
+    quiz7: {
+      correct: '<strong>Correct.</strong> Duration does not equal SLT. Students pause, rewind, take notes, and re-watch segments. The standard practice is to multiply video duration by 2&ndash;3&times; to estimate actual SLT.',
+      incorrect: '<strong>Not quite.</strong> The correct answer is <strong>B</strong>. Duration is not the same as SLT &mdash; students interact with recorded content differently than live content. They pause, take notes, and re-watch, typically requiring 2&ndash;3 times the video duration. Option A treats duration as SLT (the most common error). Option C underestimates. Option D uses an arbitrary formula with no basis.'
+    },
+    quiz8: {
+      correct: '<strong>Correct.</strong> Physical face-to-face activities are capped at 20% of total SLT in an ODL course. Physical F2F never counts as ODL delivery &mdash; it is always counted against the total, reducing the ODL percentage.',
+      incorrect: '<strong>Not quite.</strong> The correct answer is <strong>B</strong>. The cap is 20%. If physical F2F exceeds 20%, the course cannot meet the 80% ODL threshold. Option A is too restrictive. Option C is too high. Option D is wrong &mdash; there is a specific cap.'
+    },
+    quiz9: {
+      correct: '<strong>Correct.</strong> Table 4 is the central course planning document &mdash; it documents the CLOs, learning activities, assessment methods, SLT allocation, and ODL delivery breakdown. It is the blueprint that guides SIM development and LMS implementation.',
+      incorrect: '<strong>Not quite.</strong> The correct answer is <strong>B</strong>. Table 4 is a course blueprint, not a timetable (Option A), attendance register (Option C), or financial document (Option D). It connects CLOs to activities to assessments to SLT in one structured document.'
+    },
+    quiz10: {
+      correct: '<strong>Correct.</strong> The alignment chain starts with CLOs (what students should achieve), then Activities (how they learn), then Assessments (how we measure achievement), then SLT (how much time it takes). Each element flows from the previous one.',
+      incorrect: '<strong>Not quite.</strong> The correct answer is <strong>C</strong>. The alignment chain is: CLOs &rarr; Activities &rarr; Assessments &rarr; SLT. You start with learning outcomes, design activities to achieve them, create assessments to measure achievement, and calculate the SLT required. All other sequences put the cart before the horse.'
+    },
+    quiz11: {
+      correct: '<strong>Correct.</strong> MQA requires at least one semester of completed SIMs fully implemented on the LMS before PA can be granted. This ensures assessors can review the actual learning experience, not just plans.',
+      incorrect: '<strong>Not quite.</strong> The correct answer is <strong>B</strong>. The PA requirement is one semester of implemented SIMs on the LMS. Option A (business plan) is not an MQA requirement for PA. Option C (vendor agreement) is operational, not an accreditation requirement. Option D (3 years of data) is not required &mdash; new programmes may not have a face-to-face predecessor.'
+    },
+    quiz12: {
+      correct: '<strong>Correct.</strong> The pipeline is: Table 4 (blueprint) &rarr; SIM (development of self-instructional materials) &rarr; LMS (implementation of the learning experience). Each stage builds on the previous one.',
+      incorrect: '<strong>Not quite.</strong> The correct answer is <strong>D</strong>. Table 4 comes first (the blueprint), then SIM development (creating the content), then LMS implementation (building the delivery platform). All other sequences put implementation before planning or content before the blueprint.'
+    },
+    quiz13: {
+      correct: '<strong>Correct.</strong> The CLO verb is &ldquo;evaluate,&rdquo; which requires judgment, comparison, and justification. Option B matches this cognitive level &mdash; students must critique real strategies and justify their judgments. This is constructive alignment: the assessment task matches the cognitive demand of the CLO.',
+      incorrect: '<strong>Not quite.</strong> The correct answer is <strong>B</strong>. The CLO verb &ldquo;evaluate&rdquo; requires higher-order thinking &mdash; comparing, critiquing, justifying. Option A tests recall (too low). Option C tests summarisation (too low). Option D tests listing (too low). None of the wrong options require evaluation.'
+    },
+    quiz14: {
+      correct: '<strong>Correct.</strong> RSI has two components: Regular (consistent throughout the semester, not ad hoc) and Substantive (meaningful academic engagement, not just administrative announcements). It must be instructor-initiated and embedded in the course design.',
+      incorrect: '<strong>Not quite.</strong> The correct answer is <strong>B</strong>. RSI requires proactive, regular, substantive interaction initiated by the instructor. Option A is content delivery, not interaction. Option C is reactive and too slow. Option D requires only one session, failing the &ldquo;regular&rdquo; requirement.'
+    },
+    quiz15: {
+      correct: '<strong>Correct.</strong> The guideline encourages designing assessments that naturally reduce misconduct opportunities by requiring higher-order thinking &mdash; application, analysis, evaluation, creation. When students must apply knowledge to unique scenarios, external assistance becomes less useful.',
+      incorrect: '<strong>Not quite.</strong> The correct answer is <strong>C</strong>. The guideline prefers authentic assessment design over surveillance. Option A increases surveillance, which raises privacy concerns. Option B reduces assessment opportunities, which is counterproductive. Option D changes the assessment format without addressing integrity.'
+    },
+    quiz16: {
+      correct: '<strong>Correct.</strong> The six support types are: academic, technical, library &amp; learning resources, wellbeing, engagement &amp; retention, and administrative. Financial support, while important, is not one of the six types specifically outlined in the ODL guideline&rsquo;s student support framework.',
+      incorrect: '<strong>Not quite.</strong> The correct answer is <strong>B</strong>. Financial support is not one of the six types in the guideline&rsquo;s student support framework. The six are: academic, technical, library &amp; learning resources, wellbeing, engagement &amp; retention, and administrative. Options A, C, and D are all part of the framework.'
+    },
+    quiz17: {
+      correct: '<strong>Correct.</strong> The guideline specifies that staff should receive appropriate training in ODL pedagogy, SIM development, LMS implementation, online assessment, and learner engagement before the programme commences. Readiness is proactive, not reactive.',
+      incorrect: '<strong>Not quite.</strong> The correct answer is <strong>B</strong>. Training must occur before the programme starts. Option A is reactive &mdash; students have already experienced unprepared delivery. Option C is too late &mdash; half the semester has passed. Option D only addresses technical issues, ignoring pedagogy, assessment, and facilitation.'
+    },
+    quiz18: {
+      correct: '<strong>Correct.</strong> CQI is a systematic, ongoing cycle: identify opportunities &rarr; implement actions &rarr; evaluate effectiveness &rarr; enhance quality. It is evidence-based and documented through Course Reviews, APR, and PQR.',
+      incorrect: '<strong>Not quite.</strong> The correct answer is <strong>B</strong>. CQI is a systematic improvement cycle, not a one-time event (Option A), a staff replacement process (Option C), or a financial audit (Option D). It uses evidence from monitoring to drive continuous enhancement.'
+    },
+    quiz19: {
+      correct: '<strong>Correct.</strong> The PQR is the most comprehensive review, evaluating whether the programme remains current, effective, compliant, adequately resourced, sustainable, and supportive of student success. Course Review focuses on individual courses; APR covers annual trends; PQR takes the broadest, deepest look.',
+      incorrect: '<strong>Not quite.</strong> The correct answer is <strong>C</strong>. The PQR is the most comprehensive. Course Review (Option A) evaluates a single course. APR (Option B) reviews annual programme trends. Student surveys (Option D) provide feedback but are not a formal quality review. PQR evaluates continuing relevance, compliance, resources, sustainability, and strategic direction.'
+    },
+    quiz20: {
+      correct: '<strong>Correct.</strong> Table 4 misalignment is one of the most commonly flagged risks. The SLT hours documented in Table 4 must match what students actually experience on the LMS. If Table 4 says 28 hours of asynchronous learning but the LMS only contains 14 hours&rsquo; worth, assessors will flag the mismatch.',
+      incorrect: '<strong>Not quite.</strong> The correct answer is <strong>B</strong>. Table 4 misalignment &mdash; the gap between what is documented and what is actually delivered &mdash; is the most common and critical risk. Option A is not a recognised risk. Option C is uncommon &mdash; most ODL courses have too few synchronous sessions, not too many. Option D is rare; the more common problem is under-implementation.'
+    }
+  };
+
+  function selectOpt(optsId, el, letter) {
+    var container = document.getElementById(optsId);
+    container.querySelectorAll('li').forEach(function(li) {
+      li.style.border = '1px solid #e2e8f0';
+    });
+    el.style.border = '2px solid #2b6cb0';
+    selected[optsId] = letter;
+  }
+
+  function checkMCQ(quizId, optsId, correct) {
+    var container = document.getElementById(optsId);
+    var feedbackEl = document.getElementById('fb-' + quizId);
+    var sel = selected[optsId];
+
+    if (!sel) {
+      feedbackEl.textContent = 'Please select an answer before checking.';
+      feedbackEl.className = 'feedback show incorrect-fb';
+      return;
+    }
+
+    var options = container.querySelectorAll('li');
+    options.forEach(function(li, idx) {
+      var letter = String.fromCharCode(65 + idx);
+      li.classList.remove('correct', 'incorrect');
+      if (letter === correct) li.classList.add('correct');
+      else if (letter === sel && sel !== correct) li.classList.add('incorrect');
+    });
+
+    var data = fb[quizId];
+    if (sel === correct) {
+      feedbackEl.innerHTML = data.correct;
+      feedbackEl.className = 'feedback show correct-fb';
+    } else {
+      feedbackEl.innerHTML = data.incorrect;
+      feedbackEl.className = 'feedback show incorrect-fb';
+    }
+  }
+
+  function checkAllAnswers() {
+    var score = 0;
+    var total = 20;
+
+    for (var i = 1; i <= total; i++) {
+      var quizId = 'quiz' + i;
+      var optsId = 'opts' + i;
+      var correct = answers[quizId];
+      var sel = selected[optsId];
+
+      var container = document.getElementById(optsId);
+      var feedbackEl = document.getElementById('fb-' + quizId);
+      var options = container.querySelectorAll('li');
+
+      options.forEach(function(li, idx) {
+        var letter = String.fromCharCode(65 + idx);
+        li.classList.remove('correct', 'incorrect');
+        if (letter === correct) li.classList.add('correct');
+        else if (letter === sel && sel !== correct) li.classList.add('incorrect');
+      });
+
+      var data = fb[quizId];
+      if (sel === correct) {
+        score++;
+        feedbackEl.innerHTML = data.correct;
+        feedbackEl.className = 'feedback show correct-fb';
+      } else if (sel) {
+        feedbackEl.innerHTML = data.incorrect;
+        feedbackEl.className = 'feedback show incorrect-fb';
+      } else {
+        feedbackEl.innerHTML = '<strong>Not answered.</strong> The correct answer is <strong>' + correct + '</strong>. ' + data.correct;
+        feedbackEl.className = 'feedback show incorrect-fb';
+      }
+    }
+
+    var scoreBox = document.getElementById('score-box');
+    var scoreDisplay = document.getElementById('score-display');
+    var scoreMessage = document.getElementById('score-message');
+
+    scoreDisplay.textContent = score + ' / ' + total;
+
+    var msg = '';
+    if (score >= 18) {
+      msg = 'Excellent! You have a strong command of ODL programme development principles.';
+    } else if (score >= 14) {
+      msg = 'Good foundation. Review the feedback on the questions you missed and revisit the relevant pages.';
+    } else if (score >= 10) {
+      msg = 'You have a basic understanding, but several key concepts need reinforcement. Consider revisiting Modules 1\u20133.';
+    } else {
+      msg = 'Significant gaps remain. Work through the course again systematically, paying special attention to SLT calculations and the alignment chain.';
+    }
+
+    scoreMessage.textContent = msg;
+    scoreBox.style.display = 'block';
+    scoreBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+</script>
+
+</body>
+</html>

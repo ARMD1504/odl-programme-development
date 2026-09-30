@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Common Risks &amp; Good Practices — ODL Programme Development</title>
+<style>
+  :root {
+    --navy: #1a365d;
+    --blue: #2b6cb0;
+    --light-blue: #ebf4ff;
+    --green: #276749;
+    --light-green: #f0fff4;
+    --orange: #c05621;
+    --light-orange: #fffaf0;
+    --purple: #553c9a;
+    --light-purple: #faf5ff;
+    --teal: #285e61;
+    --light-teal: #e6fffa;
+    --red: #c53030;
+    --light-red: #fff5f5;
+    --gray: #4a5568;
+    --light-gray: #f7fafc;
+    --border: #e2e8f0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #2d3748;
+    line-height: 1.7;
+    background: #fff;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .page-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page-nav a {
+    color: var(--blue);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--blue);
+    border-radius: 6px;
+    transition: background 0.2s;
+  }
+
+  .page-nav a:hover { background: var(--light-blue); }
+  .page-nav .page-label { font-size: 0.85rem; color: var(--gray); }
+
+  .page-header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--purple) 100%);
+    color: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+  }
+
+  .page-header .module-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    padding: 0.2rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .page-header h1 { font-size: 1.6rem; margin-bottom: 0.4rem; }
+  .page-header .page-subtitle { font-size: 0.95rem; opacity: 0.85; }
+
+  h2 {
+    color: var(--navy);
+    font-size: 1.3rem;
+    margin: 2rem 0 1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid var(--blue);
+    display: inline-block;
+  }
+
+  h3 { color: var(--navy); font-size: 1.05rem; margin: 1.5rem 0 0.5rem; }
+  p { margin-bottom: 1rem; }
+
+  .key-point {
+    background: var(--light-blue);
+    border-left: 5px solid var(--blue);
+    padding: 1rem 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 1.5rem 0;
+    font-size: 0.95rem;
+  }
+
+  .key-point strong { color: var(--navy); }
+
+  .case-box {
+    background: var(--light-orange);
+    border-left: 5px solid var(--orange);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .case-box h3 { color: var(--orange); margin-top: 0; margin-bottom: 0.75rem; }
+  .case-box .scenario { font-style: italic; margin-bottom: 1rem; }
+
+  /* Good practice box */
+  .good-practice {
+    background: var(--light-green);
+    border-left: 5px solid var(--green);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .good-practice h3 { color: var(--green); margin-top: 0; margin-bottom: 0.75rem; }
+
+  /* SIM note */
+  .sim-note {
+    background: var(--light-purple);
+    border-left: 5px solid var(--purple);
+    padding: 1rem 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 1.5rem 0;
+    font-size: 0.93rem;
+  }
+
+  .sim-note strong { color: var(--purple); }
+
+  /* Risk cards */
+  .risk-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .risk-card {
+    border: 1px solid #feb2b2;
+    border-radius: 8px;
+    padding: 1.25rem;
+    border-left: 5px solid var(--red);
+    background: var(--light-red);
+  }
+
+  .risk-card h4 {
+    color: var(--red);
+    font-size: 0.9rem;
+    margin-bottom: 0.35rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .risk-card h4 .risk-icon {
+    display: inline-block;
+    background: var(--red);
+    color: #fff;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .risk-card p {
+    font-size: 0.85rem;
+    color: var(--gray);
+    margin: 0;
+  }
+
+  /* Self-check checklist */
+  .checklist-box {
+    background: var(--light-teal);
+    border-left: 5px solid var(--teal);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .checklist-box h3 { color: var(--teal); margin-top: 0; margin-bottom: 0.75rem; }
+
+  .checklist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+
+  .checklist-item .check-box {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--teal);
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    position: relative;
+  }
+
+  .checklist-item .check-box::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 5px;
+    width: 6px;
+    height: 10px;
+    border: solid var(--teal);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
+  .checklist-item span { flex: 1; }
+
+  /* Matching quiz */
+  .match-box {
+    background: var(--light-blue);
+    border-left: 5px solid var(--blue);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+  }
+
+  .match-box h3 { color: var(--blue); margin-top: 0; margin-bottom: 0.5rem; }
+
+  .match-item {
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .match-item:last-of-type { border-bottom: none; }
+
+  .match-item label {
+    display: block;
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+    color: var(--navy);
+    font-weight: 500;
+  }
+
+  .match-item .risk-label {
+    display: inline-block;
+    background: var(--light-red);
+    color: var(--red);
+    font-weight: 600;
+    font-size: 0.82rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    border: 1px solid #feb2b2;
+  }
+
+  .match-item select {
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    padding: 0.45rem 0.75rem;
+    font-size: 0.88rem;
+    width: 100%;
+    max-width: 520px;
+    transition: border-color 0.2s;
+    background: #fff;
+    color: #2d3748;
+    cursor: pointer;
+  }
+
+  .match-item select:focus {
+    outline: none;
+    border-color: var(--blue);
+  }
+
+  .match-item select.correct {
+    border-color: var(--green);
+    background: var(--light-green);
+  }
+
+  .match-item select.incorrect {
+    border-color: var(--red);
+    background: var(--light-red);
+  }
+
+  .match-feedback {
+    font-size: 0.83rem;
+    margin-top: 0.3rem;
+    min-height: 1.2rem;
+  }
+
+  .match-feedback.correct-fb { color: var(--green); }
+  .match-feedback.incorrect-fb { color: var(--red); }
+
+  .match-btn {
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    padding: 0.45rem 1.25rem;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 0.5rem;
+  }
+
+  .match-btn:hover { background: var(--navy); }
+
+  .match-score {
+    margin-top: 1rem;
+    font-weight: 600;
+    font-size: 0.92rem;
+  }
+
+  /* Page footer */
+  .page-footer {
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--gray);
+    font-size: 0.85rem;
+  }
+
+  /* Table 4 action prompt */
+  .table4-action {
+    background: #FFFBEB;
+    border-left: 5px solid #D97706;
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 2rem 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+
+  .table4-action h3 {
+    color: #B45309;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .table4-action .table4-icon { font-size: 1.3rem; }
+
+  .table4-action p {
+    font-size: 0.93rem;
+    margin-bottom: 0;
+  }
+
+  .table4-action .table4-intro {
+    font-size: 0.9rem;
+    color: #92400E;
+    font-style: italic;
+    margin-bottom: 0.5rem;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 1rem; }
+    .risk-grid { grid-template-columns: 1fr; }
+    .page-header h1 { font-size: 1.3rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<div class="page-nav">
+  <a href="17-monitoring-review.html">&larr; Previous</a>
+  <span class="page-label">Page 18 of 20</span>
+  <a href="19-final-test.html">Next &rarr;</a>
+</div>
+
+<!-- HEADER -->
+<div class="page-header">
+  <div class="module-tag">Module 5 &bull; Quality Assurance and Continuous Improvement</div>
+  <h1>Common Risks &amp; Good Practices</h1>
+  <p class="page-subtitle">A practical checklist of common issues identified during ODL implementation, audits, reviews, and accreditation exercises &mdash; and how to prevent them</p>
+</div>
+
+<!-- BRIDGE FROM PAGE 17 -->
+<p>On the previous page, you explored monitoring and quality assurance mechanisms &mdash; the structured processes that help institutions track whether ODL courses are being delivered as intended. Monitoring is powerful because it catches problems while they can still be corrected. But even more powerful is knowing the common risks in advance, so you can prevent them entirely rather than discovering them after they have already affected students. This page brings together the most frequently identified issues from ODL implementation, internal audits, programme reviews, and accreditation exercises, and presents them as a practical self-check you can apply to your own courses.</p>
+
+<!-- INTRODUCTION -->
+<h2>Why a Risk Checklist Matters</h2>
+
+<p>These are common issues identified during ODL implementation, internal audits, programme reviews, and accreditation exercises. They recur across institutions, disciplines, and experience levels &mdash; not because lecturers are negligent, but because ODL design involves many interconnected components, and a weakness in one area often cascades into others.</p>
+
+<p>Staff should be aware of these risks and take appropriate measures to ensure compliance. Use this page as a self-check during course design, SIM development, LMS implementation, delivery, and review. If you can confirm that your course avoids each of these risks, you are well-positioned for both successful delivery and accreditation scrutiny.</p>
+
+<div class="key-point">
+  <strong>The risks on this page are not theoretical.</strong> They are drawn from actual programme reviews and accreditation reports. Each one has appeared repeatedly across different institutions and courses. The patterns are predictable, which means they are also preventable &mdash; if you know what to look for before you start.
+</div>
+
+<!-- COMMON RISK AREAS -->
+<h2>Common Risk Areas</h2>
+
+<p>The following eight risk areas represent the most frequently flagged issues in ODL quality assurance. Each risk card describes the problem and its consequences. Read through them carefully and consider whether any apply to courses you are currently designing or delivering.</p>
+
+<div class="risk-grid">
+  <div class="risk-card">
+    <h4><span class="risk-icon">1</span> Table 4 Misalignment</h4>
+    <p>The Table 4 does not accurately reflect the actual course delivery. SLT hours on paper do not match what students actually experience. Activities listed in the Table 4 are not implemented on the LMS, or activities implemented on the LMS are not listed in the Table 4. This discrepancy is one of the most common findings during accreditation reviews.</p>
+  </div>
+  <div class="risk-card">
+    <h4><span class="risk-icon">2</span> LMS as File Repository</h4>
+    <p>Content is uploaded as files rather than implemented as structured learning experiences. There is no interactivity, no guided pathways, and no embedded activities. The LMS becomes a digital filing cabinet &mdash; students download PDFs but have no structured learning journey, no self-checks, and no interactive elements to engage with.</p>
+  </div>
+  <div class="risk-card">
+    <h4><span class="risk-icon">3</span> Insufficient RSI</h4>
+    <p>Lecturer interaction is limited to administrative announcements. There are no facilitated discussions, no proactive outreach to struggling students, and no structured feedback beyond marking assignments. Students feel isolated and unsupported, which directly impacts engagement, retention, and learning outcomes.</p>
+  </div>
+  <div class="risk-card">
+    <h4><span class="risk-icon">4</span> Assessment-CLO Misalignment</h4>
+    <p>Assessments do not match the cognitive level of the CLOs. CLOs require students to &ldquo;design&rdquo; or &ldquo;evaluate,&rdquo; but assessments only test recall and recognition. This mismatch means you cannot validly claim that students have achieved the stated learning outcomes, regardless of their scores.</p>
+  </div>
+  <div class="risk-card">
+    <h4><span class="risk-icon">5</span> SLT Miscalculation</h4>
+    <p>Duration of video or resources is counted as SLT without applying the required multiplication factor. Independent learning is counted without LMS integration to track or verify it. Over-counting SLT leads to the course failing the 80% ODL threshold, triggering compliance issues during review.</p>
+  </div>
+  <div class="risk-card">
+    <h4><span class="risk-icon">6</span> Inadequate Staff Preparation</h4>
+    <p>Staff are assigned to ODL courses without completing the required training. There is a reliance on face-to-face teaching expertise without developing ODL-specific competencies such as online facilitation, LMS management, and digital assessment design. Unprepared staff struggle with the medium.</p>
+  </div>
+  <div class="risk-card">
+    <h4><span class="risk-icon">7</span> No Early Intervention</h4>
+    <p>Student engagement is not monitored during the semester. At-risk students are identified only at the final examination, when it is too late to help. There are no proactive support mechanisms, no early alert systems, and no structured check-ins. By the time problems surface, the damage is done.</p>
+  </div>
+  <div class="risk-card">
+    <h4><span class="risk-icon">8</span> Weak Evidence Trail</h4>
+    <p>LMS data is not retained systematically. There are no records of communication, facilitation, or feedback provided to students. When accreditation reviewers ask for evidence of implementation, the course team cannot demonstrate what was actually delivered, how students were supported, or what the engagement data shows.</p>
+  </div>
+</div>
+
+<p>Notice how these risks are interconnected. A lecturer who treats the LMS as a file repository (Risk 2) is likely to have insufficient RSI (Risk 3) and a weak evidence trail (Risk 8). A lecturer whose Table 4 is misaligned (Risk 1) probably also has SLT miscalculations (Risk 5). Addressing one risk often helps address others &mdash; and ignoring one often means ignoring several.</p>
+
+<!-- SELF-CHECK CHECKLIST -->
+<h2>Self-Check Checklist</h2>
+
+<p>Use this checklist as a systematic self-check before launching your course. Each item maps directly to one or more of the risk areas above. If you can confirm every item, your course is well-positioned for both quality delivery and accreditation review.</p>
+
+<div class="checklist-box">
+  <h3>Pre-Launch Self-Check</h3>
+
+  <div class="checklist-item">
+    <span class="check-box"></span>
+    <span>Table 4 accurately reflects all learning activities and SLT allocations &mdash; every activity listed is implemented on the LMS, and every activity on the LMS is listed in the Table 4.</span>
+  </div>
+
+  <div class="checklist-item">
+    <span class="check-box"></span>
+    <span>LMS is structured with weekly modules, guided learning pathways, and embedded activities &mdash; not a file dump of PDFs and videos in a single folder.</span>
+  </div>
+
+  <div class="checklist-item">
+    <span class="check-box"></span>
+    <span>RSI is planned and documented: facilitated discussions are scheduled, weekly announcements are prepared, structured feedback windows are defined, and proactive outreach to inactive students is planned.</span>
+  </div>
+
+  <div class="checklist-item">
+    <span class="check-box"></span>
+    <span>Assessments align with CLO verbs and cognitive levels &mdash; if a CLO says &ldquo;design,&rdquo; the assessment requires a design task; if it says &ldquo;evaluate,&rdquo; the assessment requires evaluation.</span>
+  </div>
+
+  <div class="checklist-item">
+    <span class="check-box"></span>
+    <span>SLT calculations follow the correct formula with multiplication factors applied &mdash; video duration is not counted as raw hours, and independent learning is supported by LMS integration.</span>
+  </div>
+
+  <div class="checklist-item">
+    <span class="check-box"></span>
+    <span>Staff have completed ODL training before commencement &mdash; including LMS operation, online facilitation, digital assessment design, and student engagement monitoring.</span>
+  </div>
+
+  <div class="checklist-item">
+    <span class="check-box"></span>
+    <span>Student engagement is monitored weekly with early intervention protocols in place &mdash; at-risk students are identified and contacted before problems become irreversible.</span>
+  </div>
+
+  <div class="checklist-item">
+    <span class="check-box"></span>
+    <span>LMS analytics and communication records are maintained systematically &mdash; engagement data, forum participation, assessment records, and facilitation logs are all retained for accreditation evidence.</span>
+  </div>
+</div>
+
+<!-- KEY PRINCIPLE BOX -->
+<div class="key-point">
+  <strong>Key Principle: The best defence against these risks is proactive design, not reactive correction.</strong> If you build your Table 4 carefully, implement it faithfully on the LMS, maintain RSI throughout the semester, monitor engagement data, and keep evidence records &mdash; most of these risks are automatically mitigated. The checklist above is not a compliance exercise. It is a quality habit. The lecturers who avoid these risks are not the ones who fix problems quickly; they are the ones who check systematically before problems occur.
+</div>
+
+<!-- GOOD PRACTICE EXAMPLE -->
+<p>Let's see what proactive risk management looks like in practice.</p>
+
+<div class="good-practice">
+  <h3>Good Practice: Dr. Yasmin's Pre-Launch Checklist</h3>
+  <p>Before every semester, Dr. Yasmin runs through a systematic self-check of her ODL course. She does not wait for problems to surface &mdash; she looks for them deliberately before students ever log in.</p>
+  <p>First, she verifies her Table 4 SLT calculations match the actual LMS content. She opens each module on the LMS and tallies the hours students will spend on each activity, confirming that the numbers match what she documented in Table 4. If she added a new video or changed a reading, she updates the Table 4 to reflect the change.</p>
+  <p>Second, she tests every link and activity on the LMS as a student would experience it. She uses the &ldquo;student view&rdquo; feature to navigate through each weekly module, clicking every link, attempting every quiz, and checking that embedded content loads correctly. Broken links and missing resources are fixed before launch.</p>
+  <p>Third, she pre-schedules her weekly announcements, discussion forum prompts, and feedback windows. Her RSI plan is not an afterthought &mdash; it is built into the course calendar before the semester begins. Each week has a planned announcement, a discussion prompt aligned with that week's content, and a defined window for providing feedback on submitted work.</p>
+  <p>Fourth, she confirms her assessments align with each CLO verb. She creates a simple mapping table: each CLO on one axis, each assessment task on the other, with the cognitive verb noted. If any CLO is not covered by an appropriate assessment, she adjusts before the course goes live.</p>
+  <p>Finally, she checks that her LMS analytics are capturing engagement data correctly. She confirms that the system is tracking logins, content views, forum participation, and quiz attempts &mdash; the data she will use to identify at-risk students during the semester.</p>
+  <p><strong>The result:</strong> When the MQA assessor reviewed her course, it was flagged as a model implementation. The Table 4 matched the LMS perfectly. RSI was documented and visible. Assessment alignment was clearly mapped. Engagement data was available and well-organised.</p>
+  <p><strong>Why this works:</strong> Dr. Yasmin treats the risk checklist not as a compliance exercise but as a quality habit. By checking proactively, she catches problems before students encounter them. The pre-launch checklist takes a few hours at the start of each semester, but it prevents the kind of accumulated problems that can derail an entire course and trigger serious accreditation findings.</p>
+</div>
+
+<!-- TABLE 4 ACTION -->
+<p>Before you move on, take a moment to apply what you have learned.</p>
+
+<div class="table4-action">
+  <h3><span class="table4-icon">&#128221;</span> Update Your Table 4</h3>
+  <p class="table4-intro">Final check: run through the self-check checklist on this page against your Table 4.</p>
+  <p>Verify that every number adds up, every CLO has aligned activities and assessments, your ODL percentage is &ge; 80%, and your LMS plan mirrors the Table 4 structure. Your Table 4 is now your complete course blueprint &mdash; ready for SIM development and LMS implementation.</p>
+</div>
+
+<!-- CASE SCENARIO -->
+<p>Now let&rsquo;s examine what happens when the risk checklist is ignored.</p>
+
+<div class="case-box">
+  <h3>Case: Dr. Ismail's Accumulating Problems</h3>
+  <p class="scenario">Dr. Ismail designed his Table 4 quickly, treating it as a formality to satisfy the administrative requirements. His SLT calculations used video duration as SLT without applying the multiplication factor &mdash; a 30-minute video was counted as 30 minutes of SLT rather than the adjusted value. He uploaded all of his course content to the LMS as a single folder of PDFs, reasoning that students could work through them independently. He set up one discussion forum with no prompts, assuming students would start conversations on their own. He did not monitor LMS analytics during the semester, explaining later that he &ldquo;did not have time to check dashboards.&rdquo;</p>
+  <p><strong>What happened:</strong> At the end of the semester, 35% of students failed the course. During the programme review, multiple risks were flagged simultaneously: Table 4 misalignment (the documented activities did not match what students experienced), LMS file dump (content was uploaded as files, not structured as learning experiences), insufficient RSI (the single unprompted forum had three posts all semester, all from the same two students), no engagement monitoring (Dr. Ismail could not identify when or why students disengaged), and a weak evidence trail (there were no records of facilitation, feedback, or proactive communication).</p>
+  <p><strong>What went wrong?</strong> Dr. Ismail's problems did not start at any single point &mdash; they accumulated because he never used the risk checklist as a self-check. Each individual shortcut seemed manageable on its own: rough SLT calculations saved time, the file dump was quick to upload, the empty forum required no preparation, and skipping analytics monitoring freed up his schedule. But together, these shortcuts created a course that failed on almost every quality dimension. The rough SLT meant his Table 4 was inaccurate. The file dump meant there were no guided learning pathways. The empty forum meant no RSI. The missing analytics meant no early intervention. And the overall lack of structure meant there was no evidence trail to demonstrate implementation.</p>
+  <p><strong>The lesson:</strong> A pre-launch checklist would have caught most of these issues before the course went live. If Dr. Ismail had verified his SLT calculations, structured his LMS content, planned his RSI, and confirmed his analytics were working, the semester would have looked very different. The checklist is not extra work &mdash; it is the work that prevents far more work (and far worse outcomes) later.</p>
+</div>
+
+<!-- TRANSITION TO QUIZ -->
+<p>You now have a clear picture of the most common risks in ODL implementation and the strategies for preventing them. The matching exercise below tests your ability to connect each risk with its correct mitigation strategy &mdash; a skill you will need when reviewing your own courses or supporting colleagues through the design process.</p>
+
+<!-- MATCHING QUIZ -->
+<div class="match-box">
+  <h3>Check Your Understanding: Match Each Risk to Its Mitigation</h3>
+  <p style="margin-bottom: 1rem; font-size: 0.9rem;">For each risk below, select the correct mitigation strategy from the dropdown menu. Then click &ldquo;Check All&rdquo; to see your score.</p>
+
+  <div class="match-item">
+    <span class="risk-label">Risk 1: Table 4 SLT misalignment</span>
+    <label>The documented SLT hours do not match what students actually experience on the LMS.</label>
+    <select id="match1">
+      <option value="">-- Select the correct mitigation --</option>
+      <option value="A">Maintain LMS analytics, communication logs, assessment records, and forum participation data</option>
+      <option value="B">Cross-check SLT calculations against actual LMS content hours using the multiplication factor</option>
+      <option value="C">Schedule facilitated discussions, weekly announcements, and proactive outreach to inactive students</option>
+      <option value="D">Restructure content into weekly modules with guided activities, embedded quizzes, and clear learning pathways</option>
+      <option value="E">Monitor LMS engagement data weekly and implement early alert systems for at-risk students</option>
+      <option value="F">Match assessment tasks to the cognitive verb in each CLO (e.g., design requires a design task)</option>
+    </select>
+    <div class="match-feedback" id="mfb1"></div>
+  </div>
+
+  <div class="match-item">
+    <span class="risk-label">Risk 2: LMS file dump</span>
+    <label>Content is uploaded as files rather than structured learning experiences.</label>
+    <select id="match2">
+      <option value="">-- Select the correct mitigation --</option>
+      <option value="A">Maintain LMS analytics, communication logs, assessment records, and forum participation data</option>
+      <option value="B">Cross-check SLT calculations against actual LMS content hours using the multiplication factor</option>
+      <option value="C">Schedule facilitated discussions, weekly announcements, and proactive outreach to inactive students</option>
+      <option value="D">Restructure content into weekly modules with guided activities, embedded quizzes, and clear learning pathways</option>
+      <option value="E">Monitor LMS engagement data weekly and implement early alert systems for at-risk students</option>
+      <option value="F">Match assessment tasks to the cognitive verb in each CLO (e.g., design requires a design task)</option>
+    </select>
+    <div class="match-feedback" id="mfb2"></div>
+  </div>
+
+  <div class="match-item">
+    <span class="risk-label">Risk 3: Insufficient RSI</span>
+    <label>Lecturer interaction is limited to administrative announcements with no facilitated engagement.</label>
+    <select id="match3">
+      <option value="">-- Select the correct mitigation --</option>
+      <option value="A">Maintain LMS analytics, communication logs, assessment records, and forum participation data</option>
+      <option value="B">Cross-check SLT calculations against actual LMS content hours using the multiplication factor</option>
+      <option value="C">Schedule facilitated discussions, weekly announcements, and proactive outreach to inactive students</option>
+      <option value="D">Restructure content into weekly modules with guided activities, embedded quizzes, and clear learning pathways</option>
+      <option value="E">Monitor LMS engagement data weekly and implement early alert systems for at-risk students</option>
+      <option value="F">Match assessment tasks to the cognitive verb in each CLO (e.g., design requires a design task)</option>
+    </select>
+    <div class="match-feedback" id="mfb3"></div>
+  </div>
+
+  <div class="match-item">
+    <span class="risk-label">Risk 4: Assessment-CLO misalignment</span>
+    <label>Assessments test recall when CLOs require higher-order skills like design or evaluation.</label>
+    <select id="match4">
+      <option value="">-- Select the correct mitigation --</option>
+      <option value="A">Maintain LMS analytics, communication logs, assessment records, and forum participation data</option>
+      <option value="B">Cross-check SLT calculations against actual LMS content hours using the multiplication factor</option>
+      <option value="C">Schedule facilitated discussions, weekly announcements, and proactive outreach to inactive students</option>
+      <option value="D">Restructure content into weekly modules with guided activities, embedded quizzes, and clear learning pathways</option>
+      <option value="E">Monitor LMS engagement data weekly and implement early alert systems for at-risk students</option>
+      <option value="F">Match assessment tasks to the cognitive verb in each CLO (e.g., design requires a design task)</option>
+    </select>
+    <div class="match-feedback" id="mfb4"></div>
+  </div>
+
+  <div class="match-item">
+    <span class="risk-label">Risk 5: No early intervention</span>
+    <label>Student engagement is not monitored; at-risk students are identified only at the final exam.</label>
+    <select id="match5">
+      <option value="">-- Select the correct mitigation --</option>
+      <option value="A">Maintain LMS analytics, communication logs, assessment records, and forum participation data</option>
+      <option value="B">Cross-check SLT calculations against actual LMS content hours using the multiplication factor</option>
+      <option value="C">Schedule facilitated discussions, weekly announcements, and proactive outreach to inactive students</option>
+      <option value="D">Restructure content into weekly modules with guided activities, embedded quizzes, and clear learning pathways</option>
+      <option value="E">Monitor LMS engagement data weekly and implement early alert systems for at-risk students</option>
+      <option value="F">Match assessment tasks to the cognitive verb in each CLO (e.g., design requires a design task)</option>
+    </select>
+    <div class="match-feedback" id="mfb5"></div>
+  </div>
+
+  <div class="match-item">
+    <span class="risk-label">Risk 6: Weak evidence trail</span>
+    <label>LMS data is not retained; cannot demonstrate implementation for accreditation.</label>
+    <select id="match6">
+      <option value="">-- Select the correct mitigation --</option>
+      <option value="A">Maintain LMS analytics, communication logs, assessment records, and forum participation data</option>
+      <option value="B">Cross-check SLT calculations against actual LMS content hours using the multiplication factor</option>
+      <option value="C">Schedule facilitated discussions, weekly announcements, and proactive outreach to inactive students</option>
+      <option value="D">Restructure content into weekly modules with guided activities, embedded quizzes, and clear learning pathways</option>
+      <option value="E">Monitor LMS engagement data weekly and implement early alert systems for at-risk students</option>
+      <option value="F">Match assessment tasks to the cognitive verb in each CLO (e.g., design requires a design task)</option>
+    </select>
+    <div class="match-feedback" id="mfb6"></div>
+  </div>
+
+  <button class="match-btn" onclick="checkMatching()">Check All</button>
+  <div class="match-score" id="matchScore"></div>
+</div>
+
+<script>
+  var matchAnswers = {
+    match1: 'B',
+    match2: 'D',
+    match3: 'C',
+    match4: 'F',
+    match5: 'E',
+    match6: 'A'
+  };
+
+  var matchExplanations = {
+    match1: 'Table 4 SLT misalignment is resolved by cross-checking your documented SLT calculations against the actual content hours on the LMS, using the correct multiplication factors to ensure accuracy.',
+    match2: 'An LMS file dump is resolved by restructuring content into weekly modules with guided activities, embedded quizzes, and clear learning pathways that create a structured learning experience.',
+    match3: 'Insufficient RSI is resolved by scheduling facilitated discussions, weekly announcements, and proactive outreach to inactive students, ensuring regular and substantive interaction throughout the semester.',
+    match4: 'Assessment-CLO misalignment is resolved by matching each assessment task to the cognitive verb in the corresponding CLO, so that design CLOs are assessed through design tasks, evaluation CLOs through evaluation tasks, and so on.',
+    match5: 'The absence of early intervention is resolved by monitoring LMS engagement data weekly and implementing early alert systems that identify at-risk students before problems become irreversible.',
+    match6: 'A weak evidence trail is resolved by systematically maintaining LMS analytics, communication logs, assessment records, and forum participation data so that implementation can be demonstrated during accreditation reviews.'
+  };
+
+  function checkMatching() {
+    var score = 0;
+    var total = Object.keys(matchAnswers).length;
+
+    for (var i = 1; i <= total; i++) {
+      var id = 'match' + i;
+      var select = document.getElementById(id);
+      var fb = document.getElementById('mfb' + i);
+      var userAnswer = select.value;
+      var correct = matchAnswers[id];
+
+      if (userAnswer === correct) {
+        select.classList.remove('incorrect');
+        select.classList.add('correct');
+        fb.textContent = 'Correct! ' + matchExplanations[id];
+        fb.className = 'match-feedback correct-fb';
+        score++;
+      } else {
+        select.classList.remove('correct');
+        select.classList.add('incorrect');
+        if (userAnswer === '') {
+          fb.textContent = 'Please select an option. ' + matchExplanations[id];
+        } else {
+          fb.textContent = 'Not quite. ' + matchExplanations[id];
+        }
+        fb.className = 'match-feedback incorrect-fb';
+      }
+    }
+
+    var scoreEl = document.getElementById('matchScore');
+    if (score === total) {
+      scoreEl.textContent = score + '/' + total + ' \u2014 Perfect! You can identify the right mitigation for every common risk.';
+      scoreEl.style.color = 'var(--green)';
+    } else if (score >= 4) {
+      scoreEl.textContent = score + '/' + total + ' \u2014 Good effort. Review the explanations for the ones you missed.';
+      scoreEl.style.color = 'var(--orange)';
+    } else {
+      scoreEl.textContent = score + '/' + total + ' \u2014 Revisit the risk cards and checklist above. Understanding these mitigations is essential for quality assurance.';
+      scoreEl.style.color = 'var(--red)';
+    }
+  }
+</script>
+
+<!-- SUMMARY / BRIDGE TO CAPSTONE -->
+<h2>Summary</h2>
+
+<p>This page has given you a practical framework for identifying and preventing the most common risks in ODL implementation. The eight risk areas &mdash; Table 4 misalignment, LMS file dumps, insufficient RSI, assessment-CLO misalignment, SLT miscalculation, inadequate staff preparation, no early intervention, and weak evidence trails &mdash; represent patterns that recur across institutions and courses. They are predictable, which means they are preventable.</p>
+
+<p>The self-check checklist is your tool for proactive quality assurance. Used before each semester launch, it catches problems before students encounter them. Used during the semester, it helps you stay on track. Used during reviews, it provides a structured way to demonstrate compliance.</p>
+
+<p>This is the last content page in the course. You have now completed all 18 content pages across five modules. You understand ODL definitions and regulatory frameworks, SLT calculations and the multiplication factor, Table 4 design and documentation, LMS implementation and content structuring, assessment design and constructive alignment, academic integrity and online proctoring, student support and early intervention, staff readiness and professional development, monitoring and quality assurance mechanisms, and common risks with their mitigation strategies.</p>
+
+<p>The capstone exercise on the next page is where you bring all of this together. You will apply everything you have learned across all five modules to design a complete ODL course plan &mdash; from initial SLT calculations through Table 4 documentation, LMS structuring, assessment design, RSI planning, and quality assurance. The capstone is not a test of any single concept; it is a test of your ability to integrate all of them into a coherent, compliant, and well-designed ODL course.</p>
+
+<p>You are ready. Turn to page 19 to begin.</p>
+
+<!-- FOOTER -->
+<div class="page-footer">
+  <p>ODL Programme Development &bull; Page 18 of 20<br>
+  Part of the ODL Professional Development Series</p>
+</div>
+
+</body>
+</html>
